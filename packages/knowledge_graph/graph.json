@@ -6,7 +6,7 @@
       "anchor_id": "matta_deployment_bowers_and_wilkins",
       "vertical": "electronics_assembly",
       "deployment_type": "precision_speaker_components",
-      "citation_substrate_lines": [83, 540, 600],
+      "citation_substrate_lines": [540, 600],
       "citation_verbatim_excerpt": "working with Bowers & Wilkins, where Matta",
       "permitted_dimensions_of_comparability": [
         "surface_finish_qc",
@@ -18,7 +18,7 @@
       "anchor_id": "matta_deployment_caracol_am",
       "vertical": "additive_manufacturing",
       "deployment_type": "oem_closed_loop_partnership",
-      "citation_substrate_lines": [83, 271, 542, 602],
+      "citation_substrate_lines": [542, 602],
       "citation_verbatim_excerpt": "OEMs, Caracol",
       "permitted_dimensions_of_comparability": [
         "additive_manufacturing_inspection",

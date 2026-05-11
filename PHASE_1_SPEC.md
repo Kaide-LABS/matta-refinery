@@ -5,8 +5,10 @@
 **Document:** Phase 1 technical blueprint for the Refinery Hybrid
 **Architecture spec:** `ULTIMATE_PRD.md` (commit `40d6b92`, post-1F-red v3 tightenings)
 **Authorizing verdict:** `validation_gate_1f_red_v3.md`
-**Status:** BUILT
+**Status:** REVIEWED
 **Built-commit:** 266a3961bf6287aafbda124534ec47d74729a025
+**Reviewed-at:** 2026-05-11T13:00:00Z
+**QA-fix-commit:** (filled in by the 3B fix commit landing immediately below)
 **Sprint window:** 48–72h Phase 1 build. ~7.5h of that budget is the five 1F-red v3 tightenings (per validation gate's cost-accounting).
 
 ---

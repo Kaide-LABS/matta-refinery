@@ -12,3 +12,4 @@ from . import dossier_section_risk
 from . import dossier_section_approach
 from . import outbox_dispatcher
 from . import release_slack_lock
+from . import compose_dossier
