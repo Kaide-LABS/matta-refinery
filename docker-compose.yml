@@ -1,0 +1,87 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: refinery
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - refinery_dev
+
+  redis:
+    image: redis:7
+    networks:
+      - refinery_dev
+
+  mock_slack:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    command: uvicorn apps.mocks.mock_slack.server:app --host 0.0.0.0 --port 8090
+    ports:
+      - "8090:8090"
+    networks:
+      - refinery_dev
+
+  mock_crm:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    command: uvicorn apps.mocks.mock_crm.server:app --host 0.0.0.0 --port 8091
+    ports:
+      - "8091:8091"
+    networks:
+      - refinery_dev
+
+  mock_drive:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    command: uvicorn apps.mocks.mock_drive.server:app --host 0.0.0.0 --port 8092
+    ports:
+      - "8092:8092"
+    networks:
+      - refinery_dev
+
+  refinery_api:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    ports:
+      - "8080:8080"
+    env_file: .env
+    networks:
+      - refinery_dev
+    depends_on:
+      - postgres
+      - redis
+
+  refinery_worker:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.worker
+    env_file: .env
+    networks:
+      - refinery_dev
+    depends_on:
+      - postgres
+      - redis
+
+  theater_ui:
+    build:
+      context: apps/theater_ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - refinery_dev
+
+networks:
+  refinery_dev:
+
+volumes:
+  pg_data:

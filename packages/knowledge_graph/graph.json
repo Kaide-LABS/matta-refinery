@@ -1,0 +1,66 @@
+{
+  "version": "phase1-v1",
+  "built_at": "2026-05-11T00:00:00Z",
+  "anchors": [
+    {
+      "anchor_id": "matta_deployment_bowers_and_wilkins",
+      "vertical": "electronics_assembly",
+      "deployment_type": "precision_speaker_components",
+      "citation_substrate_lines": [83, 540, 600],
+      "citation_verbatim_excerpt": "working with Bowers & Wilkins, where Matta",
+      "permitted_dimensions_of_comparability": [
+        "surface_finish_qc",
+        "precision_machining_inspection",
+        "small_form_factor_metrology"
+      ]
+    },
+    {
+      "anchor_id": "matta_deployment_caracol_am",
+      "vertical": "additive_manufacturing",
+      "deployment_type": "oem_closed_loop_partnership",
+      "citation_substrate_lines": [83, 271, 542, 602],
+      "citation_verbatim_excerpt": "OEMs, Caracol",
+      "permitted_dimensions_of_comparability": [
+        "additive_manufacturing_inspection",
+        "oem_closed_loop_partnership",
+        "large_format_robot_am_cell"
+      ]
+    },
+    {
+      "anchor_id": "matta_deployment_global_drinks_brand",
+      "vertical": "fnb_bottling",
+      "deployment_type": "high_speed_bottling_qc",
+      "citation_substrate_lines": [540, 600],
+      "citation_verbatim_excerpt": "high-speed bottling for defects with a global drinks brand",
+      "permitted_dimensions_of_comparability": [
+        "high_speed_line_qc",
+        "fnb_packaging_inspection",
+        "bottling_throughput_anomaly_detection"
+      ]
+    },
+    {
+      "anchor_id": "matta_deployment_polymer_unnamed",
+      "vertical": "polymer_extrusion",
+      "deployment_type": "polymer_line_defect_detection",
+      "citation_substrate_lines": [540, 600],
+      "citation_verbatim_excerpt": "polymer manufacturing deployment, Matta achieved over 99% defect-detection",
+      "permitted_dimensions_of_comparability": [
+        "polymer_extrusion_defect_detection",
+        "continuous_line_inspection",
+        "few_shot_calibration_minutes_not_hours"
+      ]
+    },
+    {
+      "anchor_id": "matta_deployment_metal_casting_unnamed",
+      "vertical": "metal_casting",
+      "deployment_type": "casting_line_qc",
+      "citation_substrate_lines": [271, 421],
+      "citation_verbatim_excerpt": "polymer manufacturing and metal casting to bottling and consumer electronics",
+      "permitted_dimensions_of_comparability": [
+        "casting_surface_finish_qc",
+        "metallurgical_inspection",
+        "ductile_iron_inspection_baseline"
+      ]
+    }
+  ]
+}

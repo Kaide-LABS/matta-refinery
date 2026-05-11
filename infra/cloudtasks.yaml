@@ -1,0 +1,8 @@
+name: projects/my-gcp-project/locations/europe-west4/queues/outbox-relay-eu
+rateLimits:
+  maxDispatchesPerSecond: 500
+retryConfig:
+  maxAttempts: 6
+  minBackoff: 10s
+  maxBackoff: 3600s
+  maxRetryDuration: 21600s
