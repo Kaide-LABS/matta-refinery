@@ -5,7 +5,7 @@
 **Document:** Phase 1 technical blueprint for the Refinery Hybrid
 **Architecture spec:** `ULTIMATE_PRD.md` (commit `40d6b92`, post-1F-red v3 tightenings)
 **Authorizing verdict:** `validation_gate_1f_red_v3.md`
-**Status:** Build blueprint. Sections A–N. Hyper-granular, file-by-file, function-by-function. The execution agent writes code from this; this document does not contain application code.
+**Status:** BUILDING
 **Sprint window:** 48–72h Phase 1 build. ~7.5h of that budget is the five 1F-red v3 tightenings (per validation gate's cost-accounting).
 
 ---
