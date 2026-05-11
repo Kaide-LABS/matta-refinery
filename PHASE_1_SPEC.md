@@ -8,7 +8,7 @@
 **Status:** REVIEWED
 **Built-commit:** 266a3961bf6287aafbda124534ec47d74729a025
 **Reviewed-at:** 2026-05-11T13:00:00Z
-**QA-fix-commit:** (filled in by the 3B fix commit landing immediately below)
+**QA-fix-commit:** 93482e2
 **Sprint window:** 48–72h Phase 1 build. ~7.5h of that budget is the five 1F-red v3 tightenings (per validation gate's cost-accounting).
 
 ---

@@ -13,7 +13,7 @@ The Phase 1 build loop is complete. PHASE_1_SPEC.md covers the entire 72-hour sp
 
 | Phase | Spec | Built-commit | QA-fix-commit | Reviewed-at | Status |
 |---|---|---|---|---|---|
-| PHASE_1 | `PHASE_1_SPEC.md` (sections A–N, 2,248 lines) | `266a3961` | (this commit) | 2026-05-11T13:00Z | **REVIEWED** |
+| PHASE_1 | `PHASE_1_SPEC.md` (sections A–N, 2,248 lines) | `266a3961` | `93482e2` | 2026-05-11T13:00Z | **REVIEWED** |
 
 ## Architectural Trail (Final)
 
@@ -90,7 +90,7 @@ These are sprint-finish tasks per `Kaide_Labs_Identity.md §9 Sales Psychology`.
 | Authorizing verdict | `validation_gate_1f_red_v3.md` |
 | Phase 1 blueprint | `PHASE_1_SPEC.md` (Status: REVIEWED) |
 | Phase 1 build commit | `266a3961` |
-| Phase 1 QA fix commit | (this commit) |
+| Phase 1 QA fix commit | `93482e2` |
 | Unit tests passing | 15/15 |
 | Knowledge graph CLI validator | exit 0 (passes runtime provenance check) |
 | Architectural invariants intact | 4/4 (ADC / N=3 / extra=forbid / europe-west4) |
