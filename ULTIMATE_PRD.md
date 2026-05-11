@@ -160,7 +160,7 @@ Three layers, each filter-anchored: idempotency (Denic), deterministic two-route
 | Filter | Anchor | How the Hybrid satisfies |
 |---|---|---|
 | Brion (commercial pragmatism + uncertainty math) | "two factories a month + multi-year waitlist" + `dougbrion/pytorch-deep-ensembles` | Returns FDE/Doug/Special Projects hours; surfaces uncertainty via N=3 `gemini-3-flash-preview` ensemble + Vovk-style conformal calibration on defect-class; structurally mirrors his published methodology lifted to orchestration layer (see §4). |
-| Pattinson (cyber-physical trust + first principles) | ARIA SoTA Frontiers Night + Cambridge CAM "Security of Physical AI Systems" + 2022 Nature Communications | Deterministic two-route ADC as governance operator; Pydantic `extra="forbid"` admissible action space at every boundary; no actuation of physical hardware; zero shared signal path with closed-loop control; conformal sets prevent confident-but-wrong defect predictions; `allowed_evidence[]` whitelist prevents off-graph fabrication. |
+| Pattinson (cyber-physical trust + first principles) | ARIA SoTA Frontiers Night + Cambridge CAM "Security of Physical AI Systems" + 2022 Nature Communications | Deterministic two-route ADC as governance operator; Pydantic `extra="forbid"` admissible action space at every boundary; no actuation of physical hardware; zero shared signal path with closed-loop control; conformal sets prevent confident-but-wrong defect predictions; `allowed_evidence[]` whitelist prevents off-graph fabrication. **The DMZ is enforced at deployment-layer infrastructure, not only in prose — see §3.1.5 deployment topology diagram: separate GCP project, separate VPC, separate Vertex AI client, no shared IAM or quota with any hypothetical Matta core, so latency cross-contamination is physically impossible rather than policy-prohibited.** |
 | Denic (execution maximalism + idempotency) | Backend Engineer JD verbatim: "FastAPI, Pydantic, Postgres, SQLAlchemy, Redis, Celery" | Hybrid stack is exact match. Three idempotency layers (batch / prospect / dossier). Celery 5.5 `task_acks_late=True`, `task_reject_on_worker_lost=True`, `worker_prefetch_multiplier=1`, `broker_transport_options={"visibility_timeout": 3600}`. Postgres durable outbox for Slack/CRM/Drive writebacks. Graceful degradation on partial enrichment / Vertex rate limit / surface API outage. |
 | Investor mandate (Lakestar + Giant + 1st Kind) | Akis Bratsos "fast time to value" + Giant European tech sovereignty + 1st Kind Peugeot industrial legacy | Hybrid shortens deployment-slot decision cycle (Lakestar). Vertex AI europe-west4 — confirmed `gemini-3-flash-preview` and `gemini-3.1-pro-preview` exposed regionally; global endpoint forbidden (Giant). Stage 1 scoring structurally vertical-aware for automotive Tier-1 and aerospace verticals (1st Kind). Customer-side Slack/CRM/Drive tenant configuration anchors data residency at the customer boundary. |
 
@@ -257,6 +257,54 @@ All LLM inference is routed through Vertex AI on Google Cloud `europe-west4` via
    └──────────────────────────────────────────────────┘
 ```
 
+### §3.1.5 — Deployment Topology (DMZ Made Visual)
+
+The DMZ rule from §2.2 is enforced not only as architectural posture but at deployment-layer infrastructure. The sidecar runs in a dedicated Kaide GCP project with a dedicated VPC, dedicated Vertex AI client, dedicated Postgres/Redis/Cloud Tasks instances. It has zero shared IAM, zero shared network, zero shared Vertex quota with any hypothetical Matta core production environment. The DMZ rule is not a runtime check — it is a deployment-time guarantee that the network paths physically cannot overlap.
+
+```mermaid
+graph TD
+    subgraph kaide["Kaide GCP project — sidecar-only, dedicated VPC, EU region"]
+        subgraph cloudrun["Cloud Run (europe-west4)"]
+            api["refinery_api<br/>(FastAPI 0.136 lifespan,<br/>Pydantic 2.13 extra=forbid)"]
+            worker["refinery_worker<br/>(Celery 5.5, acks_late=True)"]
+        end
+        sql["Cloud SQL Postgres<br/>(canonical event ledger,<br/>dossier_artifacts,<br/>outbox + outbox_dlq)"]
+        redis["Memorystore Redis<br/>(idempotency cache,<br/>Slack distributed locks)"]
+        tasks["Cloud Tasks<br/>(outbox dispatcher,<br/>6× exponential backoff)"]
+        api --> sql
+        api --> redis
+        worker --> sql
+        worker --> redis
+        worker --> tasks
+        tasks --> worker
+    end
+
+    vertex["Vertex AI europe-west4<br/>(google-genai client,<br/>gemini-3-flash-preview,<br/>gemini-3.1-pro-preview)<br/>NO global endpoint"]
+    worker -.->|EU-pinned inference| vertex
+
+    subgraph customer["Customer-tenant workspaces — outbound writes only"]
+        slack_ws["Slack workspace"]
+        crm_ws["Hubspot / Salesforce tenant"]
+        drive_ws["Google Drive (customer Workspace)"]
+    end
+    worker -.->|outbox-relayed writes| slack_ws
+    worker -.->|outbox-relayed writes| crm_ws
+    worker -.->|outbox-relayed writes| drive_ws
+
+    barrier["═══ DMZ — DO NOT CROSS ═══<br/>NO shared VPC · NO shared IAM<br/>NO shared Vertex quota · NO shared network"]
+    kaide -.->|never crosses| barrier
+
+    subgraph matta["Matta core — illustrative stub, never touched"]
+        agents["SENTRY · TALLY · GAUGE · TRACE"]
+        mfm["Manufacturing Foundation Models"]
+        mos["Manufacturing OS UI"]
+        edge["Edge firmware · real-time camera streams"]
+    end
+    barrier -.->|enforces separation| matta
+```
+
+The sidecar shares zero infrastructure with any hypothetical Matta core production environment. The DMZ rule is enforced at deployment time — separate GCP project means no shared IAM, no shared service-account principals, no shared VPC, no peered networks, no shared Vertex AI quota or connection pool. This addresses the Pattinson Filter concern (anchored on his published closed-loop control work referenced in §4.2) about stochastic LLM latency jitter polluting real-time control loops: the network paths between the sidecar and Matta core do not exist, so latency cross-contamination is physically impossible rather than merely policy-prohibited. The customer-tenant workspaces (Slack, CRM, Drive) receive outbound writes only, through the transactional-outbox-relay pattern from §3.6; they are projections, not load-bearing dependencies.
+
 ### §3.2 — Stage 0: Deterministic Two-Route ADC (carries forward from v0 §4.2)
 
 Hardcoded Python rules engine maps `(request_type, payload_shape, route_eligibility)` to one of:
@@ -291,6 +339,10 @@ On-demand, per-prospect, triggered by human click on any surface:
 
 **`allowed_evidence[]` whitelist (v3 contribution):** Every Pro prompt receives an explicit list of permitted citation-substrate-line references for that prospect's vertical. The Pydantic validator rejects any output with a citation line not in the whitelist; the prompt itself instructs the model to cite only from `allowed_evidence`. This is a defense-in-depth pair: prompt-level constraint + schema-level enforcement.
 
+**`deterministic_section_ratio` is byte-density, not section count (Tightening 3).** The ratio threshold ≥0.60 referenced above is `bytes(deterministic_content) / bytes(total_content)`, computed over the rendered section payloads — **not** a count of deterministic-vs-LLM sections. A naive count-based ratio would be gameable: an LLM producing one verbose 3,000-character hallucinated section while the deterministic engine produced three terse 100-character factual sections yields 75% by section count but 90% LLM byte volume. The byte-density definition closes that Goodhart's-Law surface. The ratio is recomputed inside a Pydantic `model_validator` on `PreVisitDossier` (see §6.2) and the payload is rejected if the recomputed value falls below 0.60 — the validator does not trust a caller-provided number.
+
+**Section-granular DS-CP for partial-evidence sections (Tightening 4).** When the `allowed_evidence[]` whitelist for a given section's vertical sub-path is empty, or when the Domain-Shift-Aware Conformal Prediction semantic-distance metric (per the calibration table built from arXiv 2510.05566's methodology — see §4.2) indicates severe shift between the prospect's signal distribution and the calibration distribution, **only that section** is marked `UNVERIFIED_INSUFFICIENT_DATA` and stripped from the dossier payload. The remaining verified sections flow cleanly to all three native surfaces. The stripped section keys are surfaced on `PreVisitDossier.unverified_sections` (see §6.2) and rendered to Slack/CRM/Drive as an explicit "X sections marked unverified — see Theater" note, never silently omitted. This eliminates the fragility loop where a low-context prospect (the exact class the Hybrid is designed to triage) would otherwise force the whole dossier into the human-review queue.
+
 **Conformal calibration (Stage 2.2):** Computed offline against a labeled holdout of past Matta deployments + published manufacturing-defect literature for demo gaps. Coverage target α=0.1 (90% set-coverage guarantee). If the conformal set is empty or contains all 8 defect classes, the section is marked `requires_human_review`. The Theater pane shows the three Flash samples, the calibration step, and the resulting set live.
 
 ### §3.5 — Cost & Latency Envelope
@@ -315,7 +367,7 @@ Three idempotency layers (carries from v0 §4.6):
 2. **Prospect:** `lead_prospects.external_lead_id` upsert key.
 3. **Dossier:** `dossiers` keyed on `(prospect_id, signal_hash, knowledge_graph_version)`.
 
-Multi-surface retry outbox: every write to Slack / CRM / Drive goes through Postgres outbox table; a Cloud Tasks dispatcher retries with exponential backoff capped at 6 hours. Surface failures do NOT block the dossier — the artifact is canonical in Postgres; surfaces are projections.
+Multi-surface retry outbox follows the **Transactional Outbox** pattern (the recognized engineering pattern, not Kaide jargon). The dossier write to Postgres `dossier_artifacts` and the intended surface mutations to Slack / CRM / Drive are **committed in the same atomic Postgres transaction**: the dossier row and the per-surface outbox rows land together or not at all. A separate idempotent message-relay worker (`packages/outbox/dispatcher.py`, invoked via Cloud Tasks) reads the outbox table and executes the external API calls with exponential backoff. After **6 failed retries over a 6-hour envelope**, the outbox entry is moved to a `cmms_outbox_dlq` Dead Letter Queue table for manual investigation rather than retried indefinitely — DLQ rows surface in the Theater pane's outbox inspector and never silently rot. Surface failures do NOT block the dossier — the artifact is canonical in Postgres; surfaces are projections.
 
 Graceful degradation paths:
 - Vertex AI unreachable → worker NACK + retry; idempotency cache holds placeholder; Slack shows queued state.
@@ -323,6 +375,7 @@ Graceful degradation paths:
 - CRM API fails → outbox retries; dossier still appears in Slack + Drive.
 - Drive API fails → outbox retries; Slack canvas inlines the artifact.
 - Enrichment partial → dossier proceeds with `enrichment_status: partial` and gaps surfaced in Risk Register.
+- **Section-granular DS-CP for partial-evidence sections (Tightening 4).** Domain-Shift-Aware Conformal Prediction (per Lin et al. 2025, arXiv 2510.05566 — cited in §4.2) is applied **per section**, not per dossier. If a specific section's `allowed_evidence[]` whitelist is empty for the prospect's vertical sub-path, or if the DS-CP semantic-distance metric between the prospect's signal vector and the section's calibration distribution exceeds the configured threshold, only that section is marked `UNVERIFIED_INSUFFICIENT_DATA` and stripped from the dossier payload. The stripped section key is appended to `PreVisitDossier.unverified_sections` (see §6.2); the remaining verified sections flow cleanly to Slack/CRM/Drive. Section-granular handling is also cross-referenced at the §3.4 per-section processing level. The §6.5 container-boot citation-provenance check is unchanged — it validates the KG file's integrity at startup, while this section-granular DS-CP applies at per-dossier generation time. This composition prevents the fragility loop where a low-context prospect (the exact class the Hybrid is designed to triage) would force the whole dossier into the human-review queue.
 
 ---
 
@@ -468,7 +521,7 @@ matta-refinery/
 │   │       ├── dossier_section_comparable.py  # 2.3a det + 2.3b prose (v4)
 │   │       ├── dossier_section_risk.py        # 2.4
 │   │       ├── dossier_section_approach.py    # 2.5
-│   │       └── outbox_dispatcher.py           # NEW (Slack/CRM/Drive retry)
+│   │       └── outbox_dispatcher.py           # Transactional Outbox message-relay worker (Slack/CRM/Drive + DLQ on 6× retry)
 │   ├── theater_ui/                            # Next.js + Tailwind
 │   │   ├── pages/
 │   │   └── components/
@@ -506,9 +559,9 @@ matta-refinery/
 │   ├── uncertainty/                           # NEW
 │   │   ├── conformal.py                       # split-conformal calibration
 │   │   └── calibration_table.json
-│   ├── outbox/                                # NEW (multi-surface durable outbox)
-│   │   ├── models.py
-│   │   └── dispatcher.py
+│   ├── outbox/                                # Transactional Outbox (same-tx writes, DLQ after 6 retries)
+│   │   ├── models.py                          # outbox + cmms_outbox_dlq SQLAlchemy ORM
+│   │   └── dispatcher.py                      # idempotent message-relay worker, exponential backoff
 │   ├── adapters/                              # NEW (Slack/CRM/Drive)
 │   │   ├── slack/
 │   │   │   ├── client.py
@@ -585,6 +638,17 @@ class ComparableDeployment(BaseModel):
     dimension_of_comparability: Annotated[str, Field(max_length=250)]  # LLM-written prose only
     selection_method: Literal["deterministic_rules", "no_comparable_available"]
 
+DETERMINISTIC_BYTE_THRESHOLD = 0.60
+DETERMINISTIC_SECTION_KEYS = frozenset({
+    "company_facts", "verified_kg_anchors", "fitness_score_rationale",
+    "risk_checklist_baseline", "approach_template_baseline",
+})  # the section keys whose rendered bytes count toward `bytes(deterministic_content)`
+LLM_SECTION_KEYS = frozenset({
+    "process_taxonomy", "defect_hypothesis",
+    "comparable_dimension_of_comparability_prose",  # v4: deterministic selection, LLM prose only
+    "risk_register_narrative", "suggested_approach_narrative",
+})
+
 class PreVisitDossier(BaseModel):
     model_config = ConfigDict(extra="forbid")
     dossier_id: str
@@ -597,10 +661,68 @@ class PreVisitDossier(BaseModel):
     comparable_deployment: ComparableDeployment
     risk_register: RiskRegister
     suggested_approach: SuggestedApproach
-    deterministic_section_ratio: Annotated[float, Field(ge=0.0, le=1.0)]   # v4 audit field
+    rendered_sections: dict[str, str]           # section_key -> rendered bytes (utf-8); the source of truth
+                                                #  for the deterministic_section_ratio recomputation
+    deterministic_section_ratio: Annotated[
+        float,
+        Field(
+            ge=0.0, le=1.0,
+            description=(
+                "Byte-density ratio: bytes(deterministic_content) / bytes(total_content), "
+                "computed across rendered_sections. NOT a section count. The model_validator "
+                "recomputes this value from rendered_sections at validation time and rejects "
+                "the payload if the recomputed ratio falls below DETERMINISTIC_BYTE_THRESHOLD "
+                "(0.60). Caller-provided values are NOT trusted — they are overwritten by the "
+                "recomputed value. Closes the Goodhart's-Law surface where a single verbose "
+                "LLM section could dominate byte volume while passing a naive section-count check."
+            ),
+        ),
+    ]
+    unverified_sections: Annotated[             # Tightening 4: DS-CP section-granular strip list
+        list[str],
+        Field(
+            default_factory=list,
+            description=(
+                "Section keys stripped from the dossier under Domain-Shift-Aware Conformal "
+                "Prediction (DS-CP, arXiv 2510.05566 — see §4.2). A section appears here when "
+                "its allowed_evidence whitelist is empty for the prospect's vertical sub-path "
+                "or when the DS-CP semantic-distance metric indicates severe distribution "
+                "shift. The Slack/CRM/Drive renderers display an explicit 'N sections marked "
+                "unverified' note rather than silently omitting content."
+            ),
+        ),
+    ]
     generated_at: datetime
     requires_human_review_sections: Annotated[list[str], Field(default_factory=list)]
+
+    @model_validator(mode="after")
+    def _recompute_and_enforce_deterministic_byte_ratio(self) -> "PreVisitDossier":
+        det_bytes = sum(
+            len(self.rendered_sections[k].encode("utf-8"))
+            for k in DETERMINISTIC_SECTION_KEYS
+            if k in self.rendered_sections
+        )
+        llm_bytes = sum(
+            len(self.rendered_sections[k].encode("utf-8"))
+            for k in LLM_SECTION_KEYS
+            if k in self.rendered_sections
+        )
+        total = det_bytes + llm_bytes
+        if total == 0:
+            raise ValueError("PreVisitDossier rendered_sections is empty")
+        recomputed = det_bytes / total
+        # Overwrite caller-provided value; never trust it.
+        object.__setattr__(self, "deterministic_section_ratio", recomputed)
+        if recomputed < DETERMINISTIC_BYTE_THRESHOLD:
+            raise ValueError(
+                f"deterministic_section_ratio={recomputed:.3f} is below threshold "
+                f"{DETERMINISTIC_BYTE_THRESHOLD}; LLM byte volume has exceeded the audit budget. "
+                f"This payload is rejected (Tightening 3 byte-density gate)."
+            )
+        return self
 ```
+
+Imports for the model_validator: `from pydantic import BaseModel, ConfigDict, Field, model_validator` (Pydantic 2.x `@model_validator(mode='after')` is the canonical form; the v1 `@validator` / `@root_validator` decorators are not used).
 
 ### §6.3 — FastAPI Ingress Contracts
 
@@ -610,28 +732,65 @@ New routers vs v2 PRD:
 
 ```python
 # apps/refinery_api/routers/slack_events.py  (v1 contribution)
+from fastapi.responses import JSONResponse
+
+SLACK_LOCK_TTL_SECONDS = 60   # > max expected Celery execution envelope per §3.5 (Stage 2 full-dossier ≈ 88s
+                              # wall, but per-task envelope inside the workflow stays under 60s; lock TTL is
+                              # the per-task ceiling, not the end-to-end Magic Moment budget).
+
 @router.post("/slack/events", response_model=SlackEventAck)
 async def receive_slack_event(
     request: Request,
     redis: RedisDep,
     celery: CeleryDep,
-) -> SlackEventAck:
+) -> SlackEventAck | JSONResponse:
     raw_body = await request.body()
     # Slack HMAC-SHA256 v0:{ts}:{raw_body}, 5-min window
     verify_slack_signature(request.headers, raw_body)
     payload = SlackEventPayload.model_validate_json(raw_body)
 
-    # Slack retry idempotency: X-Slack-Retry-Num header dedup
+    # Tightening 2: Redis distributed lock to suppress in-flight duplicate workflow instantiation.
+    # Slack mandatory retry fires at 3s; our Celery execution envelope is longer. Without the lock,
+    # a retry hitting at t+3s while the original is still processing would instantiate a second
+    # workflow on the same event. SET NX EX gives atomic acquire-or-fail.
+    lock_acquired = await redis.set(
+        f"slack:lock:{payload.event_id}",
+        "1",
+        ex=SLACK_LOCK_TTL_SECONDS,
+        nx=True,
+    )
+    if not lock_acquired:
+        # Original is mid-execution. Return 202 — Slack does NOT retry on 202.
+        return JSONResponse(
+            status_code=202,
+            content={"status": "duplicate_in_flight", "event_id": payload.event_id},
+        )
+
+    # Post-completion dedup (separate namespace, 24h TTL, retained from prior PRD revision).
+    # This catches the legitimate case where a user manually re-triggers the same Slack action
+    # hours later — the lock will have expired, but the post-completion key blocks rework.
     if await redis.get(f"slack:event:{payload.event_id}"):
+        # Release the lock we just acquired; the work is already done.
+        await redis.delete(f"slack:lock:{payload.event_id}")
         return SlackEventAck(status="duplicate", event_id=payload.event_id)
-    await redis.set(f"slack:event:{payload.event_id}", "1", ex=86400)
 
     if payload.event.type == "file_shared":
-        # normalize to LeadIntakeBatch + enqueue
-        celery.send_task("refinery.parse_slack_ingress", args=[payload.model_dump_json()])
+        # The Celery task is configured with on_success / on_failure callbacks that:
+        #   (a) write the post-completion key:  redis.set(f"slack:event:{event_id}", "1", ex=86400)
+        #   (b) release the in-flight lock:     redis.delete(f"slack:lock:{event_id}")
+        # so a legitimate later retry is not blocked by a stale lock, and a completed event
+        # is correctly deduplicated for 24h after completion.
+        celery.send_task(
+            "refinery.parse_slack_ingress",
+            args=[payload.model_dump_json()],
+            kwargs={"slack_event_id": payload.event_id},   # lock release key
+        )
     return SlackEventAck(status="accepted", event_id=payload.event_id)
+```
 
+The distributed lock at `slack:lock:{event_id}` is necessary because Slack's mandatory retry semantics fire at the 3-second mark, while the Celery worker's per-task envelope for ingress normalization can exceed 3 seconds under cold-start or Vertex AI rate-limit conditions. The 60-second TTL is chosen to comfortably exceed the maximum per-task execution envelope inside the workflow (which stays under the §3.5 latency budget for any single Celery task, not the end-to-end Magic Moment budget) while ensuring a stale lock cannot block a legitimate manually-retriggered retry hours later.
 
+```python
 # apps/refinery_api/routers/crm_webhooks.py  (v2 contribution)
 @router.post("/crm/webhook/{provider}", response_model=CRMWebhookAck)
 async def crm_webhook(
