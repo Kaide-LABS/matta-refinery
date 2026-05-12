@@ -12,13 +12,13 @@ The bottleneck they face is crucial. Manufacturing factories lose meaningful rev
 
 ### §2 THE BOTTLENECK (Plain English)
 
-The primary pain is that Matta has far more demand than they can currently serve. Doug noted they are "deploying to around two factories a month and have a multi-year waitlist at the moment" (line 0114). At recent trade shows, they gathered an overwhelming volume of interest, with the UK Metals Expo bringing in "124 leads in two days" (line 0294) and Advanced Engineering generating "over 100 incredible leads" (line 0284). The team spends one week at trade shows and the next week traveling to factory visits. Doug, Damjan, and a planned Special Projects hire are forced to absorb all the pre-sales research required to figure out which two factories out of hundreds should get the next available slots.
+The primary pain is that Matta has far more demand than they can currently serve. Doug stated they are *"deploying to around two factories a month and have a multi-year waitlist at the moment"* (`Matta_Intel_cleaned.md` line 0114). At recent trade shows, they gathered overwhelming interest: *"124 leads in two days"* at UK Metals Expo 2025 (line 0294) and *"over 100 incredible leads"* at Advanced Engineering 2025 (line 0284). The team spends one week at trade shows (FDE JD lines 0698, 0704, 0705, 0716 — trade-show qualification and factory-visit prep are named responsibilities) and the next week traveling to factory visits. Doug, Damjan, and the Special Projects hire absorb at least some portion of the pre-sales research required to figure out which two factories out of hundreds get the next available slots.
 
-This triage burden directly costs them deals. With only two deployments a month against a massive waitlist, every decision about who gets a slot is a rate-limiter on their revenue. If they misallocate a slot to a company that isn't a good fit, they lose meaningful income. Furthermore, every hour Doug spends manually researching and pre-qualifying trade show leads is an hour he is not spending closing active deals or supporting the factories they have already deployed to.
+This triage burden directly costs them deals. With only two deployments a month against a multi-year waitlist, every decision about which prospect gets a slot is a rate-limiter on revenue. Misallocating a slot to a low-fit prospect is a meaningful fraction of ARR lost. Every hour Doug spends pre-qualifying trade-show leads is an hour he is not closing existing deals or supporting deployed factories.
 
-Their current response to this pressure is brute force. They are hiring a Special Projects leader, which they consider "probably our most important hire" (line 0625), just to absorb this pre-sales scoping work. They are also pulling the entire team onto the trade show floor to handle the volume. They have not built any internal tooling to automate the research and preparation phase; it remains an entirely hand-managed, manual triage process.
+Their current response to this pressure is partially visible in the substrate and partially inferred. They are hiring a Special Projects leader (`line 0625`: *"probably our most important hire"*) — the role is verified as critical, ⚠️ though the specific framing that it absorbs pre-sales scoping is one plausible interpretation of a broadly-scoped JD. They are taking the full team to trade shows (verified at lines 0187, 0191 for MACH 2026, lines 0234, 0393 for Southern Manufacturing) — ⚠️ though "to handle volume" is our framing, not their stated reason. **Whether they have already built internal tooling to automate the pre-visit research phase is unknown.** The substrate does not state they have such tooling; it also does not state they don't. Given that Doug actively maintains open-source ML uncertainty libraries and the team includes Cambridge research faculty plus an execution-maximalist CTO with a clear stack mandate, the prior probability that they have at least some internal triage automation is non-trivial. **Outreach must NOT assume the absence of such tooling.**
 
-Our architecture solves this pain by handling the exact slice of work that lives between the trade show floor and the actual factory visit. The tool automatically handles the triage and research, applying strict confidence checks along the way. Instead of spending a week manually researching, the new Special Projects hire will walk into a system that has already filtered the 124 trade show leads down to a ranked top twelve, complete with a fully written briefing for each top prospect ready and waiting in their chat channel, their customer database, and a shared document.
+Our architecture solves this pain by handling the slice of work between trade-show floor and factory visit — not by being the first tool in the category, but by being the rigorous, audit-grade version of pre-visit prep. The Refinery's specific architectural choices are the differentiator: deterministic comparable selection from a knowledge graph with verbatim citation provenance, deep ensembles methodology applied at the orchestration layer with conformal coverage on the defect-class hypothesis (matching Doug's published pytorch-deep-ensembles methodology lineage), Pydantic-locked output envelopes with `extra="forbid"` at every boundary, the byte-density Goodhart-resistance validator. Whether Matta has a Notion template, a custom internal Python script, or no tooling at all, the comparison surface is the same: their existing approach versus the Refinery's specific methodology. If they have nothing, we are a 10x improvement. If they have something, we are the structured, Damjan-absorbable upgrade.
 
 ### §3 THE DEMO — LAYMAN VERSION
 
@@ -105,6 +105,54 @@ The architecture strictly avoids touching any of Matta's core intellectual prope
   11. Symptom: All dossiers generate with `requires_human_review=True`. Root cause: The DS-CP threshold is too sensitive. Check first: `DSCP_SEVERE_SHIFT_THRESHOLD` in `packages/uncertainty/dscp.py`. Fix pattern: Loosen the threshold so that standard verticals like `metal_casting` pass the gate for the seeded CSV.
   12. Symptom: The cost ticker displays significantly more than $0.037. Root cause: The Celery worker is caught in a retry loop or the `thinking_level` was accidentally increased. Check first: worker logs for repeated Vertex AI calls. Fix pattern: Explicitly enforce `thinking_level="minimal"` and cap task retries.
 
+- **What "working" looks like — when to stop debugging**
+
+  Debug stops when the full happy path executes within these timing and state windows. If all of the following hold, the demo is integration-complete and recording can proceed.
+
+  * **T+0 — System idle, all surfaces alive.** Theater UI loads at `http://localhost:3000` with all three panes rendered (Slack left, Theater center, Drive right) plus CRM inset bottom-right. Mock Slack server responding to GET `http://localhost:9001/health` with 200. Mock CRM server at port 9002 healthy. Mock Drive server at port 9003 healthy. Postgres at 5432 healthy. Redis at 6379 healthy. FastAPI at 8000 has logged "Knowledge graph provenance check passed" in the lifespan startup output.
+
+  * **T+0 (action) — CSV upload accepted.** POST `/ingest/batch` with the UK Metals Expo CSV returns HTTP 200 with a `batch_id`. Postgres `lead_intake_batches` has one new row. Worker logs show `refinery.classify_action_domain` task firing.
+
+  * **T+2 — ADC decision visible.** Theater center pane shows the Slack event JSON inspector populated, signature verification "OK" badge, and ADC route pill rendered as "PRIORITIZATION" (NOT yet "DOSSIER_FULL" — that comes at T+12 after the click). This is the deterministic-ADC visual proof: no LLM card has lit yet.
+
+  * **T+5 — Stage 1 fan-out animation.** Theater center pane shows 124 prospect cards in a grid, each with an in-flight indicator. Worker logs show `refinery.enrich_prospect`, `refinery.classify_vertical`, `refinery.score_fitness` tasks firing per prospect.
+
+  * **T+8 — Magic Moment 1 lands.** Three simultaneous things must be visible:
+    - Slack left pane: a fresh canvas appears in `#fde-lead-refinery` with the top-12 prospect ranking
+    - CRM inset bottom-right: 12 prospect records show updated fitness scores
+    - Drive right pane: a "Priority Index — UK Metals Expo 2025" doc is created with the ranked list
+
+    Theater center pane: the 12 highest-fitness cards highlight in green. The William Cook Sheffield card is at the top of the ranking. The total elapsed shows ~8 seconds.
+
+  * **T+12 (action) — Click "Generate Dossier" on William Cook.** Slack interaction fires. Theater center ADC route pill updates to "DOSSIER_FULL". Worker logs show `refinery.generate_dossier` task firing. The Slack distributed lock at `slack:lock:{event_id}` should be visible in Redis via `redis-cli GET` if you check immediately.
+
+  * **T+25 — Stage 2.1 taxonomy card lights up.** Theater center pane: process_taxonomy section card transitions from gray to active. After completion (T+30): card shows primary_process="ductile iron casting", sub_processes populated.
+
+  * **T+45 — Stage 2.2 defect-class card lights with N=3 ensemble visible.** Three sample cards visible during generation, then the conformal calibration step renders showing the coverage statement and the conformal set. After completion: card shows defect_hypothesis with conformal_set populated and coverage ≥0.9.
+
+  * **T+55 — Stage 2.3 comparable card highlights "deterministic selection from KG."** UI element specifically marks the matta_customer_anchor as selected by the rules engine (NOT by LLM) — this is the v4-contribution visible-proof moment. Anchor shown: `metal_casting_*` family matching William Cook's vertical.
+
+  * **T+70 — Stage 2.4 risk register card.** Findings list populated.
+
+  * **T+78 — Stage 2.5 approach card.** Template = "two_camera_pilot", day_one_risks list populated.
+
+  * **T+85-86 — Byte-density coverage meter green.** Theater center bottom-right shows the deterministic-vs-LLM coverage meter at ≥0.60, rendering green. Pydantic validator passes; no rejection log entry.
+
+  * **T+87 — `compose_dossier` writes atomically.** Worker log shows the `with engine.begin() as conn:` block committing one `dossier_artifacts` UPDATE and three `outbox` INSERTs (Slack, CRM, Drive surfaces). Postgres `outbox` table has three new rows with state='pending'.
+
+  * **T+88 — Magic Moment 2 lands.** Three simultaneous things:
+    - Slack left pane: William Cook canvas updates with full dossier section anchors
+    - CRM inset: appends a note "Pre-Visit Dossier generated 2026-MM-DD, link: drive.google.com/..."
+    - Drive right pane: complete dossier with footer [Share] button live
+
+    Theater center cost ticker reads approximately $0.037 (within the §3.5 budget under $0.10). Total elapsed should be under 90 seconds.
+
+  * **T+90 — Recording cap.** Hard cut for OBS recording.
+
+  If any of these milestones drift more than ±5 seconds, debug the corresponding stage. If a milestone fails to land at all, see "Order of operations for debugging" above and trace upward from the symptom.
+
+  If all milestones land within tolerance: **stop debugging. The demo is integration-complete.** Proceed to recording per `PHASE_1_SPEC §M` cut list with OBS at 1080p / 30fps, separate voiceover take to Rode NT-USB, post in DaVinci Resolve.
+
 - **Common generated gotchas**
   * QA caught and fixed four stub unit tests that were failing to exercise the actual validators (resolved in commit `93482e2`).
   * QA caught and fixed the missing `compose_dossier.py` task, which was referenced but missing in the autonomous build (resolved in `93482e2`).
@@ -127,7 +175,7 @@ The architecture strictly avoids touching any of Matta's core intellectual prope
 - **1F-red v3:** The final counter-verdict document that authorized the five specific technical tightenings after challenging a premature kill order.
 - **Tightening 1-5:** The five non-negotiable engineering mandates (Transactional Outbox, Slack lock, byte-density validator, DS-CP, deployment topology) enforcing architectural rigor.
 - **DS-CP:** Domain-Shift Conformal Prediction, the specific mathematical check used to determine if the model is operating too far outside its verified training distribution.
-- **CISC:** Complex Instruction Set Computing, occasionally used metaphorically to describe heavy, monolithic prompt structures (avoided here via modular N=3 ensembles).
+- **CISC:** Confidence-Informed Self-Consistency (Taubenfeld et al., 2025, arXiv 2502.06233). The method behind the N=3 Flash ensemble's weighted majority vote: confidence scores from the model are used to weight reasoning paths, reducing the required sample size for reliable answers. Cited in `ULTIMATE_PRD.md §4.2` as the academic anchor for the ensemble pattern. Doug Brion-readiness reference — methodology lineage from his own `pytorch-deep-ensembles` and `pytorch-classification-uncertainty` repos. NOT to be confused with the CPU-architecture acronym.
 - **Byte-density ratio:** The metric calculating what percentage of the final dossier was deterministically retrieved versus generated by an LLM.
 - **Deterministic-vs-LLM coverage meter:** The UI element in the Theater pane displaying the byte-density ratio, turning green only when >0.60.
 - **SENTRY/TALLY/GAUGE/TRACE:** Matta's proprietary, real-time production agents operating directly on the factory edge.
