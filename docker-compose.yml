@@ -57,7 +57,7 @@ services:
     environment:
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/application_default_credentials.json
     volumes:
-      - ${USERPROFILE:-${HOME}}/AppData/Roaming/gcloud:/root/.config/gcloud:ro
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
     networks:
       - refinery_dev
     depends_on:
@@ -72,7 +72,7 @@ services:
     environment:
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/application_default_credentials.json
     volumes:
-      - ${USERPROFILE:-${HOME}}/AppData/Roaming/gcloud:/root/.config/gcloud:ro
+      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
     networks:
       - refinery_dev
     depends_on:
