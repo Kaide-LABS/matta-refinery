@@ -150,7 +150,7 @@ def compose_dossier(self, dossier_id: str):
             outbox_ids.append(outbox_id)
             conn.execute(
                 text(
-                    "INSERT INTO outbox (id, surface, payload, delivery_attempts, state, next_attempt_at) "
+                    "INSERT INTO outbox (id, surface, payload_jsonb, delivery_attempts, state, next_attempt_at) "
                     "VALUES (:id, :surf, :payload, 0, 'pending', :now)"
                 ),
                 {

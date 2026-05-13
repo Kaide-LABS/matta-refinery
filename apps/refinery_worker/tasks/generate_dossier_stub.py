@@ -16,7 +16,7 @@ from datetime import datetime
     retry_jitter=True,
     max_retries=3,
 )
-def generate_dossier_stub(self, prospect_id: str):
+def generate_dossier_stub(self, prospect_id: str, batch_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.begin() as conn:
         row = conn.execute(text("SELECT vertical, fitness_score, enrichment_status, requires_human_review FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}).first()
@@ -33,11 +33,12 @@ def generate_dossier_stub(self, prospect_id: str):
         stub_id = str(uuid.uuid4())
         
         conn.execute(text("""
-            INSERT INTO dossier_stubs (stub_id, prospect_id, company_facts, verified_vertical, headline_kg_anchor, slot_readiness, generated_at)
-            VALUES (:stub_id, :pid, '{}', :vertical, :anchor, :slot, :now)
+            INSERT INTO dossier_stubs (stub_id, prospect_id, batch_id, company_facts, verified_vertical, headline_kg_anchor, slot_readiness, generated_at)
+            VALUES (:stub_id, :pid, :batch_id, '{}', :vertical, :anchor, :slot, :now)
         """), {
             "stub_id": stub_id,
             "pid": prospect_id,
+            "batch_id": batch_id,
             "vertical": vertical,
             "anchor": anchor_id,
             "slot": slot_readiness,
@@ -47,7 +48,7 @@ def generate_dossier_stub(self, prospect_id: str):
         for surface in ["slack_canvas", "crm_field", "drive_doc"]:
             outbox_id = str(uuid.uuid4())
             conn.execute(text("""
-                INSERT INTO outbox (id, surface, payload, delivery_attempts, state, next_attempt_at)
+                INSERT INTO outbox (id, surface, payload_jsonb, delivery_attempts, state, next_attempt_at)
                 VALUES (:id, :surf, '{}', 0, 'pending', :now)
             """), {
                 "id": outbox_id, "surf": surface, "now": datetime.utcnow()
