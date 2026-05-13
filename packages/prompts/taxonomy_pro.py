@@ -1,6 +1,6 @@
 from packages.schemas.dossier import ProcessTaxonomy
 
-MODEL = "gemini-3.1-pro-preview"
+MODEL = "gemini-2.5-pro"
 THINKING_LEVEL = "medium"
 TEMP = 0.2
 MAX_OUT = 1024

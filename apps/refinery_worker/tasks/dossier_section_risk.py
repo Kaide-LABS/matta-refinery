@@ -29,7 +29,7 @@ def dossier_section_risk(self, prospect_id: str, dossier_id: str):
     
     async def run():
         response = await client.aio.models.generate_content(
-            model="gemini-3.1-pro-preview",
+            model="gemini-2.5-pro",
             contents=[prompt],
             config=GenerateContentConfig(
                 response_mime_type="application/json",

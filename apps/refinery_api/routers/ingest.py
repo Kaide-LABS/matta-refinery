@@ -37,10 +37,13 @@ async def receive_batch(
         
     try:
         # Tightening 1 transactional posture
-        db_batch = IngestBatch(id=batch.batch_id, file_sha256=file_sha256, user_id=user.id, day=date.today())
+        db_batch = IngestBatch(id=batch.batch_id, source_surface=batch.source_surface, file_sha256=file_sha256, user_id=user.id, day=date.today())
         session.add(db_batch)
         for row in batch.rows:
+            prospect_id = f"pros_{hashlib.md5(f'{batch.source_surface}:{row.external_lead_id}'.encode()).hexdigest()[:12]}"
             prospect = LeadProspect(
+                id=prospect_id,
+                batch_id=batch.batch_id,
                 source_system=batch.source_surface,
                 external_lead_id=row.external_lead_id,
                 company_name=row.company_name,

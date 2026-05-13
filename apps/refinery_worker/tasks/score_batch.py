@@ -31,8 +31,8 @@ def score_batch(self, batch_id: str):
         chains.append(
             chain(
                 app.signature("refinery.enrich_prospect", args=[pid]),
-                app.signature("refinery.classify_vertical", args=[pid]),
-                app.signature("refinery.score_fitness", args=[pid])
+                app.signature("refinery.classify_vertical"),
+                app.signature("refinery.score_fitness")
             )
         )
         

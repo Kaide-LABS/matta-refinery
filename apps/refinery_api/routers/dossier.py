@@ -1,3 +1,4 @@
+from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import JSONResponse
 from ..deps import RedisDep, CeleryDep, SessionDep
@@ -39,7 +40,7 @@ async def generate_dossier(
     return DossierAck(dossier_id=new_id, status="generating")
 
 @router.get("/dossier/{dossier_id}")
-async def fetch_dossier(dossier_id: str, session: SessionDep) -> PreVisitDossier | DossierAck | JSONResponse:
+async def fetch_dossier(dossier_id: str, session: SessionDep) -> Any:
     query = text("SELECT state, payload_json FROM dossier_artifacts WHERE dossier_id = :dossier_id")
     result = await session.execute(query, {"dossier_id": dossier_id})
     row = result.first()

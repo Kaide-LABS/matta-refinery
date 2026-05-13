@@ -54,7 +54,7 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     
     async def call_gemini(temp):
         response = await client.aio.models.generate_content(
-            model="gemini-3-flash-preview",
+            model="gemini-2.5-flash",
             contents=[prompt],
             config=GenerateContentConfig(
                 response_mime_type="application/json",

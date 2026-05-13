@@ -1,7 +1,7 @@
 from ..app import app
 from packages.enrichment.companies_house import CompaniesHouseAdapter
 from packages.enrichment.web_scraper import WebScraperAdapter
-from packages.enrichment.linkedin_signal import LinkedInSignalAdapter
+from packages.enrichment.linkedin_signal import LinkedinSignalAdapter
 
 @app.task(
     name="refinery.enrich_prospect",
@@ -16,7 +16,7 @@ from packages.enrichment.linkedin_signal import LinkedInSignalAdapter
 )
 def enrich_prospect(self, prospect_id: str):
     # In Phase 1 deterministic adapters
-    adapters = [CompaniesHouseAdapter(), WebScraperAdapter(), LinkedInSignalAdapter()]
+    adapters = [CompaniesHouseAdapter(), WebScraperAdapter(), LinkedinSignalAdapter()]
     status = "complete"
     for adapter in adapters:
         try:

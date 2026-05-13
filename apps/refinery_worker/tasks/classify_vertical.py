@@ -13,7 +13,7 @@ async def call_gemini(prospect_data, temp):
     from packages.prompts.vertical_flash import VERTICAL_PROMPT
     prompt = VERTICAL_PROMPT.format(**prospect_data)
     response = await client.aio.models.generate_content(
-        model="gemini-3-flash-preview",
+        model="gemini-2.5-flash",
         contents=[prompt],
         config=GenerateContentConfig(
             response_mime_type="application/json",

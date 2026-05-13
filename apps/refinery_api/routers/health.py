@@ -6,6 +6,7 @@ from sqlalchemy import text
 router = APIRouter()
 
 @router.get("/healthz")
+@router.get("/health")
 async def healthz() -> dict:
     return {"status": "ok"}
 

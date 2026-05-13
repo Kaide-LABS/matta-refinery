@@ -2,6 +2,10 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.post("/drive/files")
 async def drive_files():
     return {"file_id": "D_MOCK", "web_view_link": "https://drive.google.com/mock"}

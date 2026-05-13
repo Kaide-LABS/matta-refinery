@@ -2,6 +2,10 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 @app.post("/hubspot/webhook")
 async def hubspot_webhook():
     return {"status": "ok"}

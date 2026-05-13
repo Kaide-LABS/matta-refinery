@@ -1,6 +1,6 @@
 from packages.schemas.dossier import RiskRegister
 
-MODEL = "gemini-3.1-pro-preview"
+MODEL = "gemini-2.5-pro"
 THINKING_LEVEL = "low"
 TEMP = 0.2
 MAX_OUT = 768

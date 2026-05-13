@@ -1,1 +1,12 @@
-{}
+{
+  "calibration_version": "phase1-demo-v1",
+  "alpha": 0.1,
+  "coverage_target": 0.9,
+  "nonconformity_thresholds_by_class": {
+    "porosity": 0.1,
+    "dimensional_drift": 0.1
+  },
+  "built_at": "2026-05-12T18:38:45.430502",
+  "holdout_size": 30,
+  "seed": 42
+}

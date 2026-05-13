@@ -1,6 +1,6 @@
 from packages.schemas.defect_hypothesis import LikelyDefectClassHypothesis
 
-MODEL = "gemini-3-flash-preview"
+MODEL = "gemini-2.5-flash"
 THINKING_LEVEL = "minimal"
 TEMPS = (0.1, 0.5, 0.9)
 MAX_OUT = 512

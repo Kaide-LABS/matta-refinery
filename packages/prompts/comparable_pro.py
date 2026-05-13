@@ -5,7 +5,7 @@ class DimensionOfComparabilityProse(BaseModel):
     model_config = ConfigDict(extra="forbid")
     prose: Annotated[str, Field(max_length=250)]
 
-MODEL = "gemini-3.1-pro-preview"
+MODEL = "gemini-2.5-pro"
 THINKING_LEVEL = "low"
 TEMP = 0.3
 MAX_OUT = 256
