@@ -35,15 +35,15 @@ for port in 8090 8091 8092; do
 done
 echo "[C.4] PASS"
 
-echo "[C.5] Running unit tests..."
-PYTEST_OUT=$(python -m pytest tests/unit/ -q --tb=short 2>&1)
+echo "[C.5] Running unit tests (inside refinery_api container)..."
+PYTEST_OUT=$(docker compose exec -T refinery_api python -m pytest tests/unit/ -q --tb=short 2>&1)
 echo "${PYTEST_OUT}" | tail -5
 echo "${PYTEST_OUT}" | grep -qE "[0-9]+ passed" \
   || { echo "Unit tests did not return expected pass count"; exit 1; }
 echo "[C.5] PASS"
 
 echo "[C.6] Verifying knowledge graph..."
-python scripts/verify_knowledge_graph.py || { echo "KG validation failed"; exit 1; }
+docker compose exec -T refinery_api python scripts/verify_knowledge_graph.py || { echo "KG validation failed"; exit 1; }
 echo "[C.6] PASS"
 
 # ── §D SMOKE TEST ────────────────────────────────────────────────────────────
