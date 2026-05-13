@@ -67,3 +67,23 @@
 H1 is the blocking failure — classify_vertical will never succeed until ADC credentials are accessible inside the worker/api containers. H2 and H3 are also blocking in practice (prevent M0 from passing on a fresh `docker compose down -v` run) and need fixing before §H verification can run cleanly. All three fixes are environmental scaffolding corrections, not architectural changes.
 
 ### Awaiting approval to proceed with H1+H2+H3 fix path (recommended: all three in one pass).
+
+---
+## SESSION 2 — FIX EXECUTION (post Architect approval)
+
+### Fixes applied
+- [FIX-H1] docker-compose.yml: `${HOME}/.config/gcloud` → `/home/hp/.config/gcloud` (hardcoded Linux path; compose run via WSL Ubuntu)
+- [FIX-H2] scripts/phase_1_5_run.sh created with `-F "source_label=uk_metals_expo_2025"` in ingest curl
+- [FIX-H3] scripts/phase_1_5_run.sh calls `docker compose exec -T refinery_api python scripts/init_db.py` before ingest
+- [FIX] infra/Dockerfile.api + Dockerfile.worker: `mkdir -p apps packages scripts migrations` before pip install (setuptools stub dirs)
+- [FIX] apps/refinery_worker/tasks/generate_dossier_stub.py: `payload` → `payload_jsonb` in outbox INSERT
+- [FIX] apps/refinery_worker/tasks/compose_dossier.py: `payload` → `payload_jsonb` in outbox INSERT
+- [FIX] apps/refinery_worker/tasks/outbox_dispatcher.py: `payload` → `payload_jsonb` in outbox SELECT and outbox_dlq INSERT
+
+### Run 3 milestone observation — batch_id=095f57f1-2e31-4d08-8e32-9cc4a24c5a56
+- [MILESTONE M0] PASS — batch_id returned, row_count=124
+- [MILESTONE M1] PASS — score_batch received and succeeded; classify_vertical tasks dispatched; Vertex gemini-2.5-flash HTTP 200 confirmed
+- [MILESTONE M2] PASS — 124 rows in lead_prospects
+- [MILESTONE M3] PASS (functional) — 12 dossier_stubs generated; 36 outbox rows all state=delivered; mock surfaces stateless stubs (no list endpoints; §D.5 curl probes return 404 — expected, not a failure)
+- [MILESTONE M4] PASS — click trigger HTTP 200; generate_dossier received; dossier_section_taxonomy dispatched
+- [MILESTONE M5-M9] IN PROGRESS — Stage 2 section chain running
