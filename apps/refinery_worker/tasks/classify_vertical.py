@@ -41,6 +41,8 @@ def classify_vertical(self, prospect_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.connect() as conn:
         row = conn.execute(text("SELECT company_name, sector_hint, raw_notes FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}).first()
+        if row is None:
+            raise ValueError(f"prospect_id {prospect_id} not found in lead_prospects (stale task?)")
         prospect_data = {
             "company_name": row[0],
             "sector_hint": row[1] or "",
