@@ -74,6 +74,8 @@ code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
 echo "theater_http=${code}"
 [ "${code}" = "200" ] || echo "WARN: Theater UI returned ${code} — see §F.24"
 
+echo "[D.4-pre] Flushing Redis (clears idempotency cache and stale task queue between re-runs)..."
+docker compose exec -T redis redis-cli FLUSHALL
 echo "[D.4] Running demo setup and CSV ingest..."
 bash scripts/run_demo.sh
 
