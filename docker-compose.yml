@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: refinery
+    ports:
+      - "5432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
@@ -21,6 +23,7 @@ services:
     build:
       context: .
       dockerfile: infra/Dockerfile.api
+    entrypoint: []
     command: uvicorn apps.mocks.mock_slack.server:app --host 0.0.0.0 --port 8090
     ports:
       - "8090:8090"
@@ -31,6 +34,7 @@ services:
     build:
       context: .
       dockerfile: infra/Dockerfile.api
+    entrypoint: []
     command: uvicorn apps.mocks.mock_crm.server:app --host 0.0.0.0 --port 8091
     ports:
       - "8091:8091"
@@ -41,6 +45,7 @@ services:
     build:
       context: .
       dockerfile: infra/Dockerfile.api
+    entrypoint: []
     command: uvicorn apps.mocks.mock_drive.server:app --host 0.0.0.0 --port 8092
     ports:
       - "8092:8092"
@@ -55,9 +60,10 @@ services:
       - "8080:8080"
     env_file: .env
     environment:
+      PYTHONPATH: /app
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/application_default_credentials.json
     volumes:
-      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+      - /home/hp/.config/gcloud:/root/.config/gcloud:ro
     networks:
       - refinery_dev
     depends_on:
@@ -70,9 +76,10 @@ services:
       dockerfile: infra/Dockerfile.worker
     env_file: .env
     environment:
+      PYTHONPATH: /app
       GOOGLE_APPLICATION_CREDENTIALS: /root/.config/gcloud/application_default_credentials.json
     volumes:
-      - ${HOME}/.config/gcloud:/root/.config/gcloud:ro
+      - /home/hp/.config/gcloud:/root/.config/gcloud:ro
     networks:
       - refinery_dev
     depends_on:
