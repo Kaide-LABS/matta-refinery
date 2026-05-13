@@ -118,17 +118,26 @@ COUNT=$(docker compose exec -T postgres psql -U postgres -d refinery \
 check_milestone M2 5
 echo "[MILESTONE M2] PASS count=${COUNT}"
 
-echo "Waiting for M3 (Magic Moment 1, T+8)..."
-sleep 10
+echo "Waiting for M3 (Magic Moment 1) — polling until outbox crm_field ≥12 or T+300..."
 # §D.5 PASS functional: mock surfaces are stateless stubs with no list endpoints.
 # Outbox state=delivered is the authoritative evidence that M3 surface dispatches landed.
 # generate_dossier_stub uses surface='crm_field' (vs compose_dossier 'crm_note') — safe discriminator.
-M3_DELIVERED=$(docker compose exec -T postgres psql -U postgres -d refinery \
-  -tAc "SELECT COUNT(*) FROM outbox WHERE state='delivered' AND surface='crm_field'" 2>/dev/null | tr -d ' ')
-echo "M3 signals: outbox_delivered_crm_field=${M3_DELIVERED} (expected ≥12; mock list endpoints not available — PASS functional)"
-[ "${M3_DELIVERED}" -ge 12 ] || { echo "M3 FAIL: outbox crm_field delivered=${M3_DELIVERED}, expected ≥12"; exit 1; }
+# gemini-2.5-flash sync calls: 124 prospects × 3 calls sequential → chord → M3 takes 3-5 min actual.
+M3_DEADLINE=$(( $(date +%s) - SMOKE_T0 + 300 ))
+M3_DELIVERED=0
+while [ "${M3_DELIVERED}" -lt 12 ]; do
+  now=$(( $(date +%s) - SMOKE_T0 ))
+  if [ "${now}" -ge "${M3_DEADLINE}" ]; then
+    echo "M3 FAIL: timeout at T+${now}s, outbox crm_field delivered=${M3_DELIVERED}, expected ≥12"
+    exit 1
+  fi
+  sleep 10
+  M3_DELIVERED=$(docker compose exec -T postgres psql -U postgres -d refinery \
+    -tAc "SELECT COUNT(*) FROM outbox WHERE state='delivered' AND surface='crm_field'" 2>/dev/null | tr -d ' ' || echo 0)
+  echo "M3 poll T+$(( $(date +%s) - SMOKE_T0 ))s: outbox_delivered_crm_field=${M3_DELIVERED}"
+done
 check_milestone M3 8
-echo "[MILESTONE M3] PASS (functional)"
+echo "[MILESTONE M3] PASS (functional) outbox_delivered_crm_field=${M3_DELIVERED}"
 
 echo "Sending M4 click trigger (William Cook Sheffield)..."
 CLICK_RESP=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8080/slack/interactions \
