@@ -4,9 +4,6 @@ set -e
 echo "Seeding mock data..."
 python scripts/seed_mock_data.py
 
-echo "Initialising database..."
-python scripts/init_db.py
-
 echo "Building calibration table..."
 python scripts/build_calibration_table.py
 

@@ -66,6 +66,9 @@ echo "theater_http=${code}"
 echo "[D.4] Running demo setup and CSV ingest..."
 bash scripts/run_demo.sh
 
+echo "[D.4] Initialising database tables..."
+docker compose exec -T refinery_api python scripts/init_db.py
+
 CSV_PATH=$(find . -name "UK_Metals_Expo_2025_leads*.csv" -not -path "./.git/*" | head -1)
 [ -z "${CSV_PATH}" ] && { echo "MISSING_CSV"; exit 1; }
 
