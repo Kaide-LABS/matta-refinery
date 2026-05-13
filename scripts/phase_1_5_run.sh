@@ -36,8 +36,9 @@ done
 echo "[C.4] PASS"
 
 echo "[C.5] Running unit tests..."
-python -m pytest tests/unit/ -q 2>&1 | tail -3
-python -m pytest tests/unit/ -q --tb=no -q 2>/dev/null | grep -E "^[0-9]+ passed" \
+PYTEST_OUT=$(python -m pytest tests/unit/ -q --tb=short 2>&1)
+echo "${PYTEST_OUT}" | tail -5
+echo "${PYTEST_OUT}" | grep -qE "[0-9]+ passed" \
   || { echo "Unit tests did not return expected pass count"; exit 1; }
 echo "[C.5] PASS"
 
