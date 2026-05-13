@@ -2,11 +2,7 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /app
 COPY pyproject.toml .
-COPY apps/ apps/
-COPY packages/ packages/
-COPY scripts/ scripts/
-COPY migrations/ migrations/
-RUN pip install --no-cache-dir .
+RUN mkdir -p apps packages scripts migrations && pip install --no-cache-dir .
 
 FROM python:3.12-slim
 
