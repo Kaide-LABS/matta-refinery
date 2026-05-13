@@ -1,6 +1,6 @@
 from ..app import app
 from google import genai
-from google.genai.types import GenerateContentConfig, ThinkingConfig
+from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.dossier import ProcessTaxonomy
 import json
@@ -35,12 +35,13 @@ def dossier_section_taxonomy(self, prospect_id: str, dossier_id: str):
             config=GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=ProcessTaxonomy,
-                thinking_config=ThinkingConfig(thinking_level="medium"),
                 temperature=0.2,
-                max_output_tokens=1024,
+                max_output_tokens=2048,
             ),
         )
-        return ProcessTaxonomy.model_validate_json(response.text)
+        text = response.text
+        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+        return ProcessTaxonomy.model_validate_json(json_str)
         
     taxonomy = asyncio.run(run())
     

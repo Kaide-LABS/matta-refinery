@@ -1,7 +1,7 @@
 from ..app import app
 import asyncio
 from google import genai
-from google.genai.types import GenerateContentConfig, ThinkingConfig
+from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.defect_hypothesis import VerticalClassification
 from collections import Counter
@@ -9,21 +9,22 @@ from sqlalchemy import create_engine, text
 
 client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
 
-async def call_gemini(prospect_data, temp):
+def call_gemini(prospect_data, temp):
     from packages.prompts.vertical_flash import VERTICAL_PROMPT
     prompt = VERTICAL_PROMPT.format(**prospect_data)
-    response = await client.aio.models.generate_content(
+    response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=[prompt],
         config=GenerateContentConfig(
             response_mime_type="application/json",
             response_schema=VerticalClassification,
-            thinking_config=ThinkingConfig(thinking_level="minimal"),
             temperature=temp,
-            max_output_tokens=128,
+            max_output_tokens=2048,
         ),
     )
-    return VerticalClassification.model_validate_json(response.text)
+    text = response.text
+    json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+    return VerticalClassification.model_validate_json(json_str)
 
 @app.task(
     name="refinery.classify_vertical",
@@ -47,11 +48,9 @@ def classify_vertical(self, prospect_id: str):
             "raw_notes": row[2] or "",
         }
         
-    async def run_all():
-        temps = [0.1, 0.5, 0.9]
-        return await asyncio.gather(*[call_gemini(prospect_data, t) for t in temps])
-        
-    samples = asyncio.run(run_all())
+    samples = []
+    for t in [0.1, 0.5, 0.9]:
+        samples.append(call_gemini(prospect_data, t))
     
     votes = Counter([s.vertical for s in samples])
     most_common = votes.most_common(1)[0]

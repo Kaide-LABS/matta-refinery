@@ -12,6 +12,7 @@ dependencies = [
   "sqlalchemy>=2.0,<2.1",
   "alembic>=1.13",
   "asyncpg>=0.30",
+  "psycopg2-binary>=2.9",
   "slack-sdk>=3.27",
   "hubspot-api-client>=11.0",
   "simple-salesforce>=1.12",

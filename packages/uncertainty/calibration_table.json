@@ -6,7 +6,7 @@
     "porosity": 0.1,
     "dimensional_drift": 0.1
   },
-  "built_at": "2026-05-12T18:38:45.430502",
+  "built_at": "2026-05-13T20:14:31.173590",
   "holdout_size": 30,
   "seed": 42
 }

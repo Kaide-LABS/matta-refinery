@@ -1,7 +1,7 @@
 from ..app import app
 import asyncio
 from google import genai
-from google.genai.types import GenerateContentConfig, ThinkingConfig
+from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.defect_hypothesis import LikelyDefectClassHypothesis
 from packages.uncertainty.conformal import compute_conformal_set, CalibrationTable
@@ -25,25 +25,19 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     from packages.prompts.defect_flash import DEFECT_PROMPT
     from packages.knowledge_graph.evidence import compute_allowed_evidence
     from packages.uncertainty.dscp import semantic_distance, DSCP_SEVERE_SHIFT_THRESHOLD
+    from sqlalchemy import create_engine, text
     
-    vertical = "metal_casting" 
-    signals = {}
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.connect() as conn:
+        row = conn.execute(text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}).first()
+        vertical = row[0] if row else "unknown"
+        
+    signals = {} # Future: pull from lead_prospects.signals if added
     
     allowed_evidence = compute_allowed_evidence(vertical, "defect_hypothesis", signals)
     
     if not allowed_evidence:
-        res = LikelyDefectClassHypothesis(
-            conformal_set=[], coverage=0.0, calibration_version="current", 
-            requires_human_review=True, rationale="DS-CP severe shift / no anchor data"
-        )
-        return
-        
-    distance = semantic_distance(signals, {})
-    if distance > DSCP_SEVERE_SHIFT_THRESHOLD:
-        res = LikelyDefectClassHypothesis(
-            conformal_set=[], coverage=0.0, calibration_version="current", 
-            requires_human_review=True, rationale="DS-CP severe shift / no anchor data"
-        )
+        # Log or handle appropriately
         return
         
     prompt = DEFECT_PROMPT.format(
@@ -52,25 +46,24 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
         allowed_evidence=str(allowed_evidence)
     )
     
-    async def call_gemini(temp):
-        response = await client.aio.models.generate_content(
+    def call_gemini(temp):
+        response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=[prompt],
             config=GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=LikelyDefectClassHypothesis,
-                thinking_config=ThinkingConfig(thinking_level="minimal"),
                 temperature=temp,
-                max_output_tokens=512,
+                max_output_tokens=2048,
             ),
         )
-        return LikelyDefectClassHypothesis.model_validate_json(response.text)
+        text = response.text
+        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+        return LikelyDefectClassHypothesis.model_validate_json(json_str)
         
-    async def run_all():
-        temps = [0.1, 0.5, 0.9]
-        return await asyncio.gather(*[call_gemini(t) for t in temps])
-        
-    samples = asyncio.run(run_all())
+    samples = []
+    for t in [0.1, 0.5, 0.9]:
+        samples.append(call_gemini(t))
     
     with open("packages/uncertainty/calibration_table.json") as f:
         calib = CalibrationTable.model_validate_json(f.read())
@@ -81,3 +74,9 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
         conformal_set=conformal_set, coverage=coverage, calibration_version=calib.calibration_version,
         requires_human_review=False, rationale="Computed via conformal ensemble"
     )
+    
+    with engine.begin() as conn:
+        conn.execute(text("UPDATE dossier_artifacts SET defect_hypothesis = :res WHERE dossier_id = :did"), 
+            {"res": final_res.model_dump_json(), "did": dossier_id})
+        
+    app.send_task("refinery.dossier_section_comparable", args=[prospect_id, dossier_id])

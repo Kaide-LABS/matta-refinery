@@ -3,6 +3,7 @@ from . import score_batch
 from . import enrich_prospect
 from . import classify_vertical
 from . import score_fitness
+from . import assemble_queue_and_stubs
 from . import generate_dossier_stub
 from . import generate_dossier
 from . import dossier_section_taxonomy

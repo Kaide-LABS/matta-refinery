@@ -1,7 +1,7 @@
 from ..app import app
 import asyncio
 from google import genai
-from google.genai.types import GenerateContentConfig, ThinkingConfig
+from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.dossier import SuggestedApproach
 
@@ -35,12 +35,13 @@ def dossier_section_approach(self, prospect_id: str, dossier_id: str):
             config=GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=SuggestedApproach,
-                thinking_config=ThinkingConfig(thinking_level="low"),
                 temperature=0.2,
-                max_output_tokens=768,
+                max_output_tokens=2048,
             ),
         )
-        return SuggestedApproach.model_validate_json(response.text)
+        text = response.text
+        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+        return SuggestedApproach.model_validate_json(json_str)
         
     appr = asyncio.run(run())
     app.send_task("refinery.compose_dossier", args=[dossier_id])

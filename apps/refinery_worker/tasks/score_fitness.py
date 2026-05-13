@@ -2,6 +2,7 @@ from ..app import app
 from packages.scoring.fitness import compute_fitness
 from sqlalchemy import create_engine, text
 from apps.refinery_api.config import settings
+from types import SimpleNamespace
 
 @app.task(
     name="refinery.score_fitness",
@@ -18,11 +19,11 @@ def score_fitness(self, prospect_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.begin() as conn:
         row = conn.execute(text("SELECT vertical, factory_size_band, trade_show_provenance FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}).first()
-        prospect = {
-            "vertical": row[0],
-            "factory_size_band": row[1],
-            "trade_show_provenance": row[2]
-        }
+        prospect = SimpleNamespace(
+            vertical=row[0],
+            factory_size_band=row[1],
+            trade_show_provenance=row[2]
+        )
         score = compute_fitness(prospect, {})
         conn.execute(text("UPDATE lead_prospects SET fitness_score = :s WHERE id = :pid"), {"s": score, "pid": prospect_id})
     return prospect_id

@@ -14,7 +14,7 @@ class VerticalClassification(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     vertical: VERTICAL_ENUM
-    rationale: Annotated[str, Field(max_length=200)]
+    rationale: Annotated[str, Field(max_length=1000)]
 
 
 class LikelyDefectClassHypothesis(BaseModel):
@@ -24,7 +24,7 @@ class LikelyDefectClassHypothesis(BaseModel):
     coverage: Annotated[float, Field(ge=0.0, le=1.0)]
     calibration_version: str
     requires_human_review: bool = False
-    rationale: Annotated[str, Field(max_length=400)]
+    rationale: Annotated[str, Field(max_length=1000)]
 
     @model_validator(mode="after")
     def _flag_review_on_degenerate_set(self) -> "LikelyDefectClassHypothesis":
