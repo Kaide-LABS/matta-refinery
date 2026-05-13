@@ -84,3 +84,50 @@ Sprint: **Matta Refinery Hybrid (Form C)** — synthesis from `MATTA_MASTER_PRD_
 ---
 
 *End of MATTA_RECONCILIATION.md.*
+
+## §6 Model-String Adjustment (Phase 1.5)
+
+**Adjustment date:** 2026-05-12
+
+### §6.1 Decision
+
+The locked invariant in `ULTIMATE_PRD.md §0` originally pinned model strings to `gemini-3-flash-preview` (Flash tier, N=3 ensemble) and `gemini-3.1-pro-preview` (Pro tier, single call) on Vertex AI europe-west4. During Phase 1.5 integration debug, Vertex AI access to the `gemini-3-*` family was confirmed unavailable to the project `kaide-ai-84019` at any region. Inference calls return HTTP 404 NOT_FOUND for `gemini-3-flash-preview` in both `europe-west4` and `us-central1`, and for `gemini-3.1-flash-lite-preview` in `europe-west4`. The model-family appears to be behind a project enrollment gate that Kaide Labs is not currently on.
+
+The Architect authorized a lateral step within the Gemini family from `gemini-3-*` (preview) to `gemini-2.5-*` (GA) for Phase 1.5. Effective swap:
+- Flash tier (N=3 ensemble): `gemini-3-flash-preview` → `gemini-2.5-flash`
+- Pro tier (single call): `gemini-3.1-pro-preview` → `gemini-2.5-pro`
+
+### §6.2 What Did NOT Change
+
+Every other architectural invariant remains intact:
+- Vertex AI fabric pin (NOT Generative Language API at `generativelanguage.googleapis.com`)
+- europe-west4 region pin
+- ADC-based authentication (NOT API key)
+- N=3 deep ensemble pattern with `thinking_level="minimal"` and temperatures (0.1, 0.5, 0.9)
+- Pydantic `extra="forbid"` on all 28 BaseModel boundaries
+- Deterministic two-route ADC with zero LLM imports in any router
+- All 5 1F-red v3 tightenings (transactional outbox, Slack distributed lock, byte-density validator ≥0.60, section-granular DS-CP, deployment topology diagram)
+
+### §6.3 Methodology Anchoring Unchanged
+
+The Doug Brion methodology lineage (deep ensembles per `pytorch-deep-ensembles`, conformal coverage, confidence-informed self-consistency) is generation-agnostic — it depends on the ensemble + uncertainty pattern, not on a specific Gemini generation. The Damjan-absorbable stack story is unchanged. The Pattinson Filter (EU data residency, deterministic governance, structured output bounds) holds — `gemini-2.5-*` on Vertex europe-west4 satisfies all three.
+
+### §6.4 What Audit-Trail Docs Show vs Runtime Code
+
+By design, the following audit-trail documents retain the *original* `gemini-3-*` pin as the historically-locked architectural decision:
+- `ULTIMATE_PRD.md §0` (original pin)
+- `PHASE_1_SPEC.md` (build-time spec)
+- `validation_gate_1f_red_v3.md` (1F-red counter-verdict)
+- `MATTA_COMPREHENSION.md §4` (architectural lineage)
+
+The runtime code under `packages/` and `apps/` now references `gemini-2.5-*`. This is the standard pattern: architecture-of-record documents the locked decision at the time it was made; reconciliation §6 documents the runtime adjustment; the two together form the complete audit trail.
+
+### §6.5 Damjan- or Doug-Facing Justification (Reusable)
+
+If asked by Doug, Damjan, or any technical reviewer why the build runs Gemini 2.5 rather than Gemini 3:
+
+> "We pinned to Gemini 3 in the architectural spec. During Phase 1.5 integration debug we discovered the Gemini 3 family is currently gated behind a Google preview-access program we're not enrolled in. Rather than block the demo on an indefinite allowlist wait, we stepped laterally to Gemini 2.5 — same Vertex europe-west4 fabric, same ensemble pattern, same conformal calibration, same deterministic safety rails. The architecture is generation-agnostic. When the Gemini 3 family becomes available to the production project, the swap is a single sed across `packages/` and `apps/` (see MATTA_RECONCILIATION.md §6 for the exact pattern)."
+
+### §6.6 Re-verification
+
+After the swap, smoke-test verification per `PHASE_1_5_DEBUG_SPEC.md §H` must run three consecutive passes against the `gemini-2.5-*` runtime. If it passes, §4(b) verdict (currently ⚠️ PARTIAL pending Phase 1.5) advances to ✅ INTEGRATION-VERIFIED with the §6 adjustment recorded.
