@@ -75,8 +75,13 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
     json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
     prose_obj = DimensionOfComparabilityProse.model_validate_json(json_str)
     
+    # Normalize KG-internal anchor_id (prefixed `matta_deployment_*`) to the
+    # MATTA_CUSTOMER_ANCHOR_ENUM literal expected by ComparableDeployment.
+    # Pre-existing latent inconsistency: select.py and graph.json carry the
+    # prefix; packages/schemas/dossier.py:8-12 enum strips it. Strip at the boundary.
+    schema_anchor = anchor_id.removeprefix("matta_deployment_")
     res = ComparableDeployment(
-        matta_customer_anchor=anchor_id,
+        matta_customer_anchor=schema_anchor,
         citation_substrate_line=line,
         dimension_of_comparability=prose_obj.prose,
         selection_method="deterministic_rules"
