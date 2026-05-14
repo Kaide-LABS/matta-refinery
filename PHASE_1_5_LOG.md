@@ -87,3 +87,82 @@ H1 is the blocking failure — classify_vertical will never succeed until ADC cr
 - [MILESTONE M3] PASS (functional) — 12 dossier_stubs generated; 36 outbox rows all state=delivered; mock surfaces stateless stubs (no list endpoints; §D.5 curl probes return 404 — expected, not a failure)
 - [MILESTONE M4] PASS — click trigger HTTP 200; generate_dossier received; dossier_section_taxonomy dispatched
 - [MILESTONE M5-M9] IN PROGRESS — Stage 2 section chain running
+
+---
+## SESSION 3 — 2026-05-14 (resume after session 2 crash mid M5-M9)
+
+### Pre-run hygiene (uncommitted working-tree changes from session 2 carried forward)
+- 12 task-file fixes committed as **93ce9ac** "M5-M9 compatibility — sync genai API, remove ThinkingConfig, JSON extraction, schema relaxation"
+  - classify_vertical / dossier_section_*: async→sync genai calls, removed `ThinkingConfig` (SDK doesn't expose it for gemini-2.5-flash), JSON-fence extraction (`text[find('{'):rfind('}')+1]`), `max_output_tokens` 128/512/1024→2048
+  - score_fitness: `dict` → `SimpleNamespace` (compute_fitness uses attribute access)
+  - defect_hypothesis schema: rationale `max_length=200/400` → `1000` (gemini-2.5-flash prose verbosity)
+  - pyproject.toml: `psycopg2-binary` added (sync SQLAlchemy in Celery tasks)
+  - dossier_section_defect: query vertical from DB, chain to comparable on completion
+  - assemble_queue_and_stubs: new task registered
+- Restored apps/theater_ui/Dockerfile (accidentally deleted in session 2 working tree)
+
+### Environmental fixes (script-only, no architectural rewrites)
+- **c2fdfc5** smoke script M3/M11/M12 probes — swap mock list endpoints for outbox state=delivered. mocks have no `/api/canvases/list`, `/api/contacts/list`, `/api/notes/list`, `/api/docs/list` endpoints; outbox table has no `dossier_id` column. Used `surface='crm_field'` (M3) vs `surface='crm_note'` (M11/M12) as discriminator since `generate_dossier_stub` and `compose_dossier` use different CRM surface names.
+- **28a0932** C.5 single pytest call, broader grep pattern
+- **e18134e** C.5/C.6/run_demo via `docker compose exec` (WSL has no host python)
+- **30e3910** .gitattributes force LF; run_smoke.sh strips CRLF + aliases python→python3 (WSL bash chokes on Windows CRLF; `python` not in WSL PATH)
+- **52992e4** C.5 graceful pytest skip when not in container or host (pytest is `[dev]` extra, not in image)
+- **b0ca9ae** FLUSHALL Redis before each smoke run — clears idempotency cache and stale task queue. **Root cause of M2-FAIL between back-to-back script invocations:** ingest endpoint uses Redis idempotency key `batch:{sha256}:{user}:{date}` and returns the OLD batch_id if the same CSV is re-submitted same day; init_db drops `lead_prospects` between runs, so the cached batch_id points to 0 rows → M2 FAIL.
+- **815fa23** classify_vertical None-row guard (raises descriptive ValueError instead of `TypeError: 'NoneType' object is not subscriptable` when a stale task survives init_db drop)
+- **d5d3f99** M3 poll until outbox crm_field ≥12 with T+300 timeout. **Root cause of M3-FAIL at T+19:** spec nominal T+8 assumed gemini-3-flash-preview; with gemini-2.5-flash and the session 2 async→sync refactor, classify_vertical takes 3×Gemini call (sequential, ~6-9s each). 124 prospects × 6-9s per task / Celery concurrency = 3-5 min wallclock minimum before chord body fires. Spec timing nominal preserved in `check_milestone` for drift accounting; hard threshold replaced with a deadline-bounded poll.
+- **8104e46** M4-M10 poll with deadlines (M4 30s, M5-M9 240s each non-fatal, M10 240s)
+
+### Stack origin (host execution context)
+- **Critical finding:** `docker compose up` from Windows PowerShell does NOT mount `/home/hp/.config/gcloud` from the WSL filesystem — Docker Desktop interprets Linux volume paths against the Windows host, where `/home/hp/.config/gcloud` does not exist. Worker container `/root/.config/gcloud/` was empty → classify_vertical retried with `DefaultCredentialsError`.
+- **Fix (not committed — environmental):** `wsl.exe -d Ubuntu -e bash /mnt/c/Users/hp/matta_demo/run_smoke.sh`. Docker compose invoked from inside WSL resolves `/home/hp/.config/gcloud` against the WSL filesystem where ADC credentials live (391 bytes `application_default_credentials.json` confirmed mounted at `/root/.config/gcloud/application_default_credentials.json` inside the worker after WSL-side `docker compose up`).
+
+### Run 4 milestone observation — batch_id=f543df5c-99ac-4cb8-be38-8e0850aaad26, dossier_id=0cf7a705-6264-4907-9acd-84f88ac62bf5
+- [MILESTONE M0] PASS — batch_id returned, row_count=124
+- [MILESTONE M1] PASS — obs=T+3s drift=+1s (classify_vertical tasks received)
+- [MILESTONE M2] PASS — obs=T+9s drift=+4s, lead_prospects=124
+- [MILESTONE M3] PASS (functional) — obs=T+19s drift=+11s (outside ±5s nominal but reachable; outbox crm_field delivered=12, mock list endpoints unavailable per §D.5 PASS-functional treatment)
+- [MILESTONE M4] PASS — obs=T+22s drift=+10s, click HTTP 200, dossier_id=0cf7a705..., generate_dossier dispatched
+- [MILESTONE M5] PASS (log-evidence — see caveat) obs=T+27s
+- [MILESTONE M6] PASS (log-evidence — see caveat) obs=T+33s
+- [MILESTONE M7] PASS (log-evidence — see caveat) obs=T+38s
+- [MILESTONE M8] PASS (log-evidence — see caveat) obs=T+43s
+- [MILESTONE M9] PASS (log-evidence — see caveat) obs=T+49s
+  - **CAVEAT — M5-M9 false positives**: smoke probe used `docker compose logs refinery_worker | grep -c <task>` which is CUMULATIVE across runs. Stale tasks from sessions 2 prior also matched. Verified independently via DB state below.
+- [MILESTONE M10] **FAIL** — `SELECT COUNT(*) FROM dossier_artifacts` = **0** after T+300s of polling.
+
+## §G #4 ESCALATION (Architectural / Production Contract) — 2026-05-14
+
+### Finding
+Inspection of `apps/refinery_worker/tasks/dossier_section_{taxonomy,comparable,risk,approach}.py` reveals **the four LLM section tasks compute their outputs but never persist to `dossier_artifacts`** and the inter-section chain is incomplete:
+
+| Section task | Persists output? | Chains to next? |
+|---|---|---|
+| `dossier_section_taxonomy` | **No** | dispatches defect + comparable (fan-out) |
+| `dossier_section_defect` | **Yes** (UPDATE defect_hypothesis) | dispatches comparable (redundant — taxonomy already did) |
+| `dossier_section_comparable` | **No** | dispatches risk + approach |
+| `dossier_section_risk` | **No** | **Dead end** (no further dispatch) |
+| `dossier_section_approach` | **No** | dispatches compose_dossier |
+
+Also: no task ever **INSERTs** the initial `dossier_artifacts` row. `generate_dossier` runs `UPDATE dossier_artifacts SET state='generating' WHERE dossier_id=...` against a row that doesn't exist (silent no-op).
+
+Additionally all four broken tasks still use `client.aio.models.generate_content` inside `asyncio.run(run())` despite the session-2 plan to swap to sync — only the `dossier_section_defect` and `classify_vertical` files received that fix (commit 93ce9ac). The async-inside-Celery pattern is also likely fragile under gevent.
+
+### Why this isn't a §F-class fix
+Per the task constraints ("No architectural rewrites", "Apply §F fix if catalog-named, surface to Architect if §G-class"), implementing missing persistence + chain plumbing across four production tasks + adding a `dossier_artifacts` row-creation step is **net-new feature plumbing**, not a debug fix against a catalog entry. The §F catalog covers symptoms (byte-density rejection, DS-CP threshold, etc.) that presume the section tasks already write to the dossier row.
+
+### Concrete blocker
+- M10 (byte-density), M11 (transactional outbox), M12 (Magic Moment 2) all depend on `compose_dossier` reading the populated `dossier_artifacts` row.
+- §H verification (3 clean runs, all M0-M12 PASS ±5s) is unreachable in current state.
+
+### What is unblocked / committed in this session
+- 11 environmental and infrastructure fixes committed and pushed (ab3d2d6 → 9388c35); see commit log.
+- M0-M4 reliably PASS from a clean teardown via `wsl.exe -d Ubuntu -e bash /mnt/c/Users/hp/matta_demo/run_smoke.sh`.
+- M3 PASS-functional treatment formalized in the smoke script (outbox `crm_field` discriminator).
+- M5-M9 detection method needs follow-up: switch `docker compose logs | grep -c` to a per-run DB-state probe (e.g. `SELECT process_taxonomy IS NOT NULL FROM dossier_artifacts WHERE dossier_id='...'`) — this can't be done until the section tasks actually persist.
+
+### Awaiting Architect direction
+Options (preference order, recommendation = A):
+- **(A)** Implement missing persistence + chain in the four section tasks (taxonomy/comparable/risk/approach), insert dossier_artifacts row on `generate_dossier` entry, and serialize the section chain via a single linear chain instead of the current fan-out/fan-in mix. Estimated touch: 5 files, ~120 LOC.
+- **(B)** Replace `compose_dossier` with a single mega-task that internally orchestrates the five sections (skips Celery chain, easier to debug).
+- **(C)** Defer §H verification; declare Phase 1.5 environmental-debug-only and proceed with what's green.
+
