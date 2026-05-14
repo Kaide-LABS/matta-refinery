@@ -24,6 +24,13 @@ from packages.schemas.dossier import (
     SuggestedApproach,
 )
 from packages.schemas.defect_hypothesis import LikelyDefectClassHypothesis
+from packages.knowledge_graph.loader import load_graph
+from packages.scoring.weights import (
+    VERTICAL_MATCH_WEIGHT,
+    SIZE_BAND_WEIGHT,
+    TRADE_SHOW_PROVENANCE_WEIGHT,
+    CAPACITY_DECAY_WEIGHT,
+)
 from ..app import app
 
 
@@ -87,14 +94,115 @@ def compose_dossier(self, dossier_id: str):
     else:
         unverified_sections = json.loads(unverified_sections_json or "[]")
 
+    # Pull verified company facts from lead_prospects (one extra SELECT, reuses engine).
+    with engine.connect() as conn:
+        lp_row = conn.execute(
+            text(
+                "SELECT company_name, vertical, factory_size_band, trade_show_provenance, "
+                "contact_email, contact_name, sector_hint, source_system, external_lead_id, "
+                "raw_notes, fitness_score "
+                "FROM lead_prospects WHERE id = :pid"
+            ),
+            {"pid": prospect_id},
+        ).first()
+
+    if lp_row is None:
+        raise RuntimeError(f"lead_prospects row not found for prospect_id={prospect_id}")
+    (
+        lp_company_name, lp_vertical, lp_size_band, lp_trade_show,
+        lp_contact_email, lp_contact_name, lp_sector_hint, lp_source_system,
+        lp_external_lead_id, lp_raw_notes, lp_fitness_score,
+    ) = lp_row
+    lp_fitness_score = float(lp_fitness_score or 0.0)
+
+    # KG anchor lookup for verified_kg_anchors enrichment.
+    kg_anchor_obj = None
+    if comparable.matta_customer_anchor != "no_comparable_available":
+        kg = load_graph()
+        # graph.json carries the "matta_deployment_" prefix; schema enum strips it.
+        prefixed_id = f"matta_deployment_{comparable.matta_customer_anchor}"
+        for a in kg.anchors:
+            if a.anchor_id == prefixed_id:
+                kg_anchor_obj = a
+                break
+
+    # Deterministic fitness-score breakdown — pure math from packages/scoring/weights.py.
+    fitness_components = {
+        "vertical_match": (
+            VERTICAL_MATCH_WEIGHT if lp_vertical not in ("out_of_vertical", "vertical_uncertain") else 0.0
+        ),
+        "size_band": (SIZE_BAND_WEIGHT if lp_size_band in ("medium", "large") else 0.0),
+        "trade_show_provenance": (TRADE_SHOW_PROVENANCE_WEIGHT if lp_trade_show else 0.0),
+        "capacity_decay_max": CAPACITY_DECAY_WEIGHT,
+    }
+    fitness_score_breakdown = {
+        "fitness_score": lp_fitness_score,
+        "vertical": lp_vertical,
+        "factory_size_band": lp_size_band,
+        "trade_show_provenance": bool(lp_trade_show),
+        "weights_applied": fitness_components,
+        "weights_definitions": {
+            "vertical_match": VERTICAL_MATCH_WEIGHT,
+            "size_band": SIZE_BAND_WEIGHT,
+            "trade_show_provenance": TRADE_SHOW_PROVENANCE_WEIGHT,
+            "capacity_decay": CAPACITY_DECAY_WEIGHT,
+        },
+        "computation": (
+            "score = vertical_match(0.40 if vertical in {electronics_assembly, additive_manufacturing, "
+            "fnb_bottling, polymer_extrusion, metal_casting}) + size_band(0.25 if medium|large) + "
+            "trade_show_provenance(0.20 if true) + capacity_decay(0.15 * (1 - decay)); clipped to [0, 1]"
+        ),
+        "signal_hash": signal_hash,
+    }
+
+    # Render deterministic-side payloads.
+    company_facts_payload = {
+        "company_name": lp_company_name or "",
+        "vertical": lp_vertical or "vertical_uncertain",
+        "factory_size_band": lp_size_band or "unknown",
+        "trade_show_provenance": str(bool(lp_trade_show)),
+        "contact_email": lp_contact_email or "",
+        "contact_name": lp_contact_name or "",
+        "sector_hint": lp_sector_hint or "",
+        "source_system": lp_source_system or "",
+        "external_lead_id": lp_external_lead_id or "",
+        "raw_notes": (lp_raw_notes or "")[:400],
+    }
+
+    verified_kg_anchors_payload = {
+        "matta_customer_anchor": comparable.matta_customer_anchor,
+        "selection_method": comparable.selection_method,
+        "citation_substrate_line": comparable.citation_substrate_line,
+    }
+    if kg_anchor_obj is not None:
+        verified_kg_anchors_payload.update({
+            "anchor_id": kg_anchor_obj.anchor_id,
+            "deployment_type": kg_anchor_obj.deployment_type,
+            "citation_substrate_lines": list(kg_anchor_obj.citation_substrate_lines),
+            "citation_verbatim_excerpt": kg_anchor_obj.citation_verbatim_excerpt,
+            "permitted_dimensions_of_comparability": list(kg_anchor_obj.permitted_dimensions_of_comparability),
+            "knowledge_graph_version": kg_version,
+        })
+
+    # Full RiskFinding entries minus the `note` field (the prose lives on the LLM side).
+    risk_checklist_baseline_payload = [
+        {"category": f.category, "severity": f.severity}
+        for f in risk.findings
+    ]
+
+    # SuggestedApproach structural fields minus the rationale prose (LLM-side).
+    approach_template_baseline_payload = {
+        "template": approach.template,
+        "day_one_risks": list(approach.day_one_risks),
+    }
+
     rendered_sections = {
         # Deterministic-content section renders (counted toward bytes(deterministic_content)).
-        "company_facts": _render_section({"prospect_id": prospect_id}),
-        "verified_kg_anchors": _render_section({"anchor": comparable.matta_customer_anchor,
-                                                "citation_line": comparable.citation_substrate_line}),
-        "fitness_score_rationale": _render_section({"signal_hash": signal_hash}),
-        "risk_checklist_baseline": _render_section([f.category for f in risk.findings]),
-        "approach_template_baseline": _render_section({"template": approach.template}),
+        "company_facts": _render_section(company_facts_payload),
+        "verified_kg_anchors": _render_section(verified_kg_anchors_payload),
+        "fitness_score_rationale": _render_section(fitness_score_breakdown),
+        "risk_checklist_baseline": _render_section(risk_checklist_baseline_payload),
+        "approach_template_baseline": _render_section(approach_template_baseline_payload),
         # LLM-content section renders (counted toward bytes(total) − bytes(deterministic)).
         "process_taxonomy": _render_section(taxonomy),
         "defect_hypothesis": _render_section(defect),
