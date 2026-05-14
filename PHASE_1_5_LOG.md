@@ -345,3 +345,104 @@ Estimated touch: ~30 LOC in compose_dossier.py:90-97; one SELECT to lead_prospec
 
 ### Awaiting Architect direction on M10 (Path A vs B)
 
+---
+## §F.4 / Path B — STEP 1 NUMERICAL SANITY CHECK (2026-05-14)
+
+### Schema key lists (confirmed — packages/schemas/dossier.py:69-83, unchanged)
+
+```python
+DETERMINISTIC_SECTION_KEYS = frozenset({"company_facts", "verified_kg_anchors",
+    "fitness_score_rationale", "risk_checklist_baseline", "approach_template_baseline"})
+
+LLM_SECTION_KEYS = frozenset({"process_taxonomy", "defect_hypothesis",
+    "comparable_dimension_of_comparability_prose", "risk_register_narrative",
+    "suggested_approach_narrative"})
+```
+
+The byte-density validator (packages/schemas/dossier.py:132-156) iterates these key sets over `rendered_sections` — **NOT** raw JSONB columns. The split is data-vs-prose: e.g. comparable's structured fields go into the deterministic side (`verified_kg_anchors`), but its `dimension_of_comparability` prose goes into the LLM side.
+
+### Measured bytes — rejected dossier 2922af1c-bd8e-4871-a683-921a560810e3
+
+Raw JSONB column sizes (via `octet_length(col::text)`):
+
+| Section | JSONB bytes |
+|---|---|
+| process_taxonomy | 1,357 |
+| defect_hypothesis | 190 |
+| comparable_deployment | 352 |
+| risk_register | 2,248 |
+| suggested_approach | 782 |
+| **Total** | **4,929** |
+
+`rendered_sections` byte composition (per compose_dossier.py:90-103 mapping — JSONB → rendered):
+
+| Section | rendered as | Est. bytes | Side |
+|---|---|---|---|
+| `company_facts` | `{"prospect_id": "<id>"}` placeholder | ~40 | DET |
+| `verified_kg_anchors` | `{"anchor": <enum>, "citation_line": <int>}` placeholder | ~60 | DET |
+| `fitness_score_rationale` | `{"signal_hash": "<16-hex>"}` placeholder | ~40 | DET |
+| `risk_checklist_baseline` | `[<category enum>, ...]` placeholder | ~200 | DET |
+| `approach_template_baseline` | `{"template": <enum>}` placeholder | ~35 | DET |
+| **Det total observed** | | **~375** | |
+| `process_taxonomy` | full ProcessTaxonomy JSON | 1,357 | LLM |
+| `defect_hypothesis` | full LikelyDefectClassHypothesis JSON | 190 | LLM |
+| `comparable_dimension_of_comparability_prose` | string only (`comparable.dimension_of_comparability`) | ≤250 | LLM |
+| `risk_register_narrative` | `[f.note for f in findings]` list of note strings only | ~1,500 | LLM |
+| `suggested_approach_narrative` | string only (`approach.rationale`) | ≤600 | LLM |
+| **LLM total observed** | | **~3,900** | |
+| **Validator ratio** | 375 / (375 + 3,900) = 375 / 4,275 = **0.088** | matches observed | |
+
+### Available raw material (verified — no schema or invariant touched)
+
+**lead_prospects columns** (packages/models/prospects.py): id, batch_id, external_lead_id, company_name, contact_name, contact_email, sector_hint, source_system, vertical, factory_size_band, trade_show_provenance, fitness_score, enrichment_status, signal_hash, last_scored_at, requires_human_review, raw_notes.
+
+**KnowledgeGraphAnchor** (packages/knowledge_graph/loader.py:8-15): anchor_id, vertical, deployment_type, citation_substrate_lines (list of ints), `citation_verbatim_excerpt` (10-500 chars), `permitted_dimensions_of_comparability` (list, each ≤80 chars).
+
+**Scoring weights** (packages/scoring/weights.py): VERTICAL_MATCH_WEIGHT=0.40, SIZE_BAND_WEIGHT=0.25, TRADE_SHOW_PROVENANCE_WEIGHT=0.20, CAPACITY_DECAY_WEIGHT=0.15. Component contribution is purely deterministic per `compute_fitness` (packages/scoring/fitness.py:13-31). No new data dependencies — all of this is already in scope.
+
+---
+## §F.4 / Path B — STEP 2 PROPOSED TARGETS (awaiting Architect confirmation)
+
+### Target equation
+- LLM total ≈ 2,000 B (~50% reduction from observed 3,900 B)
+- Deterministic total ≈ 3,700 B (~10× from observed 375 B placeholders)
+- Predicted ratio = 3,700 / (3,700 + 2,000) = **0.649** (target band 0.65-0.72, hits with margin)
+
+### Per-section deterministic targets (compose_dossier.py:90-97 rewrite)
+
+| Section | New content | Est. bytes |
+|---|---|---|
+| `company_facts` | `{"company_name", "vertical", "factory_size_band", "trade_show_provenance", "contact_email", "sector_hint", "source_system", "external_lead_id", "raw_notes" (truncated 400 chars)}` from lead_prospects. ONE extra SELECT in compose_dossier. | ~700 |
+| `verified_kg_anchors` | `{"anchor_id", "deployment_type", "citation_substrate_lines": [..], "citation_verbatim_excerpt" (≤500 chars from KG), "permitted_dimensions_of_comparability": [..], "selection_method"}` — looked up by `select_comparable(vertical, None)` already returns dims/lines; for the verbatim excerpt, load_graph() and find matching anchor by ID. | ~700 |
+| `fitness_score_rationale` | `{"fitness_score": <float>, "weights_applied": {"vertical_match": 0.40 if applicable, "size_band": 0.25 if medium/large, "trade_show": 0.20 if true, "capacity_decay_contribution": <float>}, "computation": "score = vertical(0.40) + size_band(0.25) + trade_show(0.20) + capacity_decay(0.15 × (1 − decay))", "score_components_attributed": [...]}` — pure deterministic math from packages/scoring/weights.py + actual prospect fields. | ~800 |
+| `risk_checklist_baseline` | Full RiskFinding list **minus** the `note` field (which lives on the LLM side as `risk_register_narrative`): `[{"category": <enum>, "severity": <enum>}, ...]` for all findings. | ~700 |
+| `approach_template_baseline` | `{"template": <enum>, "day_one_risks": [...]}` from SuggestedApproach **minus** rationale prose (which is the LLM side). day_one_risks list already structured. | ~600 |
+| **Deterministic total target** | | **~3,500** |
+
+### Per-section LLM max_output_tokens tightening
+
+| File | Current | Target | Rationale |
+|---|---|---|---|
+| `dossier_section_taxonomy.py` | 2048 | **384** | Taxonomy JSON rationale ≤600 chars + small lists → target ~600 B output |
+| `dossier_section_defect.py` | 2048 | **256** | Already lean (~190 B observed); cap for safety |
+| `dossier_section_comparable.py` | 2048 | **128** | Only the prose field (`DimensionOfComparabilityProse.prose`, schema 250-char cap) is the gemini output |
+| `dossier_section_risk.py` | 2048 | **512** | List of up to 10 RiskFinding with notes ≤300 chars each; tighter cap will produce shorter notes naturally |
+| `dossier_section_approach.py` | 2048 | **256** | Rationale ≤600 chars + day_one_risks list; cap pushes briefer rationale |
+| **LLM rendered total target** | | **~2,000** | |
+
+### Predicted ratio
+- det ≈ 3,500 B
+- LLM ≈ 2,000 B
+- ratio = 3,500 / 5,500 = **0.636** — clears the 0.60 floor by ~6 percentage points
+
+If actuals come in 10-15% below target on the deterministic side (gemini is verbose at the cap), we still land ratio ≈ 0.58-0.62, which is on the edge. I'll add ~10-15% safety headroom by including a couple optional fields where data is present (raw_notes longer than 400 chars truncates at 600; one structured "lead_intake_metadata" sub-object in company_facts).
+
+### Preserved invariants (not touched)
+- `DETERMINISTIC_BYTE_THRESHOLD = 0.60` in packages/schemas/dossier.py:67 — UNCHANGED
+- `object.__setattr__(self, "deterministic_section_ratio", recomputed)` Goodhart-resistance pattern at dossier.py:149 — UNCHANGED
+- `DETERMINISTIC_SECTION_KEYS` and `LLM_SECTION_KEYS` enum sets — UNCHANGED
+- Schema `max_length` caps on rationale/prose fields — UNCHANGED
+- No new dependencies; only one extra SELECT in compose_dossier to lead_prospects
+
+### Awaiting Architect confirmation of targets before writing code.
+
