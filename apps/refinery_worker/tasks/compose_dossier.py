@@ -69,12 +69,23 @@ def compose_dossier(self, dossier_id: str):
         unverified_sections_json,
     ) = row
 
-    taxonomy = ProcessTaxonomy.model_validate_json(taxonomy_json)
-    defect = LikelyDefectClassHypothesis.model_validate_json(defect_json)
-    comparable = ComparableDeployment.model_validate_json(comparable_json)
-    risk = RiskRegister.model_validate_json(risk_json)
-    approach = SuggestedApproach.model_validate_json(approach_json)
-    unverified_sections = json.loads(unverified_sections_json or "[]")
+    # JSONB columns deserialize to Python dicts via SQLAlchemy, not raw JSON strings,
+    # so use model_validate(dict) not model_validate_json(str). Section tasks wrote
+    # via taxonomy.model_dump_json() → Postgres parsed to JSONB → SELECT returns dict.
+    def _load(model_cls, raw):
+        if isinstance(raw, (str, bytes, bytearray)):
+            return model_cls.model_validate_json(raw)
+        return model_cls.model_validate(raw)
+
+    taxonomy = _load(ProcessTaxonomy, taxonomy_json)
+    defect = _load(LikelyDefectClassHypothesis, defect_json)
+    comparable = _load(ComparableDeployment, comparable_json)
+    risk = _load(RiskRegister, risk_json)
+    approach = _load(SuggestedApproach, approach_json)
+    if isinstance(unverified_sections_json, list):
+        unverified_sections = unverified_sections_json
+    else:
+        unverified_sections = json.loads(unverified_sections_json or "[]")
 
     rendered_sections = {
         # Deterministic-content section renders (counted toward bytes(deterministic_content)).
