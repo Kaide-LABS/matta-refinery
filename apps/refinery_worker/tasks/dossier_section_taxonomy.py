@@ -44,7 +44,7 @@ def dossier_section_taxonomy(self, prospect_id: str, dossier_id: str):
             response_mime_type="application/json",
             response_schema=ProcessTaxonomy,
             temperature=0.2,
-            max_output_tokens=384,
+            max_output_tokens=1024,
         ),
     )
     text_resp = response.text
