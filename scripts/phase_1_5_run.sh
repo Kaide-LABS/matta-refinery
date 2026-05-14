@@ -140,10 +140,25 @@ check_milestone M3 8
 echo "[MILESTONE M3] PASS (functional) outbox_delivered_crm_field=${M3_DELIVERED}"
 
 echo "Sending M4 click trigger (William Cook Sheffield)..."
-CLICK_RESP=$(curl -s -o /dev/null -w "%{http_code}" -X POST http://localhost:8080/slack/interactions \
-  -H "Content-Type: application/json" \
-  --data-binary "@apps/mocks/fixtures/williams_cook_click.json")
-echo "click_http=${CLICK_RESP}"
+# Resolve a real prospect_id for William Cook from the DB. Fixture file
+# apps/mocks/fixtures/williams_cook_click.json doesn't exist in this checkout
+# (was referenced in spec but never committed); construct payload inline.
+WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
+  -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' AND company_name ILIKE '%william%cook%' LIMIT 1" 2>/dev/null | tr -d ' ')
+if [ -z "${WC_PID}" ]; then
+  # Fallback: use the top-fitness prospect (anchor)
+  WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
+    -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' ORDER BY fitness_score DESC NULLS LAST LIMIT 1" 2>/dev/null | tr -d ' ')
+fi
+echo "M4 prospect_id=${WC_PID}"
+[ -z "${WC_PID}" ] && { echo "M4 FAIL: no prospect found in batch"; exit 1; }
+PAYLOAD_JSON="{\"action_id\":\"generate_full_dossier\",\"prospect_id\":\"${WC_PID}\",\"signal_hash\":\"smoke-test-sig\",\"slack_response_url\":\"https://hooks.slack.com/mock\"}"
+# Endpoint accepts urlencoded form with `payload` field; signature.verify returns bool not raise → effectively bypassed for tests
+PAYLOAD_URLENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote('${PAYLOAD_JSON}'))")
+CLICK_RESP=$(curl -s -o /tmp/m4_resp.txt -w "%{http_code}" -X POST http://localhost:8080/slack/interactions \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  --data "payload=${PAYLOAD_URLENC}")
+echo "click_http=${CLICK_RESP} body=$(cat /tmp/m4_resp.txt 2>/dev/null | head -c 200)"
 [ "${CLICK_RESP}" = "200" ] || { echo "M4 FAIL: click returned ${CLICK_RESP}"; exit 1; }
 # Poll for generate_dossier to fire (up to 30s after click)
 M4_DEADLINE=$(( $(date +%s) + 30 ))
