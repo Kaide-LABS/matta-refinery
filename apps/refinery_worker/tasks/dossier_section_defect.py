@@ -19,7 +19,7 @@ client = genai.Client(vertexai=True, project=settings.gcp_project, location=sett
     retry_backoff=True,
     retry_backoff_max=600,
     retry_jitter=True,
-    max_retries=3,
+    max_retries=8,
 )
 def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     from packages.prompts.defect_flash import DEFECT_PROMPT

@@ -22,7 +22,7 @@ class DimensionOfComparabilityProse(BaseModel):
     retry_backoff=True,
     retry_backoff_max=600,
     retry_jitter=True,
-    max_retries=3,
+    max_retries=8,
 )
 def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
     from packages.knowledge_graph.select import select_comparable

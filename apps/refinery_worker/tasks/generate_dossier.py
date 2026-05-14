@@ -18,7 +18,7 @@ from packages.uncertainty.conformal import CalibrationTable
     retry_backoff=True,
     retry_backoff_max=600,
     retry_jitter=True,
-    max_retries=3,
+    max_retries=8,
 )
 def generate_dossier(self, prospect_id: str, dossier_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))

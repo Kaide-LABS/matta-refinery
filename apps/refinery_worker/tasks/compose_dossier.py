@@ -43,7 +43,7 @@ def _render_section(value: object) -> str:
     retry_backoff=True,
     retry_backoff_max=600,
     retry_jitter=True,
-    max_retries=3,
+    max_retries=8,
 )
 def compose_dossier(self, dossier_id: str):
     engine = create_engine(settings.postgres_url.replace("+asyncpg", ""))
