@@ -131,3 +131,32 @@ If asked by Doug, Damjan, or any technical reviewer why the build runs Gemini 2.
 ### §6.6 Re-verification
 
 After the swap, smoke-test verification per `PHASE_1_5_DEBUG_SPEC.md §H` must run three consecutive passes against the `gemini-2.5-*` runtime. If it passes, §4(b) verdict (currently ⚠️ PARTIAL pending Phase 1.5) advances to ✅ INTEGRATION-VERIFIED with the §6 adjustment recorded.
+
+### §6.7 Stage 2 Persistence Completion (Phase 1.5 §G #4 remediation)
+
+**Date:** 2026-05-14
+
+During Phase 1.5 integration debug, the Architect approved a §G #4 escalation: four of the five Stage 2 section tasks (`taxonomy`, `comparable`, `risk`, `approach`) computed LLM outputs but never persisted them to `dossier_artifacts`; only `dossier_section_defect` persisted. The `generate_dossier` task UPDATEd a row that no task ever INSERTed (silent no-op). `compose_dossier` read an empty row → byte-density validator (Tightening 3) and section-granular DS-CP (Tightening 4) had no content to validate, and the transactional outbox (Tightening 1) wrote empty envelopes.
+
+Resolution: implemented missing persistence per the existing PHASE_1_SPEC §3.4 spec (this was completion against the spec, not architectural change). Added:
+
+- `INSERT INTO dossier_artifacts ... ON CONFLICT (id) DO UPDATE` at the start of `generate_dossier` (idempotent UPSERT preserves retry safety; `signal_hash` falls back to `sha256(prospect|batch|kg)[:16]` if `lead_prospects.signal_hash` is NULL — empty string forbidden per audit-trail invariant).
+- UPDATE statements in `taxonomy`/`comparable`/`risk`/`approach` (each writes its Pydantic-serialized JSON to the corresponding column).
+- Linear chain via `send_task`: `taxonomy → defect → comparable → risk → approach → compose_dossier`. Replaces the prior mixed fan-out/fan-in (taxonomy double-dispatched comparable; comparable fan-out raced risk+approach UPDATEs).
+- Sync `client.models.generate_content` in all four previously-async tasks (extends the 93ce9ac pattern). Removes `asyncio.run(run())` fragility under Celery's gevent pool.
+- Real `vertical` queried from `lead_prospects` in all four tasks (parity with `defect` — completes the 3B QA pattern that hardcoded `"metal_casting"` everywhere).
+- Latent bug fix in `comparable`'s no-comparable-available branch: `citation_substrate_line=0` → `1` (Pydantic schema requires `ge=1`).
+
+Audit trail (push c2fdfc5..b058f76): e467809, 0782893, f18ebda, b058f76.
+
+#### Scoping limitation surfaced — `unverified_sections` cross-section visibility (Flag 2)
+
+The Architect's Flag 2 review of `unverified_sections` mechanics in `compose_dossier` versus the section Pydantic schemas surfaced this:
+
+- `LikelyDefectClassHypothesis` has a `requires_human_review: bool` field; `compose_dossier` at line 113-115 picks up this flag and adds `"defect_hypothesis"` to `requires_human_review_sections` if set.
+- `ProcessTaxonomy`, `ComparableDeployment`, `RiskRegister`, `SuggestedApproach` (packages/schemas/dossier.py:27-64) have **no** `requires_human_review` field and **no** `confidence` field. Compose has no schema-level signal to mark them unverified.
+- `compose_dossier` reads `unverified_sections` directly from the DB column (`json.loads(unverified_sections_json or "[]")`) — no section task currently writes to that column. Only the upstream `dossier_section_defect` DS-CP severe-shift guard at packages/uncertainty/dscp.py would conceivably do so, but the defect task's early-return on severe shift currently returns without UPDATE.
+
+**Actual state: option (c)** — `compose_dossier` only checks `defect_hypothesis.requires_human_review` for the unverified flag; the four other LLM sections cannot trigger DS-CP because they carry no uncertainty field. This is a scoping limitation, not a bug. Surfacing schema-level uncertainty fields for the other four sections (and wiring the DS-CP gate to all five) is **explicitly out of scope** for this §G #4 remediation — that is Phase 1.6 (or whichever phase introduces section-granular DS-CP rollout per ULTIMATE_PRD.md §4.2 / arXiv 2510.05566).
+
+All §A.3 architectural invariants and §A.2 out-of-scope items preserved. The remediation completed missing implementation, not new architecture.
