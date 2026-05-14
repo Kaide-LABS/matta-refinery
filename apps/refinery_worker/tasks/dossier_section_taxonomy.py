@@ -58,4 +58,3 @@ def dossier_section_taxonomy(self, prospect_id: str, dossier_id: str):
         )
 
     app.send_task("refinery.dossier_section_defect", args=[prospect_id, dossier_id])
-    app.send_task("refinery.dossier_section_comparable", args=[prospect_id, dossier_id])
