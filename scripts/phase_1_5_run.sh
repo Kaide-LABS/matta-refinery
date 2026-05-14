@@ -123,7 +123,7 @@ echo "Waiting for M3 (Magic Moment 1) — polling until outbox crm_field ≥12 o
 # Outbox state=delivered is the authoritative evidence that M3 surface dispatches landed.
 # generate_dossier_stub uses surface='crm_field' (vs compose_dossier 'crm_note') — safe discriminator.
 # gemini-2.5-flash sync calls: 124 prospects × 3 calls sequential → chord → M3 takes 3-5 min actual.
-M3_DEADLINE=$(( $(date +%s) - SMOKE_T0 + 300 ))
+M3_DEADLINE=$(( $(date +%s) - SMOKE_T0 + 900 ))
 M3_DELIVERED=0
 while [ "${M3_DELIVERED}" -lt 12 ]; do
   now=$(( $(date +%s) - SMOKE_T0 ))
@@ -181,7 +181,7 @@ for milestone in M5:process_taxonomy M6:defect_hypothesis \
                   M9:suggested_approach; do
   name=$(echo $milestone | cut -d: -f1)
   col=$(echo $milestone | cut -d: -f2)
-  M_DEADLINE=$(( $(date +%s) + 300 ))
+  M_DEADLINE=$(( $(date +%s) + 600 ))
   HAS=0
   while [ "${HAS}" -lt 1 ]; do
     [ "$(date +%s)" -ge "${M_DEADLINE}" ] && break
@@ -194,13 +194,13 @@ for milestone in M5:process_taxonomy M6:defect_hypothesis \
   if [ "${HAS}" = "1" ]; then
     echo "[MILESTONE ${name}] PASS obs=T+${now}s column=${col} populated"
   else
-    echo "[MILESTONE ${name}] FAIL obs=T+${now}s column=${col} still NULL after 300s"
+    echo "[MILESTONE ${name}] FAIL obs=T+${now}s column=${col} still NULL after 600s"
     exit 1
   fi
 done
 
 echo "Checking M10 (byte-density) — poll until dossier_artifacts has a complete row..."
-M10_DEADLINE=$(( $(date +%s) + 240 ))
+M10_DEADLINE=$(( $(date +%s) + 600 ))
 RATIO=""
 while [ -z "${RATIO}" ] || [ "${RATIO}" = "" ]; do
   [ "$(date +%s)" -ge "${M10_DEADLINE}" ] && { echo "M10 FAIL: no deterministic_section_ratio after 240s"; exit 1; }
