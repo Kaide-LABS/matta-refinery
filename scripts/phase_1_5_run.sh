@@ -171,25 +171,31 @@ done
 check_milestone M4 12
 echo "[MILESTONE M4] PASS"
 
-echo "Observing Stage 2 sections (M5-M9) — log evidence (non-fatal warnings)..."
-for milestone in M5:dossier_section_taxonomy M6:dossier_section_defect \
-                  M7:dossier_section_comparable M8:dossier_section_risk \
-                  M9:dossier_section_approach; do
+echo "Observing Stage 2 sections (M5-M9) — DB-state probe (per-run, not cumulative-log)..."
+# Look up THIS run's dossier_id (created by generate_dossier; only row in dossier_artifacts that's 'generating' or newer)
+DOSSIER_ID=$(docker compose exec -T postgres psql -U postgres -d refinery \
+  -tAc "SELECT dossier_id FROM dossier_artifacts WHERE batch_id='${BATCH_ID}' ORDER BY generated_at DESC LIMIT 1" 2>/dev/null | tr -d ' ')
+echo "M5-M9 probe target dossier_id=${DOSSIER_ID}"
+for milestone in M5:process_taxonomy M6:defect_hypothesis \
+                  M7:comparable_deployment M8:risk_register \
+                  M9:suggested_approach; do
   name=$(echo $milestone | cut -d: -f1)
-  task=$(echo $milestone | cut -d: -f2)
-  # Poll up to 240s for each section's first log line
-  M_DEADLINE=$(( $(date +%s) + 240 ))
-  COUNT=0
-  while [ "${COUNT}" -lt 1 ]; do
+  col=$(echo $milestone | cut -d: -f2)
+  M_DEADLINE=$(( $(date +%s) + 300 ))
+  HAS=0
+  while [ "${HAS}" -lt 1 ]; do
     [ "$(date +%s)" -ge "${M_DEADLINE}" ] && break
     sleep 5
-    COUNT=$(docker compose logs refinery_worker 2>&1 | grep -c "${task}" || echo 0)
+    HAS=$(docker compose exec -T postgres psql -U postgres -d refinery \
+      -tAc "SELECT (${col} IS NOT NULL)::int FROM dossier_artifacts WHERE dossier_id='${DOSSIER_ID}'" 2>/dev/null | tr -d ' ')
+    [ -z "${HAS}" ] && HAS=0
   done
   now=$(( $(date +%s) - SMOKE_T0 ))
-  if [ "${COUNT}" -ge 1 ]; then
-    echo "[MILESTONE ${name}] PASS obs=T+${now}s task=${task} count=${COUNT}"
+  if [ "${HAS}" = "1" ]; then
+    echo "[MILESTONE ${name}] PASS obs=T+${now}s column=${col} populated"
   else
-    echo "[MILESTONE ${name}] WARN obs=T+${now}s ${task} not seen after 240s — continuing"
+    echo "[MILESTONE ${name}] FAIL obs=T+${now}s column=${col} still NULL after 300s"
+    exit 1
   fi
 done
 
