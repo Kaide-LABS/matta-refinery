@@ -42,7 +42,7 @@ def dossier_section_risk(self, prospect_id: str, dossier_id: str):
             response_mime_type="application/json",
             response_schema=RiskRegister,
             temperature=0.2,
-            max_output_tokens=1024,
+            max_output_tokens=2048,
         ),
     )
     text_resp = response.text

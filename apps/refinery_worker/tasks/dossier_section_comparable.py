@@ -68,7 +68,7 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
             response_mime_type="application/json",
             response_schema=DimensionOfComparabilityProse,
             temperature=0.3,
-            max_output_tokens=512,
+            max_output_tokens=2048,
         ),
     )
     text_resp = response.text
