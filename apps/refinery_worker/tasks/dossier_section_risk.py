@@ -4,6 +4,7 @@ from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.dossier import RiskRegister
+from sqlalchemy import create_engine, text
 
 client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
 
@@ -20,13 +21,21 @@ client = genai.Client(vertexai=True, project=settings.gcp_project, location=sett
 )
 def dossier_section_risk(self, prospect_id: str, dossier_id: str):
     from packages.prompts.risk_pro import RISK_PROMPT
+
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.connect() as conn:
+        row = conn.execute(
+            text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}
+        ).first()
+    vertical = (row[0] if row else None) or "metal_casting"
+
     prompt = RISK_PROMPT.format(
         company_name="Mock",
-        vertical="metal_casting",
+        vertical=vertical,
         process_taxonomy_json="{}",
         enrichment_payload="{}"
     )
-    
+
     async def run():
         response = await client.aio.models.generate_content(
             model="gemini-2.5-pro",
@@ -38,8 +47,16 @@ def dossier_section_risk(self, prospect_id: str, dossier_id: str):
                 max_output_tokens=2048,
             ),
         )
-        text = response.text
-        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+        text_resp = response.text
+        json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
         return RiskRegister.model_validate_json(json_str)
-        
+
     risk = asyncio.run(run())
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("UPDATE dossier_artifacts SET risk_register = :payload WHERE dossier_id = :did"),
+            {"payload": risk.model_dump_json(), "did": dossier_id},
+        )
+
+    app.send_task("refinery.dossier_section_approach", args=[prospect_id, dossier_id])

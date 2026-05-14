@@ -3,6 +3,7 @@ from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.dossier import ProcessTaxonomy
+from sqlalchemy import create_engine, text
 import json
 import asyncio
 
@@ -44,6 +45,13 @@ def dossier_section_taxonomy(self, prospect_id: str, dossier_id: str):
         return ProcessTaxonomy.model_validate_json(json_str)
         
     taxonomy = asyncio.run(run())
-    
+
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.begin() as conn:
+        conn.execute(
+            text("UPDATE dossier_artifacts SET process_taxonomy = :payload WHERE dossier_id = :did"),
+            {"payload": taxonomy.model_dump_json(), "did": dossier_id},
+        )
+
     app.send_task("refinery.dossier_section_defect", args=[prospect_id, dossier_id])
     app.send_task("refinery.dossier_section_comparable", args=[prospect_id, dossier_id])

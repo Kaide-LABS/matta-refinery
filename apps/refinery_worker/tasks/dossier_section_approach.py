@@ -4,6 +4,7 @@ from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.dossier import SuggestedApproach
+from sqlalchemy import create_engine, text
 
 client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
 
@@ -44,4 +45,12 @@ def dossier_section_approach(self, prospect_id: str, dossier_id: str):
         return SuggestedApproach.model_validate_json(json_str)
         
     appr = asyncio.run(run())
+
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.begin() as conn:
+        conn.execute(
+            text("UPDATE dossier_artifacts SET suggested_approach = :payload WHERE dossier_id = :did"),
+            {"payload": appr.model_dump_json(), "did": dossier_id},
+        )
+
     app.send_task("refinery.compose_dossier", args=[dossier_id])

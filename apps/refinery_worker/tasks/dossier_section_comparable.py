@@ -6,6 +6,7 @@ from apps.refinery_api.config import settings
 from packages.schemas.dossier import ComparableDeployment
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated
+from sqlalchemy import create_engine, text
 
 client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
 
@@ -26,16 +27,29 @@ class DimensionOfComparabilityProse(BaseModel):
 )
 def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
     from packages.knowledge_graph.select import select_comparable
-    vertical = "metal_casting"
+
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.connect() as conn:
+        row = conn.execute(
+            text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}
+        ).first()
+    vertical = (row[0] if row else None) or "metal_casting"
+
     anchor_id, line, dims = select_comparable(vertical, None)
-    
+
     if anchor_id == "no_comparable_available":
         res = ComparableDeployment(
             matta_customer_anchor="no_comparable_available",
-            citation_substrate_line=0,
+            citation_substrate_line=1,
             dimension_of_comparability="No verified Matta deployment in this vertical sub-path.",
             selection_method="no_comparable_available"
         )
+        with engine.begin() as conn:
+            conn.execute(
+                text("UPDATE dossier_artifacts SET comparable_deployment = :payload WHERE dossier_id = :did"),
+                {"payload": res.model_dump_json(), "did": dossier_id},
+            )
+        app.send_task("refinery.dossier_section_risk", args=[prospect_id, dossier_id])
         return
         
     from packages.prompts.comparable_pro import COMPARABLE_PROMPT
@@ -71,6 +85,11 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
         dimension_of_comparability=prose_obj.prose,
         selection_method="deterministic_rules"
     )
-    
+
+    with engine.begin() as conn:
+        conn.execute(
+            text("UPDATE dossier_artifacts SET comparable_deployment = :payload WHERE dossier_id = :did"),
+            {"payload": res.model_dump_json(), "did": dossier_id},
+        )
+
     app.send_task("refinery.dossier_section_risk", args=[prospect_id, dossier_id])
-    app.send_task("refinery.dossier_section_approach", args=[prospect_id, dossier_id])
