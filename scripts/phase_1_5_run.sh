@@ -203,7 +203,7 @@ echo "Checking M10 (byte-density) — poll until dossier_artifacts has a complet
 M10_DEADLINE=$(( $(date +%s) + 600 ))
 RATIO=""
 while [ -z "${RATIO}" ] || [ "${RATIO}" = "" ]; do
-  [ "$(date +%s)" -ge "${M10_DEADLINE}" ] && { echo "M10 FAIL: no deterministic_section_ratio after 240s"; exit 1; }
+  [ "$(date +%s)" -ge "${M10_DEADLINE}" ] && { echo "M10 FAIL: no deterministic_section_ratio after 600s"; exit 1; }
   sleep 5
   RATIO=$(docker compose exec -T postgres psql -U postgres -d refinery \
     -tAc "SELECT deterministic_section_ratio FROM dossier_artifacts \
