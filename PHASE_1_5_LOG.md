@@ -166,3 +166,103 @@ Options (preference order, recommendation = A):
 - **(B)** Replace `compose_dossier` with a single mega-task that internally orchestrates the five sections (skips Celery chain, easier to debug).
 - **(C)** Defer §H verification; declare Phase 1.5 environmental-debug-only and proceed with what's green.
 
+---
+## §G #4 RESOLUTION — STEP 0 VERIFICATION (Option A authorized, 2026-05-14)
+
+### dossier_artifacts schema (single-row-with-section-fields pattern)
+Authoritative DDL: `scripts/init_db.py` lines 31-52 (`DROP TABLE IF EXISTS dossier_artifacts; CREATE TABLE dossier_artifacts (...)`):
+
+| Column | Type | Population point (correct intent) |
+|---|---|---|
+| `id` | TEXT PRIMARY KEY | INSERT on generate_dossier (same value as dossier_id) |
+| `dossier_id` | TEXT | INSERT on generate_dossier (UUID from slack_interactions) |
+| `prospect_id` | TEXT | INSERT on generate_dossier |
+| `batch_id` | TEXT | INSERT on generate_dossier (lookup from lead_prospects.batch_id) |
+| `signal_hash` | TEXT | INSERT on generate_dossier (lookup from lead_prospects.signal_hash) |
+| `knowledge_graph_version` | TEXT | INSERT on generate_dossier (`load_graph().version`) |
+| `calibration_version` | TEXT | INSERT on generate_dossier (CalibrationTable.calibration_version) |
+| `state` | TEXT | 'generating' on INSERT, 'complete' or 'rejected_byte_ratio' on compose |
+| `process_taxonomy` | JSONB | UPDATE by `dossier_section_taxonomy` (missing) |
+| `defect_hypothesis` | JSONB | UPDATE by `dossier_section_defect` (✓ present) |
+| `comparable_deployment` | JSONB | UPDATE by `dossier_section_comparable` (missing) |
+| `risk_register` | JSONB | UPDATE by `dossier_section_risk` (missing) |
+| `suggested_approach` | JSONB | UPDATE by `dossier_section_approach` (missing) |
+| `unverified_sections` | JSONB | UPDATE by `compose_dossier` (json.dumps of list) |
+| `deterministic_section_ratio` | FLOAT | UPDATE by `compose_dossier` (validator-computed) |
+| `validation_error` | TEXT | UPDATE on byte-density rejection path |
+| `generated_at` | TIMESTAMP | INSERT on entry, UPDATE on compose |
+
+**Pattern: single-row-with-section-fields, NOT staging-table-per-section.** Confirmed by compose_dossier.py:53-61 which SELECTs all five section columns directly from `dossier_artifacts` for a given `dossier_id`.
+
+### compose_dossier expectations (already correct — no code change needed)
+- Reads from: `dossier_artifacts` only (single SELECT, single dossier_id key)
+- Required input fields per SELECT at compose_dossier.py:54-58: `prospect_id, signal_hash, knowledge_graph_version, calibration_version, process_taxonomy, defect_hypothesis, comparable_deployment, risk_register, suggested_approach, unverified_sections`
+- Builds `PreVisitDossier(...)` with **10 rendered_sections** entries:
+  - 5 deterministic (count toward bytes(deterministic_content)): `company_facts`, `verified_kg_anchors`, `fitness_score_rationale`, `risk_checklist_baseline`, `approach_template_baseline`
+  - 5 LLM (count toward bytes(total)−bytes(deterministic)): `process_taxonomy`, `defect_hypothesis`, `comparable_dimension_of_comparability_prose`, `risk_register_narrative`, `suggested_approach_narrative`
+- Byte-density validator in `PreVisitDossier._recompute_and_enforce_deterministic_byte_ratio` (packages/schemas/dossier.py:132-156) — rejects if `det_bytes / (det_bytes+llm_bytes) < 0.60`. Reads section content via `rendered_sections[k].encode("utf-8")`, NOT directly from the section JSONB columns.
+- On success: `UPDATE dossier_artifacts SET state='complete', deterministic_section_ratio=:r, unverified_sections=:u, generated_at=:t`; INSERT 3 outbox rows (`slack_canvas`, `crm_note`, `drive_doc`) in the same transaction (Tightening 1).
+- On `ValidationError`: separate transaction `UPDATE state='rejected_byte_ratio', validation_error=:err`; outbox NOT written.
+
+### Section task output shapes
+Each task computes a Pydantic model; only `dossier_section_defect` persists. The 4 broken tasks discard.
+
+| Task | Returns (Pydantic model) | Currently persists to | Currently chains to |
+|---|---|---|---|
+| `taxonomy` | `ProcessTaxonomy` (packages/schemas/dossier.py:27-33) | **nothing** | dispatches `defect` + `comparable` (fan-out) |
+| `defect` | `LikelyDefectClassHypothesis` (packages/schemas/defect_hypothesis.py) | `UPDATE dossier_artifacts SET defect_hypothesis = :res WHERE dossier_id = :did` ✓ | dispatches `comparable` (redundant — taxonomy already did) |
+| `comparable` | wraps locally-defined `DimensionOfComparabilityProse` into `ComparableDeployment` (packages/schemas/dossier.py:36-42) | **nothing** (the wrapped `res` is discarded after construction) | dispatches `risk` + `approach` (fan-out) |
+| `risk` | `RiskRegister` (packages/schemas/dossier.py:53-56) | **nothing** | **DEAD END** — no dispatch |
+| `approach` | `SuggestedApproach` (packages/schemas/dossier.py:59-64) | **nothing** | dispatches `compose_dossier` |
+
+Plus async-in-Celery anti-pattern: `taxonomy`, `comparable`, `risk`, `approach` still use `await client.aio.models.generate_content(...)` inside `asyncio.run(run())`. Same fragility addressed in commit 93ce9ac for `classify_vertical` and `dossier_section_defect`.
+
+Also: `generate_dossier.py` line 19 does `UPDATE dossier_artifacts SET state='generating' WHERE dossier_id=:did` — silent no-op because no INSERT precedes it. The `dossier_artifacts` row does not exist when the chain starts.
+
+### Proposed fix design (Option A, refined per Architect direction)
+
+**Pattern:** linear chain via `app.send_task` from each section task to the next. Replace current fan-out/fan-in.
+
+**dossier_artifacts row creation:** INSERT at the start of `generate_dossier(prospect_id, dossier_id)`. The task already receives `prospect_id` and `dossier_id` as args. Look up `batch_id`, `signal_hash` from `lead_prospects`. Resolve `knowledge_graph_version` via `packages.knowledge_graph.loader.load_graph().version`. Resolve `calibration_version` by reading `packages/uncertainty/calibration_table.json` (or via the `CalibrationTable.calibration_version` field that compose_dossier already loads at line 134-135).
+
+**Chain order:** `generate_dossier` → `taxonomy` → `defect` → `comparable` → `risk` → `approach` → `compose_dossier`
+
+**Per-section persistence:** each section task adds at the end (after Pydantic model is computed):
+```python
+with engine.begin() as conn:
+    conn.execute(
+        text("UPDATE dossier_artifacts SET <column> = :payload WHERE dossier_id = :did"),
+        {"payload": result.model_dump_json(), "did": dossier_id},
+    )
+app.send_task("refinery.<next_task>", args=[prospect_id, dossier_id])
+```
+
+Column mapping:
+- taxonomy → `process_taxonomy`
+- defect → `defect_hypothesis` (already correct; remove redundant comparable dispatch — chain to comparable singularly)
+- comparable → `comparable_deployment` (NOTE: persist the *wrapped* `ComparableDeployment`, not the inner `DimensionOfComparabilityProse`)
+- risk → `risk_register` (add dispatch to approach)
+- approach → `suggested_approach` (already dispatches compose_dossier — keep)
+
+**Async-in-Celery swap:** for taxonomy/comparable/risk/approach, replace the async pattern with the sync pattern in `client.models.generate_content` (matches 93ce9ac). Remove `import asyncio` from these files.
+
+**Estimated LOC:** ~110-130 across 5 files (generate_dossier.py ~25 LOC INSERT + lookups; 4 section tasks ~20-25 LOC each: sync swap + UPDATE + linear chain). `compose_dossier.py` unchanged. `init_db.py` unchanged (schema already correct).
+
+**Files touched:**
+1. `apps/refinery_worker/tasks/generate_dossier.py` — INSERT row + dependency lookups
+2. `apps/refinery_worker/tasks/dossier_section_taxonomy.py` — sync swap + UPDATE + chain to defect
+3. `apps/refinery_worker/tasks/dossier_section_defect.py` — single-chain to comparable (remove redundant dispatch; already persists)
+4. `apps/refinery_worker/tasks/dossier_section_comparable.py` — sync swap + UPDATE (ComparableDeployment) + chain to risk only
+5. `apps/refinery_worker/tasks/dossier_section_risk.py` — sync swap + UPDATE + chain to approach
+6. `apps/refinery_worker/tasks/dossier_section_approach.py` — sync swap + UPDATE + keep compose dispatch
+
+(6 files, not 5 — taxonomy now chains to defect instead of fan-out, so all 4 broken tasks need the chain edit, plus defect needs the comparable-redundancy removed.)
+
+### Open questions for Architect (low-stakes, asking before code)
+1. **signal_hash provenance**: `lead_prospects.signal_hash` is `nullable=True` (packages/models/prospects.py:33). Is it populated by `score_fitness` or expected to be empty at dossier-generation time? If empty, use empty string `""` or compute on the fly inside generate_dossier?
+2. **batch_id provenance**: `generate_dossier(prospect_id, dossier_id)` doesn't receive `batch_id`. Look it up via `SELECT batch_id FROM lead_prospects WHERE id=:pid`. Acceptable?
+3. **Vertical / signals passed to section tasks**: currently the four broken tasks hardcode `vertical="metal_casting"` and `signals={}` / `enrichment_payload="{}"`. The defect task correctly queries `vertical` from lead_prospects. Should taxonomy/comparable/risk/approach also query the real vertical, or is the demo seeding such that hardcoded `metal_casting` is acceptable for §H verification?
+   - **Recommend:** query real vertical for parity with defect, but keep `signals={}` and other placeholders if the upstream enrichment data isn't populated yet (would expand scope).
+
+**STOPPING HERE per Architect direction — awaiting confirmation of fix design before writing code.**
+
