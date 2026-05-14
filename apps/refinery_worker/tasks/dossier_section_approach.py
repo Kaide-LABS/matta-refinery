@@ -1,5 +1,4 @@
 from ..app import app
-import asyncio
 from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
@@ -21,32 +20,36 @@ client = genai.Client(vertexai=True, project=settings.gcp_project, location=sett
 )
 def dossier_section_approach(self, prospect_id: str, dossier_id: str):
     from packages.prompts.approach_pro import APPROACH_PROMPT
+
+    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    with engine.connect() as conn:
+        row = conn.execute(
+            text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}
+        ).first()
+    vertical = (row[0] if row else None) or "metal_casting"
+
     prompt = APPROACH_PROMPT.format(
         company_name="Mock",
-        vertical="metal_casting",
+        vertical=vertical,
         process_taxonomy_json="{}",
         conformal_set="[]",
         risk_findings="[]"
     )
-    
-    async def run():
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=[prompt],
-            config=GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=SuggestedApproach,
-                temperature=0.2,
-                max_output_tokens=2048,
-            ),
-        )
-        text = response.text
-        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
-        return SuggestedApproach.model_validate_json(json_str)
-        
-    appr = asyncio.run(run())
 
-    engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
+    response = client.models.generate_content(
+        model="gemini-2.5-pro",
+        contents=[prompt],
+        config=GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=SuggestedApproach,
+            temperature=0.2,
+            max_output_tokens=2048,
+        ),
+    )
+    text_resp = response.text
+    json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
+    appr = SuggestedApproach.model_validate_json(json_str)
+
     with engine.begin() as conn:
         conn.execute(
             text("UPDATE dossier_artifacts SET suggested_approach = :payload WHERE dossier_id = :did"),

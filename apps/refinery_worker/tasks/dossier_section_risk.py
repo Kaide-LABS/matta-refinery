@@ -1,5 +1,4 @@
 from ..app import app
-import asyncio
 from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
@@ -36,22 +35,19 @@ def dossier_section_risk(self, prospect_id: str, dossier_id: str):
         enrichment_payload="{}"
     )
 
-    async def run():
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=[prompt],
-            config=GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=RiskRegister,
-                temperature=0.2,
-                max_output_tokens=2048,
-            ),
-        )
-        text_resp = response.text
-        json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
-        return RiskRegister.model_validate_json(json_str)
-
-    risk = asyncio.run(run())
+    response = client.models.generate_content(
+        model="gemini-2.5-pro",
+        contents=[prompt],
+        config=GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=RiskRegister,
+            temperature=0.2,
+            max_output_tokens=2048,
+        ),
+    )
+    text_resp = response.text
+    json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
+    risk = RiskRegister.model_validate_json(json_str)
 
     with engine.begin() as conn:
         conn.execute(

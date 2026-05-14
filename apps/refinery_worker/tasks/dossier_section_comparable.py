@@ -1,5 +1,4 @@
 from ..app import app
-import asyncio
 from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
@@ -62,22 +61,19 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
         process_taxonomy_json="{}"
     )
     
-    async def run():
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=[prompt],
-            config=GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=DimensionOfComparabilityProse,
-                temperature=0.3,
-                max_output_tokens=2048,
-            ),
-        )
-        text = response.text
-        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
-        return DimensionOfComparabilityProse.model_validate_json(json_str)
-        
-    prose_obj = asyncio.run(run())
+    response = client.models.generate_content(
+        model="gemini-2.5-pro",
+        contents=[prompt],
+        config=GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=DimensionOfComparabilityProse,
+            temperature=0.3,
+            max_output_tokens=2048,
+        ),
+    )
+    text_resp = response.text
+    json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
+    prose_obj = DimensionOfComparabilityProse.model_validate_json(json_str)
     
     res = ComparableDeployment(
         matta_customer_anchor=anchor_id,
