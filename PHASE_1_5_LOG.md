@@ -266,3 +266,82 @@ Column mapping:
 
 **STOPPING HERE per Architect direction — awaiting confirmation of fix design before writing code.**
 
+---
+## §G #4 RESOLUTION — IMPLEMENTATION COMPLETE & §H VERIFICATION SURFACES NEW BYTE-DENSITY ISSUE (2026-05-14)
+
+### Implementation (commits e467809, 0782893, f18ebda, b058f76, 4061b87, 2ebf2ea, fedeef2, 38e0c54)
+Per Architect-approved Option A:
+- `generate_dossier` INSERT with idempotent UPSERT (signal_hash fallback to sha256(prospect|batch|kg)[:16])
+- 4 section tasks (taxonomy/comparable/risk/approach) now UPDATE their JSONB columns (defect already did)
+- Linear chain: taxonomy → defect → comparable → risk → approach → compose
+- Sync genai client swap across all 4 broken section tasks (extends 93ce9ac)
+- Real `vertical` queried from lead_prospects in all 4
+- comparable: `matta_deployment_` prefix stripped at schema boundary (latent KG/schema mismatch; surfaced only because comparable now actually executes and persists)
+- max_retries 3 → 8 across all Stage 2 tasks (DNS hiccups on oauth2.googleapis.com — Stage 1 absorbed via parallelism, linear Stage 2 cannot)
+- compose_dossier: dict-or-str dispatch on JSONB column reads (Postgres returns dict via SQLAlchemy adapter, `model_validate_json` requires str)
+
+§6.7 audit trail appended to MATTA_RECONCILIATION.md.
+
+### §H verification — Run 1 outcomes
+**M0-M9: ALL PASS via DB-state probe (per-run, no cumulative-log false positives):**
+| Milestone | Obs | Evidence |
+|---|---|---|
+| M0 | T+0 | batch_id=2922af1c-..., row_count=124 |
+| M1 | T+4s drift +2s | classify_vertical tasks dispatched |
+| M2 | T+9s drift +4s | lead_prospects count=124 |
+| M3 | T+382s | outbox crm_field delivered=12 (Stage 1 takes ~6min wallclock with gemini-2.5-flash sync × 124 prospects × 3 temps / Celery concurrency=4) |
+| M4 | T+387s | click HTTP 200, dossier_id=2922af1c-bd8e-..., generate_dossier dispatched |
+| M5 | T+405s | dossier_artifacts.process_taxonomy IS NOT NULL |
+| M6 | T+428s | defect_hypothesis IS NOT NULL |
+| M7 | T+450s | comparable_deployment IS NOT NULL |
+| M8 | T+512s | risk_register IS NOT NULL |
+| M9 | T+523s | suggested_approach IS NOT NULL |
+| M10 | T+1100+ | **FAIL — state='rejected_byte_ratio'** |
+
+### M10 FAIL — Byte-density rejection (§F.4 catalog match, but tokens-only fix is structurally insufficient)
+
+`compose_dossier` ran cleanly (no retries, ~50ms) and correctly rejected: `deterministic_section_ratio=0.088` vs threshold 0.60. State updated to `rejected_byte_ratio`. Validation error stored. Tightening 3 byte-density gate working as designed.
+
+#### Why §F.4 alone won't land it
+
+The §F.4 prescription is "lower max_output_tokens; lowering 0.60 threshold is forbidden". But the math is brutal:
+
+Today's deterministic renderers in compose_dossier.py:90-97 are placeholders:
+```python
+"company_facts": _render_section({"prospect_id": prospect_id}),                  # ~50 B
+"verified_kg_anchors": _render_section({"anchor": ..., "citation_line": ...}),   # ~80 B
+"fitness_score_rationale": _render_section({"signal_hash": signal_hash}),        # ~30 B
+"risk_checklist_baseline": _render_section([f.category for f in risk.findings]), # ~200 B
+"approach_template_baseline": _render_section({"template": approach.template}),  # ~40 B
+# total deterministic ≈ 400 B
+```
+
+LLM total at current `max_output_tokens=2048` per section: 5 × ~1500 B ≈ 7500 B (gemini-2.5-flash/pro JSON fills toward schema `max_length` caps: rationale 600/1000 chars, RiskRegister findings 10 × 300 chars).
+
+- Current ratio: 400 / 7900 ≈ 0.050  (observed 0.088 — slightly higher because gemini didn't max out every field)
+- At `max_output_tokens=512`: LLM ≈ 5 × ~1500 = 7500 B unchanged (schema caps were the binding constraint, not the token cap) → ratio still ~0.05
+- At `max_output_tokens=128`: LLM ≈ 5 × ~400 = 2000 B → ratio = 400/2400 ≈ 0.17. Still fails the 0.60 floor.
+- To hit 0.60 with current deterministic=400 B: LLM must be ≤ 267 B total — ≤ 53 B per section. Roughly one short sentence. Effectively unusable.
+
+**Conclusion:** the catalog §F.4 fix (lower tokens) is necessary but **structurally insufficient** with the current deterministic placeholders. The byte-density gate presumes the deterministic side carries real verified content; the current renderers ship only IDs and enum strings.
+
+#### Two paths (recommendation = A; B is acceptable fallback if Architect prefers minimal scope)
+
+**Path A — Fatten the deterministic renderers (recommended).** Pull real data already available in the row + lead_prospects join:
+- `company_facts`: company_name, vertical, factory_size_band, trade_show_provenance, contact_email, sector_hint, fitness_score (deterministic — verified at ingest, not LLM-derived)
+- `verified_kg_anchors`: anchor enum + citation_substrate_line + the permitted_dimensions_of_comparability list from KG (these are *verified* facts in graph.json)
+- `fitness_score_rationale`: fitness_score numeric + factory_size_band + a deterministic template-rendered sentence describing how the score was computed (the scoring formula is in packages/scoring/fitness.py; this is verified math, not LLM)
+- `risk_checklist_baseline`: full RiskFinding (category + severity) for each — already in schema, just include severity not just category
+- `approach_template_baseline`: template enum + day_one_risks list (the structured fields of SuggestedApproach — deterministic schema-grade data, not the rationale prose)
+
+Estimated touch: ~30 LOC in compose_dossier.py:90-97; one SELECT to lead_prospects for the company facts. No schema changes. This is completion of the spec — the deterministic_section_keys list (packages/schemas/dossier.py:69-75) clearly intends these to be rich.
+
+**Path B — Combine §F.4 token tightening + Path A.** Belt-and-braces: drop max_output_tokens to 384 AND fatten deterministic renderers. Lands the ratio with more safety margin.
+
+#### Out of scope (do not propose without Architect approval)
+- Lowering the 0.60 threshold (forbidden by §F.4)
+- Adding schema-level uncertainty fields to non-defect sections (Phase 1.6 per §6.7 Flag 2)
+- Changing the byte-density math (Tightening 3 invariant)
+
+### Awaiting Architect direction on M10 (Path A vs B)
+
