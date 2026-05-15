@@ -446,3 +446,82 @@ If actuals come in 10-15% below target on the deterministic side (gemini is verb
 
 ### Awaiting Architect confirmation of targets before writing code.
 
+---
+## §F.4 / Path B — IMPLEMENTATION + EMPIRICAL CALIBRATION (2026-05-14/15)
+
+### What was implemented
+- **Commit 6be5f83** — fattened all 5 deterministic renderers in compose_dossier.py with real data from lead_prospects + KG anchor lookup + scoring weights. One extra SELECT to lead_prospects. No new dependencies, no schema changes.
+- **Commit 5de12c4** — initial token tightening per Architect targets (taxonomy 384 / defect 256 / comparable 128 / risk 512 / approach 256).
+
+### Empirical findings after rebuild + §H Run
+
+#### Token tightening was structurally rejected by the gemini-2.5 model family
+
+**At Architect's targets (commit 5de12c4):** M5 FAIL after 600s. Worker logs:
+```
+ValidationError: 1 validation error for ProcessTaxonomy
+Invalid JSON: EOF while parsing a value at line 1 column 0 [type=json_invalid, input_value='', input_type=str]
+```
+gemini-2.5-pro at `max_output_tokens=384` returned **empty `response.text`** — model exhausted the token budget on internal reasoning before emitting any JSON. Same MAX_TOKENS behavior reproduced at 512, 768, 1024 (commit ad558aa "calibration adjustment"). The pro model has implicit reasoning overhead that consumes the entire budget unless ~2000+ tokens are allowed.
+
+defect on gemini-2.5-flash at 256: also failed, but differently — emitted preamble `'Here is the JSON requested:\n'` then got cut off before the JSON started (commit 0687c2c reverted the 4 pro tasks to 2048; ff69d8a reverted defect to 2048).
+
+`response_mime_type="application/json"` + `response_schema=<Pydantic class>` do NOT guarantee gemini stays in pure-JSON mode under tight token budgets; the model emits prose preambles before structured output.
+
+**All 5 section tasks now back at `max_output_tokens=2048` (the original, known-working floor).** The token-tightening half of Path B is **structurally incompatible** with gemini-2.5-pro + the current Pydantic schemas. Cannot land it without either:
+  (a) switching off pro to flash everywhere (loses prose quality),
+  (b) adding `ThinkingConfig(thinking_budget=N)` to partition reasoning from output (SDK compatibility uncertain — was removed in 93ce9ac because of issues with flash; pro support unverified in current SDK version),
+  (c) accepting empty/truncated outputs as a failure mode.
+
+#### Deterministic fattening worked
+
+**§H Run with fattened det + all LLM at 2048 (commits 6be5f83 + ff69d8a, dossier_id `409bb49b-1259-47ea-9e46-5c27a33c4cd2`):**
+- M0-M9: ALL PASS
+- M10 still FAIL but with **state='rejected_byte_ratio', deterministic_section_ratio=0.401** (vs threshold 0.60)
+- Compared to pre-fattening: ratio improved **0.088 → 0.401** (4.6× — the fattening worked, just not enough on its own)
+
+Measured raw JSONB bytes (this run):
+| Section | Bytes |
+|---|---|
+| taxonomy | 1378 |
+| defect | 209 |
+| comparable | 369 |
+| risk | 2158 |
+| approach | 829 |
+| **LLM rendered total (est.)** | **~3900** |
+
+Implied deterministic rendered total from `ratio = det / (det + llm)`:
+- 0.401 = det / (det + 3900) → det = **~2611 B** (predicted target was ~3500 B; actuals came in ~25% lighter)
+
+### Gap analysis (numerical)
+
+To hit ratio ≥ 0.60 with LLM stuck at ~3900 B (model floor): **det must be ≥ ~5850 B**. Current det ≈ 2611 B. Gap = **~3239 B** of additional deterministic content needed.
+
+To hit ratio = 0.60 by cutting LLM with det stuck at 2611: LLM must be ≤ ~1741 B. Empirically the model produces ≥ ~3500 B for these schemas with thinking overhead. Gap of ~1750 B is **not closable via max_output_tokens** (returns empty/preamble below ~2048).
+
+### Path C — proposed escalation (awaiting Architect direction)
+
+Three options surfaced (recommendation = **A**):
+
+**Option A — Deeper deterministic enrichment.** Add more verified content per existing DETERMINISTIC_SECTION_KEYS (no new keys, set is invariant):
+- `company_facts` (+ ~600 B): provenance metadata — batch_id, last_scored_at, ingest_at, source_label, file_sha256 from ingest_batches table
+- `verified_kg_anchors` (+ ~1500 B): expand from single anchor to ALL anchors in the same vertical from graph.json (cross-anchor comparability table), plus deterministic_phase_breakdown lookup per template enum
+- `fitness_score_rationale` (+ ~400 B): full per-component contribution table with formulae rendered as text + scoring decision tree branches evaluated (deterministic math)
+- `risk_checklist_baseline` (+ ~500 B): per-finding deterministic risk_pillar from a static category→pillar lookup table; add severity_score (deterministic numerical mapping from severity enum); add knowledge_graph_evidence_lines that backed the risk classification
+- `approach_template_baseline` (+ ~600 B): deterministic_phase_breakdown lookup per template enum (e.g. two_camera_pilot → 4-phase Gantt-style table with deterministic phase names, durations, deliverables, exit criteria)
+- Estimated post-fix det total: ~5600 B → ratio ≈ 0.589 (just below 0.60, need ~50 B more headroom — straightforward)
+- ~80-100 LOC across compose_dossier.py + 2 small lookup tables (probably new files packages/scoring/risk_pillars.py + packages/scoring/approach_phases.py or inline dicts in compose_dossier)
+- No schema changes. No invariant changes. Strictly more verified data into existing key buckets.
+
+**Option B — Re-introduce `ThinkingConfig(thinking_budget=N)` on pro tasks.** Partitions reasoning from output: `thinking_budget=512`, `max_output_tokens=512`, total budget = 1024 (half the current 2048). Forces shorter JSON outputs without empty responses. Risk: SDK compatibility uncertain — commit 93ce9ac removed thinking_config because of issues. Worth ~30 min to test before scoping deep enrichment.
+
+**Option C — Switch the SDK `_render_section` to redact LLM prose at the compose_dossier boundary.** Today `risk_register_narrative` renders ALL `f.note` strings (~1500-2000 B). Could cap it to the first 3 notes truncated to 100 chars each → ~600 B. Mechanically cuts LLM total ~30%. **Drawback:** loses prose content; arguably violates the spirit of byte-density (which is supposed to gate model verbosity, not silently truncate at the compose layer).
+
+### What's working / persisted
+- All §G #4 remediation commits (e467809..fedeef2) are stable
+- M0-M9 PASS reliably across 3 runs
+- compose_dossier reads the populated row, computes ratio correctly, writes state='rejected_byte_ratio' with validation_error preserved — the gate is doing its job
+- The 0.60 threshold, `object.__setattr__` overwrite, key set invariants, and schema max_lengths are all untouched
+
+### Awaiting Architect direction (A vs B vs C)
+
