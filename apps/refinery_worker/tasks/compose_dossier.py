@@ -31,6 +31,12 @@ from packages.scoring.weights import (
     TRADE_SHOW_PROVENANCE_WEIGHT,
     CAPACITY_DECAY_WEIGHT,
 )
+from packages.scoring.risk_pillars import (
+    RISK_PILLAR_LOOKUP,
+    SEVERITY_SCORE_LOOKUP,
+    RISK_KG_EVIDENCE_ANCHOR,
+)
+from packages.scoring.approach_phases import APPROACH_PHASE_BREAKDOWN
 from ..app import app
 
 
@@ -94,14 +100,18 @@ def compose_dossier(self, dossier_id: str):
     else:
         unverified_sections = json.loads(unverified_sections_json or "[]")
 
-    # Pull verified company facts from lead_prospects (one extra SELECT, reuses engine).
+    # Pull verified company facts + ingest provenance (one extra SELECT, reuses engine).
     with engine.connect() as conn:
         lp_row = conn.execute(
             text(
-                "SELECT company_name, vertical, factory_size_band, trade_show_provenance, "
-                "contact_email, contact_name, sector_hint, source_system, external_lead_id, "
-                "raw_notes, fitness_score "
-                "FROM lead_prospects WHERE id = :pid"
+                "SELECT lp.company_name, lp.vertical, lp.factory_size_band, lp.trade_show_provenance, "
+                "lp.contact_email, lp.contact_name, lp.sector_hint, lp.source_system, lp.external_lead_id, "
+                "lp.raw_notes, lp.fitness_score, lp.batch_id, lp.last_scored_at, "
+                "lp.enrichment_status, lp.requires_human_review, "
+                "ib.file_sha256, ib.user_id, ib.day, ib.created_at, ib.source_surface "
+                "FROM lead_prospects lp "
+                "LEFT JOIN ingest_batches ib ON ib.id = lp.batch_id "
+                "WHERE lp.id = :pid"
             ),
             {"pid": prospect_id},
         ).first()
@@ -111,20 +121,33 @@ def compose_dossier(self, dossier_id: str):
     (
         lp_company_name, lp_vertical, lp_size_band, lp_trade_show,
         lp_contact_email, lp_contact_name, lp_sector_hint, lp_source_system,
-        lp_external_lead_id, lp_raw_notes, lp_fitness_score,
+        lp_external_lead_id, lp_raw_notes, lp_fitness_score, lp_batch_id,
+        lp_last_scored_at, lp_enrichment_status, lp_requires_human_review,
+        ib_file_sha256, ib_user_id, ib_day, ib_created_at, ib_source_surface,
     ) = lp_row
     lp_fitness_score = float(lp_fitness_score or 0.0)
 
     # KG anchor lookup for verified_kg_anchors enrichment.
+    # Load full graph + find primary anchor (by matched ID) + collect peer anchors
+    # in the same vertical (used in the multi-anchor comparability table below).
     kg_anchor_obj = None
+    peer_anchors: list = []
+    kg_loaded = None
     if comparable.matta_customer_anchor != "no_comparable_available":
-        kg = load_graph()
+        kg_loaded = load_graph()
         # graph.json carries the "matta_deployment_" prefix; schema enum strips it.
         prefixed_id = f"matta_deployment_{comparable.matta_customer_anchor}"
-        for a in kg.anchors:
+        for a in kg_loaded.anchors:
             if a.anchor_id == prefixed_id:
                 kg_anchor_obj = a
-                break
+            elif kg_anchor_obj is not None and a.vertical == kg_anchor_obj.vertical:
+                peer_anchors.append(a)
+        if kg_anchor_obj is not None:
+            # Second pass for peers whose order put them before the matched anchor.
+            peer_anchors = [
+                a for a in kg_loaded.anchors
+                if a.vertical == kg_anchor_obj.vertical and a.anchor_id != kg_anchor_obj.anchor_id
+            ]
 
     # Deterministic fitness-score breakdown — pure math from packages/scoring/weights.py.
     fitness_components = {
@@ -135,6 +158,43 @@ def compose_dossier(self, dossier_id: str):
         "trade_show_provenance": (TRADE_SHOW_PROVENANCE_WEIGHT if lp_trade_show else 0.0),
         "capacity_decay_max": CAPACITY_DECAY_WEIGHT,
     }
+    # Per-component attribution table — each row is a deterministic branch evaluation
+    # of the scoring formula. No LLM; pure math from packages/scoring/weights.py + actual
+    # prospect fields.
+    fitness_decision_tree = [
+        {
+            "component": "vertical_match",
+            "weight": VERTICAL_MATCH_WEIGHT,
+            "predicate": "vertical NOT IN {out_of_vertical, vertical_uncertain}",
+            "predicate_satisfied": lp_vertical not in ("out_of_vertical", "vertical_uncertain"),
+            "input_value": lp_vertical or "",
+            "contribution": (VERTICAL_MATCH_WEIGHT if lp_vertical not in ("out_of_vertical", "vertical_uncertain") else 0.0),
+        },
+        {
+            "component": "size_band",
+            "weight": SIZE_BAND_WEIGHT,
+            "predicate": "factory_size_band IN {medium, large}",
+            "predicate_satisfied": lp_size_band in ("medium", "large"),
+            "input_value": lp_size_band or "",
+            "contribution": (SIZE_BAND_WEIGHT if lp_size_band in ("medium", "large") else 0.0),
+        },
+        {
+            "component": "trade_show_provenance",
+            "weight": TRADE_SHOW_PROVENANCE_WEIGHT,
+            "predicate": "trade_show_provenance IS TRUE",
+            "predicate_satisfied": bool(lp_trade_show),
+            "input_value": str(bool(lp_trade_show)),
+            "contribution": (TRADE_SHOW_PROVENANCE_WEIGHT if lp_trade_show else 0.0),
+        },
+        {
+            "component": "capacity_decay",
+            "weight": CAPACITY_DECAY_WEIGHT,
+            "predicate": "weight * (1 - decay); decay sourced from QueueState",
+            "predicate_satisfied": True,
+            "input_value": "queue_state.capacity_decay",
+            "contribution": "<= " + str(CAPACITY_DECAY_WEIGHT),
+        },
+    ]
     fitness_score_breakdown = {
         "fitness_score": lp_fitness_score,
         "vertical": lp_vertical,
@@ -152,10 +212,12 @@ def compose_dossier(self, dossier_id: str):
             "fnb_bottling, polymer_extrusion, metal_casting}) + size_band(0.25 if medium|large) + "
             "trade_show_provenance(0.20 if true) + capacity_decay(0.15 * (1 - decay)); clipped to [0, 1]"
         ),
+        "decision_tree": fitness_decision_tree,
         "signal_hash": signal_hash,
     }
 
     # Render deterministic-side payloads.
+    # (1) company_facts — adds ingest provenance (batch_id, file_sha256, day, user_id, source_label).
     company_facts_payload = {
         "company_name": lp_company_name or "",
         "vertical": lp_vertical or "vertical_uncertain",
@@ -167,33 +229,66 @@ def compose_dossier(self, dossier_id: str):
         "source_system": lp_source_system or "",
         "external_lead_id": lp_external_lead_id or "",
         "raw_notes": (lp_raw_notes or "")[:400],
+        "enrichment_status": lp_enrichment_status or "",
+        "requires_human_review": str(bool(lp_requires_human_review)),
+        "last_scored_at": str(lp_last_scored_at) if lp_last_scored_at else "",
+        "ingest_provenance": {
+            "batch_id": lp_batch_id or "",
+            "file_sha256": ib_file_sha256 or "",
+            "user_id": ib_user_id or "",
+            "ingest_day": str(ib_day) if ib_day else "",
+            "ingest_created_at": str(ib_created_at) if ib_created_at else "",
+            "source_label": ib_source_surface or "",
+        },
     }
 
+    # (2) verified_kg_anchors — adds per-vertical multi-anchor cross-table with
+    # verbatim citation excerpts for every peer anchor (substrate-grounded evidence).
     verified_kg_anchors_payload = {
         "matta_customer_anchor": comparable.matta_customer_anchor,
         "selection_method": comparable.selection_method,
         "citation_substrate_line": comparable.citation_substrate_line,
+        "knowledge_graph_version": kg_version,
     }
     if kg_anchor_obj is not None:
         verified_kg_anchors_payload.update({
             "anchor_id": kg_anchor_obj.anchor_id,
+            "vertical": kg_anchor_obj.vertical,
             "deployment_type": kg_anchor_obj.deployment_type,
             "citation_substrate_lines": list(kg_anchor_obj.citation_substrate_lines),
             "citation_verbatim_excerpt": kg_anchor_obj.citation_verbatim_excerpt,
             "permitted_dimensions_of_comparability": list(kg_anchor_obj.permitted_dimensions_of_comparability),
-            "knowledge_graph_version": kg_version,
         })
+        verified_kg_anchors_payload["peer_anchors_in_vertical"] = [
+            {
+                "anchor_id": a.anchor_id,
+                "deployment_type": a.deployment_type,
+                "citation_substrate_lines": list(a.citation_substrate_lines),
+                "citation_verbatim_excerpt": a.citation_verbatim_excerpt,
+                "permitted_dimensions_of_comparability": list(a.permitted_dimensions_of_comparability),
+            }
+            for a in peer_anchors
+        ]
 
-    # Full RiskFinding entries minus the `note` field (the prose lives on the LLM side).
+    # (4) risk_checklist_baseline — adds risk_pillar (categorical), severity_score
+    # (numerical), and deterministic kg_evidence_anchor per finding.
     risk_checklist_baseline_payload = [
-        {"category": f.category, "severity": f.severity}
+        {
+            "category": f.category,
+            "severity": f.severity,
+            "risk_pillar": RISK_PILLAR_LOOKUP.get(f.category, "uncategorised"),
+            "severity_score": SEVERITY_SCORE_LOOKUP.get(f.severity, 0.0),
+            "kg_evidence_anchor": RISK_KG_EVIDENCE_ANCHOR.get(f.category, ""),
+        }
         for f in risk.findings
     ]
 
-    # SuggestedApproach structural fields minus the rationale prose (LLM-side).
+    # (5) approach_template_baseline — adds deterministic_phase_breakdown with
+    # full evaluation_criteria + exit_criteria per phase (Day-1 actionable plan).
     approach_template_baseline_payload = {
         "template": approach.template,
         "day_one_risks": list(approach.day_one_risks),
+        "deterministic_phase_breakdown": APPROACH_PHASE_BREAKDOWN.get(approach.template, []),
     }
 
     rendered_sections = {
