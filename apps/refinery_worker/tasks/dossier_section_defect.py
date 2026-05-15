@@ -54,7 +54,7 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
                 response_mime_type="application/json",
                 response_schema=LikelyDefectClassHypothesis,
                 temperature=temp,
-                max_output_tokens=256,
+                max_output_tokens=2048,
             ),
         )
         text = response.text
