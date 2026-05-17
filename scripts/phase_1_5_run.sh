@@ -172,9 +172,15 @@ check_milestone M4 12
 echo "[MILESTONE M4] PASS"
 
 echo "Observing Stage 2 sections (M5-M9) — DB-state probe (per-run, not cumulative-log)..."
-# Look up THIS run's dossier_id (created by generate_dossier; only row in dossier_artifacts that's 'generating' or newer)
-DOSSIER_ID=$(docker compose exec -T postgres psql -U postgres -d refinery \
-  -tAc "SELECT dossier_id FROM dossier_artifacts WHERE batch_id='${BATCH_ID}' ORDER BY generated_at DESC LIMIT 1" 2>/dev/null | tr -d ' ')
+# Poll until generate_dossier inserts the dossier_artifacts row (up to 60s after M4 click)
+DOSSIER_ID=""
+DOSSIER_ID_DEADLINE=$(( $(date +%s) + 60 ))
+while [ -z "${DOSSIER_ID}" ]; do
+  [ "$(date +%s)" -ge "${DOSSIER_ID_DEADLINE}" ] && { echo "M5 FAIL: dossier_artifacts row not created within 60s of M4 click"; exit 1; }
+  sleep 2
+  DOSSIER_ID=$(docker compose exec -T postgres psql -U postgres -d refinery \
+    -tAc "SELECT dossier_id FROM dossier_artifacts WHERE batch_id='${BATCH_ID}' ORDER BY generated_at DESC LIMIT 1" 2>/dev/null | tr -d ' ')
+done
 echo "M5-M9 probe target dossier_id=${DOSSIER_ID}"
 for milestone in M5:process_taxonomy M6:defect_hypothesis \
                   M7:comparable_deployment M8:risk_register \
