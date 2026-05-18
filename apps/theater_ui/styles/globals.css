@@ -931,3 +931,99 @@ code, .mono {
   font-family: var(--font-mono);
   line-height: 1.5;
 }
+
+/* ─── Tutorial callout ────────────────────────────────────────────────── */
+.tutorial-callout {
+  position: fixed;
+  top: calc(var(--header-height) + 20px);
+  right: 20px;
+  width: 340px;
+  background: var(--matta-pane-bg);
+  border: 1px solid var(--matta-peach);
+  border-radius: var(--radius-md);
+  padding: 14px 16px 12px;
+  z-index: 60;
+  font-size: 13px;
+  color: var(--matta-charcoal);
+  transition: opacity 280ms var(--ease-standard);
+}
+
+.tutorial-callout--fading {
+  opacity: 0.0;
+}
+
+.tutorial-callout__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tutorial-callout__tag {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--matta-peach-dark);
+}
+
+.tutorial-callout__close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--matta-grey);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  transition: background 140ms var(--ease-standard), color 140ms var(--ease-standard);
+}
+
+.tutorial-callout__close:hover {
+  background: var(--matta-code-bg);
+  color: var(--matta-navy);
+}
+
+.tutorial-callout__body {
+  margin-bottom: 12px;
+}
+
+.tutorial-callout__title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--matta-navy);
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+
+.tutorial-callout__text {
+  font-size: 12px;
+  color: var(--matta-charcoal);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.tutorial-callout__progress {
+  padding-top: 8px;
+  border-top: 1px solid var(--matta-warm-border-soft);
+}
+
+.tutorial-callout__progress-text {
+  font-size: 10px;
+  color: var(--matta-grey);
+  font-family: var(--font-mono);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.tutorial-callout__progress-bar {
+  height: 2px;
+  background: var(--matta-warm-border-soft);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.tutorial-callout__progress-fill {
+  height: 100%;
+  background: var(--matta-peach);
+  transition: width 600ms var(--ease-standard);
+}

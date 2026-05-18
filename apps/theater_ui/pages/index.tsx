@@ -4,6 +4,7 @@ import SlackLeftPane from '../components/SlackLeftPane';
 import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
 import CRMRecordInset from '../components/CRMRecordInset';
+import TutorialCallout from '../components/TutorialCallout';
 import { useDemoState } from '../hooks/useWebSocket';
 
 function MattaWordmark() {
@@ -70,6 +71,12 @@ const IndexPage: NextPage = () => {
         <DriveDossierRightPane phase={demo.phase} dossier={demo.dossier} />
         <CRMRecordInset phase={demo.phase} />
       </div>
+      <TutorialCallout
+        phase={demo.phase}
+        elapsedSec={demo.elapsedSec}
+        stage2Progress={demo.stage2Progress}
+        byteDensityRatio={demo.byteDensityRatio}
+      />
     </div>
   );
 };
