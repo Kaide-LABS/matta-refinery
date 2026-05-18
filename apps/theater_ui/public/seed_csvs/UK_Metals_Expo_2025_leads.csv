@@ -1,12 +1,12 @@
 external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
 W001,William Cook Sheffield,James Mitchell,jmitchell@wcook-sheffield.co.uk,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
-W002,Tata Steel UK,Sarah Henderson,s.henderson@tatasteel.com,steel,enterprise,asked about hot-strip mill QC retrofit
+W002,Tata Steel UK,Sarah Henderson,s.henderson@tatasteel.com,steel,large,asked about hot-strip mill QC retrofit
 W003,Sheffield Forgemasters,David Brennan,d.brennan@sheffieldforge.co.uk,open-die forging,large,currently evaluating in-line metrology vendors
 W004,Goodwin PLC,Claire Foster,claire.foster@goodwin-plc.co.uk,investment casting,medium,
 W005,Doncasters Group,Rajesh Patel,rpatel@doncasters.com,investment casting / aerospace alloys,large,expanding Lincoln site Q3 2026
 W006,Brush Group Loughborough,Michael Walker,michael.walker@brush.co.uk,turbine generator forgings,large,
 W007,Caparo Forging,Amrit Singh,amrit.singh@caparoforge.com,automotive forging tier 2,medium,Tata supplier; interested in calibration drift detection
-W008,Liberty Steel Rotherham,Emma Thompson,emma.thompson@libertysteel.com,specialty steel bar,enterprise,
+W008,Liberty Steel Rotherham,Emma Thompson,emma.thompson@libertysteel.com,specialty steel bar,large,
 W009,Brunel Bearings,Paul Murphy,p.murphy@brunelbearings.co.uk,precision bearings,medium,asked about bearing-race finish inspection
 W010,Severn Glocon,Rachel Foster,r.foster@severnglocon.com,valve castings,medium,
 W011,Weir Minerals Todmorden,Andrew Macdonald,a.macdonald@weirgroup.com,pump impeller castings,large,decision maker not at booth — follow up
@@ -15,9 +15,9 @@ W013,Renishaw Castings Division,Joanna Harrison,j.harrison@renishaw.com,metrolog
 W014,Hayward Tyler,Stefan Kowalski,s.kowalski@haywardtyler.com,submersible motor components,medium,asked specifically about porosity Pareto
 W015,Edwards Vacuum Burgess Hill,Joanne Taylor,j.taylor@edwardsvacuum.com,vacuum pump castings,large,
 W016,Smiths Detection Watford,,,precision aerospace assemblies,large,
-W017,Spirit AeroSystems Belfast,Niamh O'Connor,n.oconnor@spiritaero.com,aerospace composite skins,enterprise,Airbus A220 fuselage supply
+W017,Spirit AeroSystems Belfast,Niamh O'Connor,n.oconnor@spiritaero.com,aerospace composite skins,large,Airbus A220 fuselage supply
 W018,Bridon-Bekaert Doncaster,Dipak Chowdhury,d.chowdhury@bridon-bekaert.com,high-tensile steel cable,medium,
-W019,BAE Land Systems Telford,Group inquiry,,armoured vehicle weld inspection,enterprise,OFFICIAL-SENSITIVE channel only
+W019,BAE Land Systems Telford,Group inquiry,,armoured vehicle weld inspection,large,OFFICIAL-SENSITIVE channel only
 W020,Castings PLC Brownhills,Peter Shaw,p.shaw@castingsplc.com,iron casting jobbing foundry,medium,cycle time spike on grade EN-GJL-300
 W021,Yorkshire Casting Co,Harpreet Kaur,h.kaur@yorkshirecasting.co.uk,ductile iron casting,small,
 W022,Sheffield Castings,Bilal Akhtar,b.akhtar@sheffieldcastings.co.uk,iron casting,small,
@@ -37,12 +37,12 @@ W035,Magellan Aerospace Wrexham,Vikram Kumar,v.kumar@magellan-wrexham.com,engine
 W036,Meggitt Aerospace Coventry,Jennifer Allen,j.allen@meggitt.com,thermal management components,large,
 W037,Harland & Wolff Belfast,Declan Murphy,d.murphy@harland-wolff.com,marine-grade plate fabrication,large,asked specifically about hull-section weld inspection
 W038,Caledonian Forge Glasgow,Mhairi Fraser,m.fraser@caledonianforge.co.uk,shipbuilding-grade forgings,medium,
-W039,Babcock Marine Rosyth,,,submarine pressure hull,enterprise,OFFICIAL-SENSITIVE — limited substrate
+W039,Babcock Marine Rosyth,,,submarine pressure hull,large,OFFICIAL-SENSITIVE — limited substrate
 W040,Clyde Engineering,team@clydeengineering.co.uk,,marine engineering castings,medium,
 W041,Brüggen Metallwerke GmbH,Andreas Köhler,a.koehler@brueggen-metall.de,sheet steel forming,large,
 W042,Klüber Lubrication Munich,Nadia Hofmann,n.hofmann@klueber.com,seal-grade polymer extrusion,medium,
 W043,Heller Maschinenfabrik Nürtingen,Jens Brandt,j.brandt@heller-machines.de,5-axis machining centres,medium,wants to qualify our system for Heller line
-W044,Doosan Heavy Changwon (UK rep),UK rep at booth,,power-gen forgings,enterprise,
+W044,Doosan Heavy Changwon (UK rep),UK rep at booth,,power-gen forgings,large,
 W045,Voith Hydro Heidenheim,Ursula Weber,u.weber@voith.com,hydroelectric runner casting,large,asked about ductile cast surface qc
 W046,Erbslöh Aluminium GmbH,Jürgen Schmidt,j.schmidt@erbsloeh.de,automotive aluminium extrusion,medium,
 W047,ELG Haniel Sheffield (UK subsidiary),Stefan Becker,s.becker@elg-haniel.co.uk,stainless scrap processing,medium,
@@ -53,7 +53,7 @@ W051,Rotork Bath,Paul Bennett,p.bennett@rotork.com,industrial actuator castings,
 W052,IMI Plc Birmingham,Neil Shah,n.shah@imi.com,fluid control valve castings,large,asked about porosity & dimensional drift correlation
 W053,Spectris Egham,Alex Kim,a.kim@spectris.com,test & measurement assemblies,medium,
 W054,Vesuvius Plc Doncaster,Hossam Elias,h.elias@vesuvius.com,refractory ceramic casting,large,
-W055,Bodycote Macclesfield,Julian Davies,j.davies@bodycote.com,heat treatment & HIP,enterprise,post-process inspection of HIP'd parts
+W055,Bodycote Macclesfield,Julian Davies,j.davies@bodycote.com,heat treatment & HIP,large,post-process inspection of HIP'd parts
 W056,Independent Forgings Sheffield,Ranjit Singh,r.singh@indepforgings.com,open-die heavy forging,medium,saw fitness scoring methodology demo
 W057,Hawkins Forge & Stamping Walsall,Kerry O'Neill,k.oneill@hawkinsforge.co.uk,automotive stampings,medium,
 W058,Brookhouse Forgings Oldham,Muhammad Tahir,m.tahir@brookhouseforgings.co.uk,automotive crankshafts,medium,decision maker requested follow-up Q2
@@ -70,17 +70,17 @@ W068,J&J Castings Glasgow,Jamie Ferguson,j.ferguson@jjcastings.co.uk,small-batch
 W069,Heat Treatment Services Halifax,,,steel heat treatment,small,
 W070,Wilson Welding Inspection,Tom Wilson,t.wilson@wilsonweld.co.uk,weld NDT consultancy,small,wants to integrate with QMS — out of scope
 W071,Penso Composites Coventry,Francesca Bianchi,f.bianchi@penso.co.uk,automotive composite layup,medium,
-W072,Jaguar Land Rover Castle Bromwich,,,automotive body-in-white,enterprise,JLR Q&A team — assembly line vision
-W073,Rolls-Royce Civil Aerospace Derby,Group inquiry,,turbine blade investment casting,enterprise,Trent series; ITAR-adjacent
-W074,Airbus UK Broughton,,,wing assembly inspection,enterprise,Airbus A320 wing line
-W075,BAE Systems Submarines Barrow,,,naval pressure hull,enterprise,OFFICIAL-SENSITIVE
-W076,Nissan Sunderland,,,automotive body stamping,enterprise,asked about scrap rate reduction Q2 target
-W077,Toyota Manufacturing UK Burnaston,,,engine machining,enterprise,
-W078,Nestle Confectionery York,,,food packaging,enterprise,out of scope — food sector
-W079,Unilever Port Sunlight,,,personal care packaging,enterprise,out of scope — FMCG
-W080,Diageo Edinburgh,Hamish Macdonald,h.macdonald@diageo.com,whisky bottling line,enterprise,interesting — global drinks brand parallel
+W072,Jaguar Land Rover Castle Bromwich,,,automotive body-in-white,large,JLR Q&A team — assembly line vision
+W073,Rolls-Royce Civil Aerospace Derby,Group inquiry,,turbine blade investment casting,large,Trent series; ITAR-adjacent
+W074,Airbus UK Broughton,,,wing assembly inspection,large,Airbus A320 wing line
+W075,BAE Systems Submarines Barrow,,,naval pressure hull,large,OFFICIAL-SENSITIVE
+W076,Nissan Sunderland,,,automotive body stamping,large,asked about scrap rate reduction Q2 target
+W077,Toyota Manufacturing UK Burnaston,,,engine machining,large,
+W078,Nestle Confectionery York,,,food packaging,large,out of scope — food sector
+W079,Unilever Port Sunlight,,,personal care packaging,large,out of scope — FMCG
+W080,Diageo Edinburgh,Hamish Macdonald,h.macdonald@diageo.com,whisky bottling line,large,interesting — global drinks brand parallel
 W081,Britvic Lutterworth,Kavita Patel,k.patel@britvic.co.uk,beverage bottling,large,
-W082,Coca-Cola Enterprises Wakefield,,,beverage canning,enterprise,out of scope — FMCG canning
+W082,Coca-Cola Enterprises Wakefield,,,beverage canning,large,out of scope — FMCG canning
 W083,Greenfield Metalworks,,,jobbing fabrication,small,under 10 employees; one-off work
 W084,Steve's Welding Sheffield,Steve,,small welding shop,small,owner-operator; curiosity visit
 W085,Heritage Iron Foundry Devon,John Pearce,owner@heritageironfoundry.co.uk,artisan iron casting,small,art / heritage castings

@@ -54,13 +54,13 @@ TRACER = (
 # Empties are filled in below for realistic messiness.
 COHORT = [
     # — Established UK metal/forge/steel names
-    ("Tata Steel UK", "steel", "enterprise", "asked about hot-strip mill QC retrofit", "s.henderson@tatasteel.com", "Sarah Henderson"),
+    ("Tata Steel UK", "steel", "large", "asked about hot-strip mill QC retrofit", "s.henderson@tatasteel.com", "Sarah Henderson"),
     ("Sheffield Forgemasters", "open-die forging", "large", "currently evaluating in-line metrology vendors", "d.brennan@sheffieldforge.co.uk", "David Brennan"),
     ("Goodwin PLC", "investment casting", "medium", None, "claire.foster@goodwin-plc.co.uk", "Claire Foster"),
     ("Doncasters Group", "investment casting / aerospace alloys", "large", "expanding Lincoln site Q3 2026", "rpatel@doncasters.com", "Rajesh Patel"),
     ("Brush Group Loughborough", "turbine generator forgings", "large", None, "michael.walker@brush.co.uk", "Michael Walker"),
     ("Caparo Forging", "automotive forging tier 2", "medium", "Tata supplier; interested in calibration drift detection", "amrit.singh@caparoforge.com", "Amrit Singh"),
-    ("Liberty Steel Rotherham", "specialty steel bar", "enterprise", None, "emma.thompson@libertysteel.com", "Emma Thompson"),
+    ("Liberty Steel Rotherham", "specialty steel bar", "large", None, "emma.thompson@libertysteel.com", "Emma Thompson"),
     ("Brunel Bearings", "precision bearings", "medium", "asked about bearing-race finish inspection", "p.murphy@brunelbearings.co.uk", "Paul Murphy"),
     ("Severn Glocon", "valve castings", "medium", None, "r.foster@severnglocon.com", "Rachel Foster"),
     ("Weir Minerals Todmorden", "pump impeller castings", "large", "decision maker not at booth — follow up", "a.macdonald@weirgroup.com", "Andrew Macdonald"),
@@ -69,9 +69,9 @@ COHORT = [
     ("Hayward Tyler", "submersible motor components", "medium", "asked specifically about porosity Pareto", "s.kowalski@haywardtyler.com", "Stefan Kowalski"),
     ("Edwards Vacuum Burgess Hill", "vacuum pump castings", "large", None, "j.taylor@edwardsvacuum.com", "Joanne Taylor"),
     ("Smiths Detection Watford", "precision aerospace assemblies", "large", None, None, None),
-    ("Spirit AeroSystems Belfast", "aerospace composite skins", "enterprise", "Airbus A220 fuselage supply", "n.oconnor@spiritaero.com", "Niamh O'Connor"),
+    ("Spirit AeroSystems Belfast", "aerospace composite skins", "large", "Airbus A220 fuselage supply", "n.oconnor@spiritaero.com", "Niamh O'Connor"),
     ("Bridon-Bekaert Doncaster", "high-tensile steel cable", "medium", None, "d.chowdhury@bridon-bekaert.com", "Dipak Chowdhury"),
-    ("BAE Land Systems Telford", "armoured vehicle weld inspection", "enterprise", "OFFICIAL-SENSITIVE channel only", None, "Group inquiry"),
+    ("BAE Land Systems Telford", "armoured vehicle weld inspection", "large", "OFFICIAL-SENSITIVE channel only", None, "Group inquiry"),
     ("Castings PLC Brownhills", "iron casting jobbing foundry", "medium", "cycle time spike on grade EN-GJL-300", "p.shaw@castingsplc.com", "Peter Shaw"),
     ("Yorkshire Casting Co", "ductile iron casting", "small", None, "h.kaur@yorkshirecasting.co.uk", "Harpreet Kaur"),
 
@@ -97,14 +97,14 @@ COHORT = [
     # — Northern Ireland / Scotland
     ("Harland & Wolff Belfast", "marine-grade plate fabrication", "large", "asked specifically about hull-section weld inspection", "d.murphy@harland-wolff.com", "Declan Murphy"),
     ("Caledonian Forge Glasgow", "shipbuilding-grade forgings", "medium", None, "m.fraser@caledonianforge.co.uk", "Mhairi Fraser"),
-    ("Babcock Marine Rosyth", "submarine pressure hull", "enterprise", "OFFICIAL-SENSITIVE — limited substrate", None, None),
+    ("Babcock Marine Rosyth", "submarine pressure hull", "large", "OFFICIAL-SENSITIVE — limited substrate", None, None),
     ("Clyde Engineering", "marine engineering castings", "medium", None, None, "team@clydeengineering.co.uk"),
 
     # — Continental EU (UK Metals Expo had EU presence)
     ("Brüggen Metallwerke GmbH", "sheet steel forming", "large", None, "a.koehler@brueggen-metall.de", "Andreas Köhler"),
     ("Klüber Lubrication Munich", "seal-grade polymer extrusion", "medium", None, "n.hofmann@klueber.com", "Nadia Hofmann"),
     ("Heller Maschinenfabrik Nürtingen", "5-axis machining centres", "medium", "wants to qualify our system for Heller line", "j.brandt@heller-machines.de", "Jens Brandt"),
-    ("Doosan Heavy Changwon (UK rep)", "power-gen forgings", "enterprise", None, None, "UK rep at booth"),
+    ("Doosan Heavy Changwon (UK rep)", "power-gen forgings", "large", None, None, "UK rep at booth"),
     ("Voith Hydro Heidenheim", "hydroelectric runner casting", "large", "asked about ductile cast surface qc", "u.weber@voith.com", "Ursula Weber"),
     ("Erbslöh Aluminium GmbH", "automotive aluminium extrusion", "medium", None, "j.schmidt@erbsloeh.de", "Jürgen Schmidt"),
     ("ELG Haniel Sheffield (UK subsidiary)", "stainless scrap processing", "medium", None, "s.becker@elg-haniel.co.uk", "Stefan Becker"),
@@ -117,7 +117,7 @@ COHORT = [
     ("IMI Plc Birmingham", "fluid control valve castings", "large", "asked about porosity & dimensional drift correlation", "n.shah@imi.com", "Neil Shah"),
     ("Spectris Egham", "test & measurement assemblies", "medium", None, "a.kim@spectris.com", "Alex Kim"),
     ("Vesuvius Plc Doncaster", "refractory ceramic casting", "large", None, "h.elias@vesuvius.com", "Hossam Elias"),
-    ("Bodycote Macclesfield", "heat treatment & HIP", "enterprise", "post-process inspection of HIP'd parts", "j.davies@bodycote.com", "Julian Davies"),
+    ("Bodycote Macclesfield", "heat treatment & HIP", "large", "post-process inspection of HIP'd parts", "j.davies@bodycote.com", "Julian Davies"),
 
     # — Forging / heavy industrial cluster
     ("Independent Forgings Sheffield", "open-die heavy forging", "medium", "saw fitness scoring methodology demo", "r.singh@indepforgings.com", "Ranjit Singh"),
@@ -144,19 +144,19 @@ COHORT = [
     ("Penso Composites Coventry", "automotive composite layup", "medium", None, "f.bianchi@penso.co.uk", "Francesca Bianchi"),
 
     # — Larger enterprise that won't rank top-12 due to vertical mismatch
-    ("Jaguar Land Rover Castle Bromwich", "automotive body-in-white", "enterprise", "JLR Q&A team — assembly line vision", None, None),
-    ("Rolls-Royce Civil Aerospace Derby", "turbine blade investment casting", "enterprise", "Trent series; ITAR-adjacent", None, "Group inquiry"),
-    ("Airbus UK Broughton", "wing assembly inspection", "enterprise", "Airbus A320 wing line", None, None),
-    ("BAE Systems Submarines Barrow", "naval pressure hull", "enterprise", "OFFICIAL-SENSITIVE", None, None),
-    ("Nissan Sunderland", "automotive body stamping", "enterprise", "asked about scrap rate reduction Q2 target", None, None),
-    ("Toyota Manufacturing UK Burnaston", "engine machining", "enterprise", None, None, None),
+    ("Jaguar Land Rover Castle Bromwich", "automotive body-in-white", "large", "JLR Q&A team — assembly line vision", None, None),
+    ("Rolls-Royce Civil Aerospace Derby", "turbine blade investment casting", "large", "Trent series; ITAR-adjacent", None, "Group inquiry"),
+    ("Airbus UK Broughton", "wing assembly inspection", "large", "Airbus A320 wing line", None, None),
+    ("BAE Systems Submarines Barrow", "naval pressure hull", "large", "OFFICIAL-SENSITIVE", None, None),
+    ("Nissan Sunderland", "automotive body stamping", "large", "asked about scrap rate reduction Q2 target", None, None),
+    ("Toyota Manufacturing UK Burnaston", "engine machining", "large", None, None, None),
 
     # — Out-of-scope or low-fit (will rank low)
-    ("Nestle Confectionery York", "food packaging", "enterprise", "out of scope — food sector", None, None),
-    ("Unilever Port Sunlight", "personal care packaging", "enterprise", "out of scope — FMCG", None, None),
-    ("Diageo Edinburgh", "whisky bottling line", "enterprise", "interesting — global drinks brand parallel", "h.macdonald@diageo.com", "Hamish Macdonald"),
+    ("Nestle Confectionery York", "food packaging", "large", "out of scope — food sector", None, None),
+    ("Unilever Port Sunlight", "personal care packaging", "large", "out of scope — FMCG", None, None),
+    ("Diageo Edinburgh", "whisky bottling line", "large", "interesting — global drinks brand parallel", "h.macdonald@diageo.com", "Hamish Macdonald"),
     ("Britvic Lutterworth", "beverage bottling", "large", None, "k.patel@britvic.co.uk", "Kavita Patel"),
-    ("Coca-Cola Enterprises Wakefield", "beverage canning", "enterprise", "out of scope — FMCG canning", None, None),
+    ("Coca-Cola Enterprises Wakefield", "beverage canning", "large", "out of scope — FMCG canning", None, None),
 
     # — Micro-companies that will de-prioritize
     ("Greenfield Metalworks", "jobbing fabrication", "small", "under 10 employees; one-off work", None, None),
@@ -244,7 +244,7 @@ SIZE_BANDS = [
     ("small", 0.30),
     ("medium", 0.40),
     ("large", 0.20),
-    ("enterprise", 0.10),
+    ("large", 0.10),
 ]
 
 RAW_NOTE_TEMPLATES = [
