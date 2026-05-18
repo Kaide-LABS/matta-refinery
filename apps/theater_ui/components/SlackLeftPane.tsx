@@ -17,12 +17,27 @@ function fmtElapsed(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+// Slack timestamp formatting — "Today at 9:42 AM" pattern, derived from
+// page-load time so the demo always reads as "today". The Doug message is
+// stamped a few minutes before; bot messages are stamped at current load.
+function slackTimestamp(offsetMin = 0): string {
+  const d = new Date(Date.now() - offsetMin * 60_000);
+  const hh = d.getHours() % 12 || 12;
+  const mm = d.getMinutes().toString().padStart(2, '0');
+  const ap = d.getHours() >= 12 ? 'PM' : 'AM';
+  return `Today at ${hh}:${mm} ${ap}`;
+}
+
+const DOUG_INITIALS = 'DB';
+const REFINERY_ICON_PATH = '/branding/matta_logo_icon.jpg';
+
 export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickProspect }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
+  const [refineryIconFailed, setRefineryIconFailed] = useState(false);
 
   const csvPath = activeCsv.publicPath;
-  const csvLabel = `${activeCsv.filename} · ${activeCsv.approxLeadCount} leads`;
+  const csvLabel = `${activeCsv.filename}`;
 
   const stage1Running = phase === 'stage1';
   const stage1Done =
@@ -30,25 +45,79 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
     phase === 'stage2_requesting' ||
     phase === 'stage2' ||
     phase === 'complete';
+  const stage2Done = phase === 'complete';
   const clickable = stage1Done;
+
+  // Timestamps locked at first render so they don't shift mid-demo
+  const [dougTimestamp] = useState(() => slackTimestamp(4));
+  const [refineryRankedTimestamp, setRefineryRankedTimestamp] = useState<string | null>(null);
+  const [refineryBriefingTimestamp, setRefineryBriefingTimestamp] = useState<string | null>(null);
+
+  // Set bot timestamps the first time each message appears
+  React.useEffect(() => {
+    if (stage1Done && refineryRankedTimestamp === null) {
+      setRefineryRankedTimestamp(slackTimestamp(0));
+    }
+  }, [stage1Done, refineryRankedTimestamp]);
+  React.useEffect(() => {
+    if (stage2Done && refineryBriefingTimestamp === null) {
+      setRefineryBriefingTimestamp(slackTimestamp(0));
+    }
+  }, [stage2Done, refineryBriefingTimestamp]);
+
+  const RefineryAvatar = () => {
+    if (refineryIconFailed) {
+      return <span className="slack-avatar slack-avatar--bot">M</span>;
+    }
+    return (
+      /* eslint-disable-next-line @next/next/no-img-element */
+      <img
+        className="slack-avatar slack-avatar--img"
+        src={REFINERY_ICON_PATH}
+        alt="Refinery"
+        onError={() => setRefineryIconFailed(true)}
+      />
+    );
+  };
 
   return (
     <div className="slack-pane">
-      <div className="slack-pane__channel">#fde-lead-refinery</div>
-      <div className="slack-pane__msg">
-        <span className="slack-pane__author">Doug</span> {activeCsv.dougMessage}
+      <div className="slack-channel-header" data-tutorial-anchor="slack-channel">
+        <div className="slack-channel-header__top">
+          <span className="slack-channel-header__hash">#</span>
+          <span className="slack-channel-header__name">fde-lead-refinery</span>
+        </div>
+        <div className="slack-channel-header__sub">
+          Lead Refinery automated pipeline · Refinery bot posts ranked shortlist + briefings
+        </div>
       </div>
-      <button
-        className="slack-pane__attachment slack-pane__attachment--clickable"
-        data-tutorial-anchor="csv-attachment"
-        onClick={() => setCsvModalOpen(true)}
-        type="button"
-        aria-label="Preview CSV input"
-      >
-        <span className="slack-pane__attachment-icon">📎</span>
-        <span className="slack-pane__attachment-label">{csvLabel}</span>
-        <span className="slack-pane__attachment-hint">Preview →</span>
-      </button>
+
+      {/* Doug's message */}
+      <div className="slack-msg">
+        <div className="slack-avatar slack-avatar--doug">{DOUG_INITIALS}</div>
+        <div className="slack-msg__body">
+          <div className="slack-msg__meta">
+            <span className="slack-msg__author">Doug</span>
+            <span className="slack-msg__time">{dougTimestamp}</span>
+          </div>
+          <div className="slack-msg__text">{activeCsv.dougMessage}</div>
+          <button
+            className="slack-attachment slack-attachment--clickable"
+            data-tutorial-anchor="csv-attachment"
+            onClick={() => setCsvModalOpen(true)}
+            type="button"
+            aria-label="Preview CSV input"
+          >
+            <span className="slack-attachment__icon">📎</span>
+            <div className="slack-attachment__meta">
+              <span className="slack-attachment__filename">{csvLabel}</span>
+              <span className="slack-attachment__size">{activeCsv.approxLeadCount} leads · CSV</span>
+            </div>
+            <span className="slack-attachment__hint">Preview →</span>
+          </button>
+        </div>
+      </div>
+
       <CsvPreviewModal
         open={csvModalOpen}
         csvPath={csvPath}
@@ -56,55 +125,124 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
         onClose={() => setCsvModalOpen(false)}
       />
 
+      {/* Stage 1 in-flight indicator (between Doug's message and the bot reply) */}
       {stage1Running && (
-        <div className="slack-pane__status slack-pane__status--inflight">
-          Refinery ranking · {fmtElapsed(elapsedSec)}
+        <div className="slack-typing">
+          <div className="slack-avatar slack-avatar--bot slack-avatar--small">
+            {refineryIconFailed ? 'M' : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={REFINERY_ICON_PATH} alt="Refinery" onError={() => setRefineryIconFailed(true)} />
+            )}
+          </div>
+          <span className="slack-typing__text">
+            Refinery is ranking · {fmtElapsed(elapsedSec)}
+          </span>
+          <span className="slack-typing__dots" aria-hidden="true">
+            <span /><span /><span />
+          </span>
         </div>
       )}
 
+      {/* Refinery bot ranked shortlist message */}
       {stage1Done && (
-        <div className="slack-pane__shortlist" data-tutorial-anchor="slack-shortlist">
-          <div className="slack-pane__shortlist-header">
-            <span>Refinery Ranked Shortlist</span>
-            <span className="slack-pane__shortlist-count">Top 12 of 124</span>
+        <div className="slack-msg slack-msg--bot" data-tutorial-anchor="slack-shortlist">
+          <RefineryAvatar />
+          <div className="slack-msg__body">
+            <div className="slack-msg__meta">
+              <span className="slack-msg__author">Refinery</span>
+              <span className="slack-app-badge">APP</span>
+              <span className="slack-msg__time">{refineryRankedTimestamp ?? ''}</span>
+            </div>
+            <div className="slack-msg__text">
+              Ranked the {activeCsv.approxLeadCount} {activeCsv.tradeShowDisplay} leads.
+              Top 12 below — click <strong>Generate Briefing</strong> on any prospect to
+              produce the full pre-visit dossier.
+            </div>
+
+            <div className="slack-blockkit">
+              <ul className="slack-blockkit__cards">
+                {TOP_12_PROSPECTS.map((p: ProspectCard) => {
+                  const isWilliamCook = p.companyName.toLowerCase().includes('william cook');
+                  const tooltip = isWilliamCook
+                    ? 'Triggers Stage 2 dossier generation for William Cook Sheffield'
+                    : 'Demo wires Stage 2 through William Cook Sheffield as the tracer prospect';
+                  return (
+                    <li
+                      key={p.prospectId}
+                      className={`prospect-card ${!clickable ? 'prospect-card--disabled' : ''}`}
+                      onMouseEnter={() => setHoverTip(p.prospectId)}
+                      onMouseLeave={() => setHoverTip(null)}
+                      onClick={() => clickable && onClickProspect(p.prospectId, p.companyName)}
+                      role="button"
+                      tabIndex={clickable ? 0 : -1}
+                      aria-disabled={!clickable}
+                      data-prospect-rank={p.rank}
+                      data-tutorial-anchor={isWilliamCook ? 'prospect-anchor' : undefined}
+                    >
+                      <div className="prospect-card__head">
+                        <span className="prospect-card__rank">#{p.rank}</span>
+                        <span className="prospect-card__name">{p.companyName}</span>
+                        <span className="prospect-card__fit">fit {p.fitnessScore.toFixed(2)}</span>
+                      </div>
+                      <div className="prospect-card__meta">
+                        <span>{p.vertical.replace(/_/g, ' ')}</span>
+                        <span className="prospect-card__sep">·</span>
+                        <span>{activeCsv.tradeShowDisplay}</span>
+                      </div>
+                      <div className="prospect-card__footer">
+                        <button
+                          className="prospect-card__cta"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (clickable) onClickProspect(p.prospectId, p.companyName);
+                          }}
+                          disabled={!clickable}
+                        >
+                          Generate Briefing
+                        </button>
+                      </div>
+                      {hoverTip === p.prospectId && (
+                        <div className="prospect-card__tooltip">{tooltip}</div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
-          <ul className="slack-pane__cards">
-            {TOP_12_PROSPECTS.map((p: ProspectCard) => {
-              const isWilliamCook = p.companyName.toLowerCase().includes('william cook');
-              const tooltip = isWilliamCook
-                ? 'Generate full dossier for William Cook Sheffield'
-                : 'Demo focuses on William Cook Sheffield';
-              return (
-                <li
-                  key={p.prospectId}
-                  className={`prospect-card ${isWilliamCook ? 'prospect-card--anchor' : ''} ${
-                    !clickable ? 'prospect-card--disabled' : ''
-                  }`}
-                  onMouseEnter={() => setHoverTip(p.prospectId)}
-                  onMouseLeave={() => setHoverTip(null)}
-                  onClick={() => clickable && onClickProspect(p.prospectId, p.companyName)}
-                  role="button"
-                  tabIndex={clickable ? 0 : -1}
-                  aria-disabled={!clickable}
-                  data-tutorial-anchor={isWilliamCook ? 'prospect-anchor' : undefined}
-                >
-                  <div className="prospect-card__rank">{p.rank}</div>
-                  <div className="prospect-card__body">
-                    <div className="prospect-card__name">{p.companyName}</div>
-                    <div className="prospect-card__meta">
-                      <span>fit {p.fitnessScore.toFixed(2)}</span>
-                      <span className="prospect-card__sep">·</span>
-                      <span>{p.vertical.replace('_', ' ')}</span>
-                    </div>
-                    {hoverTip === p.prospectId && (
-                      <div className="prospect-card__tooltip">{tooltip}</div>
-                    )}
-                  </div>
-                  {isWilliamCook && <div className="prospect-card__cta">Generate</div>}
-                </li>
-              );
-            })}
-          </ul>
+        </div>
+      )}
+
+      {/* Refinery bot follow-up after dossier ships */}
+      {stage2Done && (
+        <div className="slack-msg slack-msg--bot" data-tutorial-anchor="slack-briefing-update">
+          <RefineryAvatar />
+          <div className="slack-msg__body">
+            <div className="slack-msg__meta">
+              <span className="slack-msg__author">Refinery</span>
+              <span className="slack-app-badge">APP</span>
+              <span className="slack-msg__time">{refineryBriefingTimestamp ?? ''}</span>
+            </div>
+            <div className="slack-blockkit slack-blockkit--briefing-ready">
+              <div className="slack-blockkit__header">
+                ✅ Pre-visit briefing ready for <strong>William Cook Sheffield</strong>
+              </div>
+              <div className="slack-blockkit__summary">
+                Process taxonomy · Defect hypothesis (N=3 conformal) · Comparable Matta
+                deployment · Integration risks · Suggested approach. Validated against
+                the deterministic-byte gate.
+              </div>
+              <div className="slack-blockkit__actions">
+                <button className="slack-blockkit__btn" type="button">
+                  📄 View briefing in Drive
+                </button>
+                <button className="slack-blockkit__btn slack-blockkit__btn--secondary" type="button">
+                  📋 Open CRM record
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

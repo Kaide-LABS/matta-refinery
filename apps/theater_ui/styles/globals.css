@@ -180,10 +180,17 @@ code, .mono {
   background: var(--matta-pane-bg);
   border: 1px solid var(--matta-warm-border);
   border-radius: var(--radius-lg);
-  padding: 20px;
   overflow-y: auto;
   min-width: 0;
 }
+
+.theater-pane,
+.drive-pane {
+  padding: 20px;
+}
+
+/* The Slack pane manages its own padding per-row (channel header, message
+   rows, etc.) so the pane container itself does not pad. */
 
 @keyframes pane-pulse {
   0% { box-shadow: 0 0 0 0 rgba(242, 194, 165, 0.0); border-color: var(--matta-warm-border); }
@@ -195,42 +202,168 @@ code, .mono {
   animation: pane-pulse 900ms var(--ease-standard);
 }
 
-/* ─── Slack pane ──────────────────────────────────────────────────────── */
+/* ─── Slack pane (fidelity styling) ───────────────────────────────────── */
 .slack-pane {
   font-size: 13px;
+  padding: 0;
+  overflow-y: auto;
 }
 
-.slack-pane__channel {
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: -0.005em;
-  color: var(--matta-navy);
-  padding-bottom: 12px;
-  margin-bottom: 14px;
+/* Channel header — Slack-pattern: # name + subtitle, thin separator below */
+.slack-channel-header {
+  padding: 14px 18px 12px;
   border-bottom: 1px solid var(--matta-warm-border-soft);
+  background: var(--matta-pane-bg);
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
-.slack-pane__msg {
-  margin-bottom: 14px;
-  color: var(--matta-charcoal);
-  line-height: 1.55;
+.slack-channel-header__top {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
 }
 
-.slack-pane__author {
+.slack-channel-header__hash {
+  font-size: 16px;
+  color: var(--matta-grey);
+  font-weight: 400;
+}
+
+.slack-channel-header__name {
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--matta-navy);
+  letter-spacing: -0.01em;
+}
+
+.slack-channel-header__sub {
+  font-size: 11px;
+  color: var(--matta-grey);
+  margin-top: 4px;
+}
+
+/* Message rows: avatar + body */
+.slack-msg {
+  display: flex;
+  gap: 10px;
+  padding: 12px 18px;
+  align-items: flex-start;
+  transition: background 120ms var(--ease-standard);
+}
+
+.slack-msg:hover {
+  background: rgba(245, 241, 232, 0.4);
+}
+
+.slack-msg--bot {
+  /* No visual difference from human msg — Slack treats bots identically */
+}
+
+.slack-msg__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.slack-msg__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.slack-msg__author {
   font-weight: 500;
   color: var(--matta-navy);
-  margin-right: 6px;
+  font-size: 13px;
+  letter-spacing: -0.005em;
 }
 
-.slack-pane__attachment {
+.slack-app-badge {
+  font-family: var(--font-body);
+  font-size: 9px;
+  padding: 1px 4px;
+  background: var(--matta-code-bg);
+  color: var(--matta-grey);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.slack-msg__time {
+  font-size: 11px;
+  color: var(--matta-grey);
+  font-weight: 400;
+}
+
+.slack-msg__text {
+  font-size: 13px;
+  color: var(--matta-charcoal);
+  line-height: 1.5;
+}
+
+/* Avatars: 36px square with rounded corners (Slack convention) */
+.slack-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+  user-select: none;
+  overflow: hidden;
+}
+
+.slack-avatar--doug {
+  background: var(--matta-navy);
+  color: #fff;
+}
+
+.slack-avatar--bot {
+  background: var(--matta-peach-tint);
+  color: var(--matta-peach-dark);
+  border: 1px solid var(--matta-warm-border-soft);
+}
+
+.slack-avatar--img {
+  background: var(--matta-cream);
+  border: 1px solid var(--matta-warm-border-soft);
+  object-fit: cover;
+}
+
+.slack-avatar--small {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.slack-avatar--small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+/* Slack-style attachment card */
+.slack-attachment {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 14px;
-  background: var(--matta-code-bg);
+  background: var(--matta-pane-bg);
   border: 1px solid var(--matta-warm-border-soft);
-  border-radius: var(--radius-md);
-  margin-bottom: 18px;
+  border-left: 3px solid var(--matta-warm-border);
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
   color: var(--matta-charcoal);
   font-size: 12px;
   font-family: inherit;
@@ -238,25 +371,47 @@ code, .mono {
   width: 100%;
 }
 
-.slack-pane__attachment--clickable {
+.slack-attachment--clickable {
   cursor: pointer;
   transition: border-color 160ms var(--ease-standard), background 160ms var(--ease-standard);
 }
 
-.slack-pane__attachment--clickable:hover {
+.slack-attachment--clickable:hover {
   border-color: var(--matta-warm-border);
+  border-left-color: var(--matta-peach);
   background: #faf6ec;
 }
 
-.slack-pane__attachment-label {
+.slack-attachment__icon {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.slack-attachment__meta {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.slack-attachment__filename {
+  font-weight: 500;
+  color: var(--matta-navy);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  letter-spacing: -0.005em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.slack-pane__attachment-hint {
+.slack-attachment__size {
+  font-size: 11px;
+  color: var(--matta-grey);
+}
+
+.slack-attachment__hint {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -265,36 +420,46 @@ code, .mono {
   white-space: nowrap;
 }
 
-.slack-pane__attachment--clickable:hover .slack-pane__attachment-hint {
+.slack-attachment--clickable:hover .slack-attachment__hint {
   color: var(--matta-peach-dark);
 }
 
-.slack-pane__attachment-icon {
-  font-size: 13px;
-  opacity: 0.7;
-}
-
-.slack-pane__status {
-  margin: 14px 0;
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  background: var(--matta-code-bg);
-  color: var(--matta-grey);
+/* Typing / "bot is working" indicator between messages */
+.slack-typing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px 12px;
   font-size: 12px;
-  font-family: var(--font-mono);
-  letter-spacing: 0.01em;
+  color: var(--matta-grey);
+  font-style: italic;
 }
 
-.slack-pane__status--inflight::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
+.slack-typing__text {
+  font-family: var(--font-mono);
+  font-style: normal;
+}
+
+.slack-typing__dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.slack-typing__dots span {
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--matta-pulse-grey);
-  margin-right: 8px;
-  vertical-align: middle;
-  animation: pulse-dot 1.4s ease-in-out infinite;
+  animation: slack-typing-dot 1.4s ease-in-out infinite;
+}
+
+.slack-typing__dots span:nth-child(2) { animation-delay: 0.2s; }
+.slack-typing__dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes slack-typing-dot {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
 }
 
 @keyframes pulse-dot {
@@ -302,43 +467,78 @@ code, .mono {
   50% { opacity: 0.35; }
 }
 
-.slack-pane__shortlist {
-  margin-top: 18px;
+/* Block Kit-styled card container */
+.slack-blockkit {
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--matta-pane-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-left: 3px solid var(--matta-warm-border);
+  border-radius: var(--radius-sm);
 }
 
-.slack-pane__shortlist-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 12px;
-}
-
-.slack-pane__shortlist-header span:first-child {
-  font-weight: 500;
-  color: var(--matta-navy);
-  font-size: 13px;
-}
-
-.slack-pane__shortlist-count {
-  font-size: 11px;
-  color: var(--matta-grey);
-  font-family: var(--font-mono);
-}
-
-.slack-pane__cards {
+.slack-blockkit__cards {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* ─── Prospect card ───────────────────────────────────────────────────── */
+.slack-blockkit--briefing-ready {
+  border-left-color: var(--matta-forest);
+  background: rgba(92, 122, 107, 0.05);
+}
+
+.slack-blockkit__header {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--matta-navy);
+  margin-bottom: 8px;
+  letter-spacing: -0.005em;
+}
+
+.slack-blockkit__summary {
+  font-size: 12px;
+  color: var(--matta-charcoal);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.slack-blockkit__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.slack-blockkit__btn {
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 7px 13px;
+  background: var(--matta-code-bg);
+  color: var(--matta-navy);
+  border: 1px solid var(--matta-warm-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 140ms var(--ease-standard), border-color 140ms var(--ease-standard);
+}
+
+.slack-blockkit__btn:hover {
+  background: #faf6ec;
+  border-color: var(--matta-grey);
+}
+
+.slack-blockkit__btn--secondary {
+  background: var(--matta-pane-bg);
+}
+
+/* Prospect card — Block Kit action-card style */
 .prospect-card {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 6px;
   padding: 10px 12px;
   border: 1px solid var(--matta-warm-border-soft);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background: var(--matta-pane-bg);
   cursor: pointer;
   transition: border-color 180ms var(--ease-standard), background 180ms var(--ease-standard);
@@ -347,22 +547,20 @@ code, .mono {
 
 .prospect-card:hover:not(.prospect-card--disabled) {
   border-color: var(--matta-warm-border);
+  border-left: 2px solid var(--matta-peach);
+  padding-left: 11px;
   background: #fbfaf7;
 }
 
-.prospect-card--anchor:not(.prospect-card--disabled) {
-  border-color: var(--matta-peach);
-  background: var(--matta-peach-tint);
-}
-
-.prospect-card--anchor:hover:not(.prospect-card--disabled) {
-  border-color: var(--matta-peach-dark);
-  background: rgba(242, 194, 165, 0.18);
-}
-
 .prospect-card--disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+}
+
+.prospect-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .prospect-card__rank {
@@ -370,59 +568,89 @@ code, .mono {
   font-size: 11px;
   font-weight: 500;
   color: var(--matta-grey);
-  min-width: 16px;
-}
-
-.prospect-card__body {
-  flex: 1;
-  min-width: 0;
+  min-width: 26px;
 }
 
 .prospect-card__name {
+  flex: 1;
+  min-width: 0;
   font-weight: 500;
   color: var(--matta-navy);
   font-size: 13px;
   letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prospect-card__fit {
+  font-size: 11px;
+  color: var(--matta-charcoal);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .prospect-card__meta {
   font-size: 11px;
   color: var(--matta-grey);
-  margin-top: 2px;
   font-family: var(--font-mono);
+  padding-left: 36px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .prospect-card__sep {
-  margin: 0 6px;
+  margin: 0 2px;
   opacity: 0.5;
+}
+
+.prospect-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 36px;
+  margin-top: 4px;
+}
+
+.prospect-card__cta {
+  font-family: var(--font-body);
+  font-size: 11px;
+  padding: 5px 11px;
+  background: var(--matta-peach);
+  color: var(--matta-navy);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.005em;
+  transition: background 140ms var(--ease-standard);
+}
+
+.prospect-card__cta:hover:not(:disabled) {
+  background: var(--matta-peach-dark);
+}
+
+.prospect-card__cta:disabled {
+  background: var(--matta-warm-border-soft);
+  color: var(--matta-grey);
+  cursor: not-allowed;
 }
 
 .prospect-card__tooltip {
   position: absolute;
-  top: 100%;
-  left: 12px;
+  top: calc(100% + 4px);
+  right: 12px;
   z-index: 20;
-  margin-top: 6px;
   padding: 6px 10px;
   background: var(--matta-navy);
   color: #fff;
   font-size: 11px;
   border-radius: var(--radius-sm);
-  white-space: nowrap;
   pointer-events: none;
   letter-spacing: 0.01em;
-}
-
-.prospect-card__cta {
-  font-family: var(--font-body);
-  font-size: 10px;
-  padding: 4px 9px;
-  background: var(--matta-peach);
-  color: var(--matta-navy);
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  max-width: 260px;
+  line-height: 1.4;
 }
 
 /* ─── Theater center pane ─────────────────────────────────────────────── */
