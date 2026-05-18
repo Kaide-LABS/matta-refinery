@@ -512,33 +512,33 @@ code, .mono {
   line-height: 1.6;
 }
 
-.theater-section--moment {
+.theater-section--milestone {
   border-color: var(--matta-peach);
   background: var(--matta-peach-tint);
   animation: pane-pulse 900ms var(--ease-standard);
 }
 
-.theater-section--moment .theater-section__heading {
+.theater-section--milestone .theater-section__heading {
   color: var(--matta-navy);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.theater-section--moment-compact {
+.theater-section--milestone-compact {
   padding: 12px 14px;
 }
 
-.theater-section--moment-compact .theater-section__heading {
+.theater-section--milestone-compact .theater-section__heading {
   margin-bottom: 6px;
   font-size: 12px;
 }
 
-.theater-section--moment-compact .theater-section__body {
+.theater-section--milestone-compact .theater-section__body {
   font-size: 11px;
 }
 
-.theater-section__moment-tag {
+.theater-section__milestone-tag {
   display: inline-block;
   padding: 2px 7px;
   background: var(--matta-peach);

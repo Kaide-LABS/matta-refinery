@@ -202,15 +202,15 @@ export default function TheaterCenterPane({
 
       {stage1Done && !stage2Active && !done && (
         <div
-          className="theater-section theater-section--moment theater-section--moment-compact"
-          data-tutorial-anchor="magic-moment-1"
+          className="theater-section theater-section--milestone theater-section--milestone-compact"
+          data-tutorial-anchor="stage1-complete"
         >
           <div className="theater-section__heading">
-            <span className="theater-section__moment-tag">M3</span> Magic Moment 1 fired
+            <span className="theater-section__milestone-tag">Stage 1</span> Top 12 ranked
           </div>
           <div className="theater-section__body">
-            Top 12 ranked · Slack canvas, CRM fields, Drive priority index updated in one
-            Postgres transaction. Click a prospect card to generate the full briefing.
+            Slack canvas, CRM fields, and Drive priority index updated in one Postgres
+            transaction. Click a prospect card to generate the full briefing.
           </div>
         </div>
       )}
@@ -286,15 +286,15 @@ export default function TheaterCenterPane({
 
       {done && (
         <div
-          className="theater-section theater-section--moment theater-section--moment-compact"
-          data-tutorial-anchor="magic-moment-2"
+          className="theater-section theater-section--milestone theater-section--milestone-compact"
+          data-tutorial-anchor="dossier-complete"
         >
           <div className="theater-section__heading">
-            <span className="theater-section__moment-tag">M12</span> Magic Moment 2 fired
+            <span className="theater-section__milestone-tag">Dossier</span> Briefing ready
           </div>
           <div className="theater-section__body">
-            Briefing materialized across Slack canvas, CRM note, and Drive document.
-            Total elapsed {fmtMin(elapsedSec)}.
+            Briefing materialized across Slack, CRM, and Drive — one Postgres transaction,
+            no half-states. Total elapsed {fmtMin(elapsedSec)}.
           </div>
           <button className="btn btn-secondary" onClick={onReset} type="button">
             Reset Demo

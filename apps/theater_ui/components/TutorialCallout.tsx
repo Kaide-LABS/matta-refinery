@@ -61,13 +61,13 @@ function deriveStep(
   if (phase === 'stage1_complete') {
     return {
       id: 'm3',
-      title: 'Magic Moment 1 — three surfaces, one transaction',
-      body: 'Top 12 ranked. Slack canvas, CRM fields, and Drive priority index all materialized in the same Postgres transaction via the outbox. Click any prospect card to trigger the full briefing.',
+      title: 'Stage 1 complete — top 12 ranked',
+      body: 'Slack, CRM, and Drive updated in one Postgres transaction via the outbox. Click any prospect card to generate the full briefing.',
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-inset"]',
         '[data-tutorial-anchor="drive-header"]',
-        '[data-tutorial-anchor="magic-moment-1"]',
+        '[data-tutorial-anchor="stage1-complete"]',
         '[data-tutorial-anchor="prospect-anchor"]',
       ],
     };
@@ -133,13 +133,13 @@ function deriveStep(
       ratio !== null ? ` Byte-density ratio: ${ratio.toFixed(3)} (floor 0.60).` : '';
     return {
       id: 'm12',
-      title: 'Magic Moment 2 — full briefing materialized',
-      body: `Slack canvas, CRM note, and Drive doc all delivered. Same transactional outbox pattern as Stage 1. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
+      title: 'Briefing ready',
+      body: `The dossier shipped to all three surfaces in one Postgres transaction — no half-states. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-inset"]',
         '[data-tutorial-anchor="dossier-doc"]',
-        '[data-tutorial-anchor="magic-moment-2"]',
+        '[data-tutorial-anchor="dossier-complete"]',
       ],
     };
   }
