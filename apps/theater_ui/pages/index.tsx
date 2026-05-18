@@ -5,6 +5,7 @@ import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
 import CRMRecordInset from '../components/CRMRecordInset';
 import TutorialCallout from '../components/TutorialCallout';
+import KGValidatorIndicator from '../components/KGValidatorIndicator';
 import { useDemoState } from '../hooks/useWebSocket';
 
 function MattaWordmark() {
@@ -37,6 +38,7 @@ const IndexPage: NextPage = () => {
           <div className="app-header__title">Lead Refinery · Theater Console</div>
         </div>
         <div className="app-header__right">
+          <KGValidatorIndicator />
           {demo.batchId && (
             <div
               className="app-header__connection"
