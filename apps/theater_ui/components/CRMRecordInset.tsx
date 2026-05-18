@@ -16,7 +16,7 @@ export default function CRMRecordInset({ phase }: Props) {
   if (!stage1Done) return null;
 
   return (
-    <div className="crm-inset">
+    <div className="crm-inset" data-tutorial-anchor="crm-inset">
       <div className="crm-inset__header">
         <span className="crm-inset__logo">HubSpot</span>
         <span className="crm-inset__contact">William Cook Sheffield</span>

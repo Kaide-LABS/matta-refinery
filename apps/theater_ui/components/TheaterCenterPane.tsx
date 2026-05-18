@@ -69,6 +69,7 @@ export default function TheaterCenterPane({
             className="btn btn-primary"
             onClick={onRunDemo}
             type="button"
+            data-tutorial-anchor="run-demo"
           >
             Run Demo
           </button>
@@ -117,7 +118,7 @@ export default function TheaterCenterPane({
       )}
 
       {stage1Done && !stage2Active && !done && (
-        <div className="theater-section theater-section--moment">
+        <div className="theater-section theater-section--moment" data-tutorial-anchor="magic-moment-1">
           <div className="theater-section__heading">Magic Moment 1 fired</div>
           <div className="theater-section__body">
             Top 12 ranked · Slack canvas, CRM fields, Drive priority index updated.
@@ -136,7 +137,11 @@ export default function TheaterCenterPane({
             {SECTION_ORDER.map((s) => {
               const state = stage2Progress[s];
               return (
-                <li key={s} className={`section-row section-row--${state}`}>
+                <li
+                  key={s}
+                  className={`section-row section-row--${state}`}
+                  data-section={s}
+                >
                   <span className="section-row__indicator">
                     {state === 'complete' ? '✓' : state === 'active' ? '●' : '○'}
                   </span>
@@ -149,7 +154,7 @@ export default function TheaterCenterPane({
       )}
 
       {byteDensityRatio !== null && (
-        <div className="theater-section">
+        <div className="theater-section" data-tutorial-anchor="byte-density">
           <div className="theater-section__heading">Byte-density coverage</div>
           <div className="density-meter">
             <div className="density-meter__bar">
@@ -175,7 +180,7 @@ export default function TheaterCenterPane({
       )}
 
       {done && (
-        <div className="theater-section theater-section--moment">
+        <div className="theater-section theater-section--moment" data-tutorial-anchor="magic-moment-2">
           <div className="theater-section__heading">Magic Moment 2 fired</div>
           <div className="theater-section__body">
             Briefing materialized across Slack canvas, CRM note, and Drive document.

@@ -1035,3 +1035,44 @@ code, .mono {
   background: var(--matta-peach);
   transition: width 600ms var(--ease-standard);
 }
+
+/* ─── Tutorial target highlight ───────────────────────────────────────── */
+/* Applied to any DOM element matching the active TutorialCallout step's
+   targetSelector(s). Layout-neutral — only adds outer effects (box-shadow,
+   outline) so highlighted elements don't shift or resize. The pulse runs
+   continuously while the highlight is active, drawing the eye without
+   stealing focus from the underlying content. */
+.tutorial-target {
+  position: relative;
+  z-index: 1;
+  animation: tutorial-target-pulse 1800ms ease-in-out infinite;
+  border-radius: var(--radius-md);
+  transition: box-shadow 300ms var(--ease-standard);
+}
+
+@keyframes tutorial-target-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px var(--matta-peach),
+      0 0 0 5px rgba(242, 194, 165, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px var(--matta-peach-dark),
+      0 0 0 9px rgba(242, 194, 165, 0.10);
+  }
+}
+
+/* When the highlight lands on a section row that's already mid-flight, keep
+   the peach left-border AND the outer pulse legible by ensuring the pulse
+   wraps the row's outer border, not its left accent. */
+.section-row.tutorial-target {
+  border-radius: var(--radius-md);
+}
+
+/* When highlight lands on the dossier's comparable anchor (which already has
+   its own peach left-border + tint), bump the contrast so the pulse reads
+   distinct from the underlying styling. */
+.dossier-doc__section--anchor.tutorial-target {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}

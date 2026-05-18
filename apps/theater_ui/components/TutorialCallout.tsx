@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { DemoPhase, Stage2Progress } from '../hooks/useWebSocket';
 
 interface Props {
@@ -11,10 +11,14 @@ interface Props {
 // Each step is keyed to a derived demo-state condition rather than a wallclock
 // timer, so the callout never drifts out of sync with what's actually on
 // screen. The 'derive' function picks one step per render — the active step.
+// Each step also carries an array of CSS selectors pointing at the DOM
+// element(s) the callout is referring to; those elements receive a
+// `.tutorial-target` class while the step is active and lose it on transition.
 interface Step {
   id: string;
   title: string;
   body: string;
+  targets: string[];
 }
 
 function fmtElapsed(sec: number): string {
@@ -35,6 +39,7 @@ function deriveStep(
       title: 'Start the demo',
       body:
         '124 UK Metals Expo leads arrived in Slack. Click Run Demo to ingest them. The Refinery will score fit, rank the top 12, and route them across Slack, the CRM, and Drive — simultaneously.',
+      targets: ['[data-tutorial-anchor="run-demo"]', '[data-tutorial-anchor="csv-attachment"]'],
     };
   }
   if (phase === 'ingesting') {
@@ -42,6 +47,7 @@ function deriveStep(
       id: 'ingesting',
       title: 'Uploading the batch',
       body: 'CSV posted to /ingest/batch with idempotency-keyed Postgres write. ADC routes to PRIORITIZATION — Stage 1 is about to fan out.',
+      targets: [],
     };
   }
   if (phase === 'stage1') {
@@ -49,6 +55,7 @@ function deriveStep(
       id: 'stage1',
       title: 'Stage 1 — deep-ensemble scoring in flight',
       body: `Each lead runs through an N=3 ensemble for vertical classification, followed by deterministic fit scoring against the calibrated weights. ~5 minutes for 124 leads. Elapsed: ${fmtElapsed(elapsedSec)}.`,
+      targets: [],
     };
   }
   if (phase === 'stage1_complete') {
@@ -56,6 +63,13 @@ function deriveStep(
       id: 'm3',
       title: 'Magic Moment 1 — three surfaces, one transaction',
       body: 'Top 12 ranked. Slack canvas, CRM fields, and Drive priority index all materialized in the same Postgres transaction via the outbox. Click any prospect card to trigger the full briefing.',
+      targets: [
+        '[data-tutorial-anchor="slack-shortlist"]',
+        '[data-tutorial-anchor="crm-inset"]',
+        '[data-tutorial-anchor="drive-header"]',
+        '[data-tutorial-anchor="magic-moment-1"]',
+        '[data-tutorial-anchor="prospect-anchor"]',
+      ],
     };
   }
   if (phase === 'stage2_requesting') {
@@ -63,6 +77,7 @@ function deriveStep(
       id: 'm4',
       title: 'Stage 2 dispatched',
       body: 'Slack-style click handler accepted. Refinery generated a dossier_id and enqueued the William Cook briefing. Five sections will render in order.',
+      targets: [],
     };
   }
   if (phase === 'stage2') {
@@ -71,6 +86,7 @@ function deriveStep(
         id: 'm9',
         title: 'Approach template',
         body: 'Suggested approach assembling: two-camera pilot scaffold with deterministic phase breakdown (kickoff, shadow, parallel, handoff).',
+        targets: ['[data-section="suggested_approach"]'],
       };
     }
     if (stage2.risk_register === 'active') {
@@ -78,6 +94,7 @@ function deriveStep(
         id: 'm8',
         title: 'Integration risk register',
         body: 'Each risk tied to a pillar (infrastructure, environmental, compliance) with severity score and a verbatim knowledge-graph anchor — no free-form LLM speculation.',
+        targets: ['[data-section="risk_register"]'],
       };
     }
     if (stage2.comparable_deployment === 'active' || stage2.comparable_deployment === 'complete') {
@@ -85,6 +102,7 @@ function deriveStep(
         id: 'm7',
         title: 'Comparable deployment — deterministic anchor',
         body: 'The comparable Matta deployment is selected by the knowledge-graph selector, not the LLM. The LLM writes prose against that anchor. This is the load-bearing safety rail.',
+        targets: ['[data-section="comparable_deployment"]', '[data-tutorial-anchor="comparable-anchor"]'],
       };
     }
     if (stage2.defect_hypothesis === 'active') {
@@ -92,6 +110,7 @@ function deriveStep(
         id: 'm6',
         title: 'Defect hypothesis — N=3 conformal',
         body: 'Three independent samples at temperatures 0.1 / 0.5 / 0.9, then a conformal-coverage gate at ≥0.90. The hypothesis only ships if the ensemble agrees within calibration.',
+        targets: ['[data-section="defect_hypothesis"]'],
       };
     }
     if (stage2.process_taxonomy === 'active') {
@@ -99,12 +118,14 @@ function deriveStep(
         id: 'm5',
         title: 'Process taxonomy',
         body: 'First section rendering — extracting the process geometry (casting type, pour temperature, geometry class) from the verified facts in the knowledge graph.',
+        targets: ['[data-section="process_taxonomy"]'],
       };
     }
     return {
       id: 'stage2-generic',
       title: 'Stage 2 in flight',
       body: 'Five briefing sections rendering. Each section is Pydantic-validated against extra="forbid"; the byte-density gate at the end enforces deterministic content ≥0.60 of the bytes.',
+      targets: [],
     };
   }
   if (phase === 'complete') {
@@ -114,6 +135,12 @@ function deriveStep(
       id: 'm12',
       title: 'Magic Moment 2 — full briefing materialized',
       body: `Slack canvas, CRM note, and Drive doc all delivered. Same transactional outbox pattern as Stage 1. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
+      targets: [
+        '[data-tutorial-anchor="slack-shortlist"]',
+        '[data-tutorial-anchor="crm-inset"]',
+        '[data-tutorial-anchor="dossier-doc"]',
+        '[data-tutorial-anchor="magic-moment-2"]',
+      ],
     };
   }
   if (phase === 'error') {
@@ -121,9 +148,10 @@ function deriveStep(
       id: 'error',
       title: 'Something went wrong',
       body: 'The Refinery hit an error. Reset the demo and try again, or check the API health endpoint at :8080/health.',
+      targets: [],
     };
   }
-  return { id: 'unknown', title: '', body: '' };
+  return { id: 'unknown', title: '', body: '', targets: [] };
 }
 
 const ALL_STEP_IDS = [
@@ -140,6 +168,8 @@ const ALL_STEP_IDS = [
   'm12',
 ];
 
+const HIGHLIGHT_CLASS = 'tutorial-target';
+
 export default function TutorialCallout({
   phase,
   elapsedSec,
@@ -149,11 +179,37 @@ export default function TutorialCallout({
   const [dismissed, setDismissed] = useState(false);
   const [prevStepId, setPrevStepId] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const highlightedRef = useRef<Element[]>([]);
 
   const step = useMemo(
     () => deriveStep(phase, elapsedSec, stage2Progress, byteDensityRatio),
     [phase, elapsedSec, stage2Progress, byteDensityRatio]
   );
+
+  // ─── Apply / remove .tutorial-target class on the step's targets ────────
+  // Runs whenever the active step changes OR the dismissed flag changes (so
+  // dismissing the callout also clears any active highlights). The cleanup
+  // function strips the class before the next effect run, keeping the DOM
+  // tidy across step transitions.
+  useEffect(() => {
+    if (dismissed || step.targets.length === 0) {
+      return;
+    }
+    // Collect matching elements (selectors are stable; querySelectorAll runs
+    // against the current DOM, which by this point in the effect lifecycle
+    // includes any newly-rendered section cards).
+    const elements: Element[] = [];
+    step.targets.forEach((selector) => {
+      const matches = document.querySelectorAll(selector);
+      matches.forEach((el) => elements.push(el));
+    });
+    elements.forEach((el) => el.classList.add(HIGHLIGHT_CLASS));
+    highlightedRef.current = elements;
+    return () => {
+      highlightedRef.current.forEach((el) => el.classList.remove(HIGHLIGHT_CLASS));
+      highlightedRef.current = [];
+    };
+  }, [step.id, step.targets, dismissed]);
 
   // Trigger a fade transition when the step id changes
   useEffect(() => {

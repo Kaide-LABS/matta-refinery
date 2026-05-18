@@ -42,8 +42,8 @@ export default function DriveDossierRightPane({ phase, dossier }: Props) {
   const hasContent = dossier !== null;
 
   return (
-    <div className="drive-pane">
-      <div className="drive-pane__header">
+    <div className="drive-pane" data-tutorial-anchor="drive-pane">
+      <div className="drive-pane__header" data-tutorial-anchor="drive-header">
         <span className="drive-pane__icon">📄</span>
         <span className="drive-pane__breadcrumb">Drive · Matta Pre-Visit Dossiers</span>
       </div>
@@ -53,7 +53,7 @@ export default function DriveDossierRightPane({ phase, dossier }: Props) {
       )}
 
       {hasContent && (
-        <div className="dossier-doc">
+        <div className="dossier-doc" data-tutorial-anchor="dossier-doc">
           <h1 className="dossier-doc__title">
             Matta Pre-Visit Dossier — William Cook Sheffield
           </h1>
@@ -91,7 +91,10 @@ export default function DriveDossierRightPane({ phase, dossier }: Props) {
           ) : null}
 
           {dossier?.comparable_deployment ? (
-            <section className="dossier-doc__section dossier-doc__section--anchor">
+            <section
+              className="dossier-doc__section dossier-doc__section--anchor"
+              data-tutorial-anchor="comparable-anchor"
+            >
               <div className="dossier-doc__anchor-tag">
                 Deterministic KG selection — LLM did not pick this anchor
               </div>

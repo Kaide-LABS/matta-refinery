@@ -31,7 +31,7 @@ export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Pr
       <div className="slack-pane__msg">
         <span className="slack-pane__author">Doug</span> UK Metals Expo batch — Stew, can you triage?
       </div>
-      <div className="slack-pane__attachment">
+      <div className="slack-pane__attachment" data-tutorial-anchor="csv-attachment">
         <span className="slack-pane__attachment-icon">📎</span>
         UK_Metals_Expo_2025_leads.csv · 124 leads
       </div>
@@ -43,7 +43,7 @@ export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Pr
       )}
 
       {stage1Done && (
-        <div className="slack-pane__shortlist">
+        <div className="slack-pane__shortlist" data-tutorial-anchor="slack-shortlist">
           <div className="slack-pane__shortlist-header">
             <span>Refinery Ranked Shortlist</span>
             <span className="slack-pane__shortlist-count">Top 12 of 124</span>
@@ -66,6 +66,7 @@ export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Pr
                   role="button"
                   tabIndex={clickable ? 0 : -1}
                   aria-disabled={!clickable}
+                  data-tutorial-anchor={isWilliamCook ? 'prospect-anchor' : undefined}
                 >
                   <div className="prospect-card__rank">{p.rank}</div>
                   <div className="prospect-card__body">
