@@ -69,6 +69,7 @@ const IndexPage: NextPage = () => {
           stage2Progress={demo.stage2Progress}
           stage2Timings={demo.stage2Timings}
           byteDensityRatio={demo.byteDensityRatio}
+          dossier={demo.dossier}
           error={demo.error}
           onRunDemo={demo.runDemo}
           onReset={demo.reset}

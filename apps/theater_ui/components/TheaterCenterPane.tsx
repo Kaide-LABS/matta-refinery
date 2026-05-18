@@ -3,6 +3,7 @@ import type {
   DemoPhase,
   Stage2Progress,
   Stage2SectionTimings,
+  DossierPayload,
 } from '../hooks/useWebSocket';
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   stage2Progress: Stage2Progress;
   stage2Timings: Stage2SectionTimings;
   byteDensityRatio: number | null;
+  dossier: DossierPayload | null;
   error: string | null;
   onRunDemo: () => void;
   onReset: () => void;
@@ -83,10 +85,23 @@ export default function TheaterCenterPane({
   stage2Progress,
   stage2Timings,
   byteDensityRatio,
+  dossier,
   error,
   onRunDemo,
   onReset,
 }: Props) {
+  // Pull the conformal coverage value off the defect-hypothesis payload when
+  // it lands in the polled dossier. Only the defect section currently runs
+  // the full uncertainty pattern (per MATTA_RECONCILIATION.md §6.7) — the
+  // other four section schemas have no `coverage` / `requires_human_review`
+  // fields, so this UI surfacing applies to defect alone.
+  const defectPayload = dossier?.defect_hypothesis as
+    | { coverage?: number; requires_human_review?: boolean; conformal_set?: unknown[]; calibration_version?: string }
+    | undefined;
+  const defectCoverage =
+    typeof defectPayload?.coverage === 'number' ? defectPayload.coverage : null;
+  const defectRequiresReview = defectPayload?.requires_human_review === true;
+  const defectCoveragePasses = defectCoverage !== null && defectCoverage >= 0.9 && !defectRequiresReview;
   const idle = phase === 'idle';
   const ingesting = phase === 'ingesting';
   const stage1 = phase === 'stage1';
@@ -303,21 +318,43 @@ export default function TheaterCenterPane({
                   : state === 'active'
                   ? SECTION_DETAIL[s].active
                   : SECTION_DETAIL[s].pending;
+              const isDefectComplete = s === 'defect_hypothesis' && state === 'complete' && defectCoverage !== null;
               return (
                 <li
                   key={s}
                   className={`section-row section-row--${state}`}
                   data-section={s}
                 >
-                  <span className="section-row__indicator">
-                    {state === 'complete' ? '✓' : state === 'active' ? '●' : '○'}
-                  </span>
-                  <div className="section-row__body">
-                    <span className="section-row__name">{SECTION_LABELS[s]}</span>
-                    <span className="section-row__detail">{detail}</span>
+                  <div className="section-row__main">
+                    <span className="section-row__indicator">
+                      {state === 'complete' ? '✓' : state === 'active' ? '●' : '○'}
+                    </span>
+                    <div className="section-row__body">
+                      <span className="section-row__name">{SECTION_LABELS[s]}</span>
+                      <span className="section-row__detail">{detail}</span>
+                    </div>
+                    {state === 'active' && (
+                      <span className="section-row__spinner" aria-hidden="true" />
+                    )}
                   </div>
-                  {state === 'active' && (
-                    <span className="section-row__spinner" aria-hidden="true" />
+                  {isDefectComplete && (
+                    <div
+                      className="section-row__coverage"
+                      title="Domain-Shift Conformal Prediction · arXiv 2510.05566 (Lin 2025) · gate ≥0.90"
+                    >
+                      <span className="section-row__coverage-label">conformal coverage</span>
+                      <span className="section-row__coverage-value">
+                        {defectCoverage!.toFixed(2)}
+                      </span>
+                      <span className="section-row__coverage-gate">gate ≥0.90</span>
+                      <span className={
+                        defectCoveragePasses
+                          ? 'section-row__coverage-badge section-row__coverage-badge--pass'
+                          : 'section-row__coverage-badge section-row__coverage-badge--review'
+                      }>
+                        {defectCoveragePasses ? 'PASS' : 'REVIEW'}
+                      </span>
+                    </div>
                   )}
                 </li>
               );

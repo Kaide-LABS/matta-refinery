@@ -1117,6 +1117,70 @@ code, .mono {
   flex-shrink: 0;
 }
 
+.section-row {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.section-row__main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.section-row__coverage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  margin-left: 26px;
+  padding: 6px 10px;
+  background: var(--matta-pane-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.section-row__coverage-label {
+  color: var(--matta-grey);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 500;
+}
+
+.section-row__coverage-value {
+  color: var(--matta-navy);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.section-row__coverage-gate {
+  color: var(--matta-grey);
+}
+
+.section-row__coverage-badge {
+  margin-left: auto;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.section-row__coverage-badge--pass {
+  background: var(--matta-forest-tint);
+  color: var(--matta-forest);
+}
+
+.section-row__coverage-badge--review {
+  background: var(--matta-peach-tint);
+  color: var(--matta-peach-dark);
+}
+
 @keyframes section-spinner {
   to { transform: rotate(360deg); }
 }
