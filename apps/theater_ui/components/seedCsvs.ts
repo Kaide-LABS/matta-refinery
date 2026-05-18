@@ -25,7 +25,7 @@ export const SEED_CSVS: SeedCsv[] = [
     filename: 'UK_Metals_Expo_2025_leads.csv',
     publicPath: '/seed_csvs/UK_Metals_Expo_2025_leads.csv',
     tradeShowDisplay: 'UK Metals Expo 2025',
-    dougMessage: 'UK Metals Expo batch — Stew, can you triage?',
+    dougMessage: 'UK Metals Expo batch — can someone triage?',
     approxLeadCount: 124,
   },
   {
@@ -33,7 +33,7 @@ export const SEED_CSVS: SeedCsv[] = [
     filename: 'Hannover_Messe_2025_leads.csv',
     publicPath: '/seed_csvs/Hannover_Messe_2025_leads.csv',
     tradeShowDisplay: 'Hannover Messe 2025',
-    dougMessage: 'Hannover Messe batch — Stew, can you triage?',
+    dougMessage: 'Hannover Messe batch — can someone triage?',
     approxLeadCount: 110,
   },
   {
@@ -41,7 +41,7 @@ export const SEED_CSVS: SeedCsv[] = [
     filename: 'IMTS_Chicago_2025_leads.csv',
     publicPath: '/seed_csvs/IMTS_Chicago_2025_leads.csv',
     tradeShowDisplay: 'IMTS Chicago 2025',
-    dougMessage: 'IMTS Chicago batch — Stew, can you triage?',
+    dougMessage: 'IMTS Chicago batch — can someone triage?',
     approxLeadCount: 95,
   },
   {
@@ -49,7 +49,7 @@ export const SEED_CSVS: SeedCsv[] = [
     filename: 'Industrial_AI_Summit_2025_leads.csv',
     publicPath: '/seed_csvs/Industrial_AI_Summit_2025_leads.csv',
     tradeShowDisplay: 'Industrial AI Summit 2025',
-    dougMessage: 'Industrial AI Summit batch — Stew, can you triage?',
+    dougMessage: 'Industrial AI Summit batch — can someone triage?',
     approxLeadCount: 78,
   },
   {
@@ -57,7 +57,7 @@ export const SEED_CSVS: SeedCsv[] = [
     filename: 'Forging_Industry_Convention_2025_leads.csv',
     publicPath: '/seed_csvs/Forging_Industry_Convention_2025_leads.csv',
     tradeShowDisplay: 'Forging Industry Convention 2025',
-    dougMessage: 'Forging Industry Convention batch — Stew, can you triage?',
+    dougMessage: 'Forging Industry Convention batch — can someone triage?',
     approxLeadCount: 102,
   },
 ];
