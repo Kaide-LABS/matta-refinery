@@ -886,6 +886,12 @@ code, .mono {
   font-weight: 500;
 }
 
+.adc-routes {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .adc-pill {
   display: inline-block;
   padding: 5px 11px;
@@ -895,8 +901,35 @@ code, .mono {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 500;
-  color: var(--matta-navy);
+  color: var(--matta-grey);
   letter-spacing: 0.05em;
+  transition: background 400ms var(--ease-standard), color 400ms var(--ease-standard), border-color 400ms var(--ease-standard);
+}
+
+.adc-pill--active {
+  background: var(--matta-peach);
+  color: var(--matta-navy);
+  border-color: var(--matta-peach);
+  animation: adc-pill-activate 600ms var(--ease-standard);
+}
+
+@keyframes adc-pill-activate {
+  0% { background: var(--matta-code-bg); box-shadow: 0 0 0 0 rgba(242, 194, 165, 0); }
+  40% { background: var(--matta-peach); box-shadow: 0 0 0 4px rgba(242, 194, 165, 0.28); }
+  100% { background: var(--matta-peach); box-shadow: 0 0 0 0 rgba(242, 194, 165, 0); }
+}
+
+.theater-footer__cell--adc {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.theater-footer__annotation {
+  font-size: 10px;
+  color: var(--matta-grey);
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
 }
 
 .theater-mono {

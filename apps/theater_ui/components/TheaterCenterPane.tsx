@@ -311,16 +311,40 @@ export default function TheaterCenterPane({
         </div>
       )}
 
-      {(stage1 || stage1Done || stage2Active || done) && batchId && (
+      {(!idle && !ingesting) && (
         <div className="theater-footer">
-          <div className="theater-footer__cell">
+          <div className="theater-footer__cell theater-footer__cell--adc">
             <span className="theater-footer__label">ADC Route</span>
-            <span className="adc-pill">PRIORITIZATION</span>
+            <div className="adc-routes" data-tutorial-anchor="adc-routes">
+              <span
+                className={`adc-pill ${
+                  stage1 || stage1Done ? 'adc-pill--active' : ''
+                }`}
+                data-route="prioritization"
+                title="Stage 1 batch scoring route"
+              >
+                PRIORITIZATION
+              </span>
+              <span
+                className={`adc-pill ${
+                  stage2Active || done ? 'adc-pill--active' : ''
+                }`}
+                data-route="dossier_full"
+                title="Stage 2 full-briefing route"
+              >
+                DOSSIER_FULL
+              </span>
+            </div>
+            <span className="theater-footer__annotation">
+              deterministic routing · 0 LLM calls · packages/adc/rules.py
+            </span>
           </div>
-          <div className="theater-footer__cell">
-            <span className="theater-footer__label">Idempotency</span>
-            <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
-          </div>
+          {batchId && (
+            <div className="theater-footer__cell">
+              <span className="theater-footer__label">Idempotency</span>
+              <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
+            </div>
+          )}
         </div>
       )}
     </div>
