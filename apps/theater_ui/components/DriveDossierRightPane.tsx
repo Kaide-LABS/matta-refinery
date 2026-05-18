@@ -1,45 +1,125 @@
 import React from 'react';
+import type { DemoPhase, DossierPayload } from '../hooks/useWebSocket';
 
-interface TheaterEvent {
-  type: string;
-  timestamp: string;
-  payload: any;
+interface Props {
+  phase: DemoPhase;
+  dossier: DossierPayload | null;
 }
 
-export default function DriveDossierRightPane({ events }: { events: TheaterEvent[] }) {
-  const stage2Complete = events.some(e => e.type === 'stage2.complete');
+function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
+  if (value === null || value === undefined) return <span className="dossier-empty">—</span>;
+  if (typeof value === 'string') return <span>{value}</span>;
+  if (typeof value === 'number' || typeof value === 'boolean') return <span>{String(value)}</span>;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return <span className="dossier-empty">[]</span>;
+    return (
+      <ul className="dossier-list">
+        {value.slice(0, 6).map((v, i) => (
+          <li key={i}>{renderJsonValue(v, depth + 1)}</li>
+        ))}
+        {value.length > 6 && <li className="dossier-more">+ {value.length - 6} more</li>}
+      </ul>
+    );
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>);
+    return (
+      <dl className="dossier-kv">
+        {entries.slice(0, 8).map(([k, v]) => (
+          <React.Fragment key={k}>
+            <dt>{k}</dt>
+            <dd>{renderJsonValue(v, depth + 1)}</dd>
+          </React.Fragment>
+        ))}
+      </dl>
+    );
+  }
+  return <span>{String(value)}</span>;
+}
+
+export default function DriveDossierRightPane({ phase, dossier }: Props) {
+  const showWaiting = phase === 'idle' || phase === 'ingesting' || phase === 'stage1' || phase === 'stage1_complete' || phase === 'stage2_requesting';
+  const hasContent = dossier !== null;
+
   return (
-    <div className="p-4 bg-gray-50 overflow-y-auto">
-      <h2 className="text-lg font-bold text-gray-800 mb-4">Google Drive Mock</h2>
-      {stage2Complete ? (
-        <div className="bg-white p-6 shadow-lg border border-gray-200">
-          <h1 className="text-2xl font-bold mb-4">Matta Pre-Visit Dossier — William Cook Sheffield</h1>
-          <p className="text-sm text-gray-500 mb-4">Generated: 2026-05-11 | KG Version: phase1-v1 | Calibration: phase1-demo-v1</p>
-          <div className="text-sm mb-4">
-            <h3 className="font-bold mb-1">§1 Process Taxonomy</h3>
-            <p>Ductile iron casting. Ladle pour at ~1450C.</p>
+    <div className="drive-pane">
+      <div className="drive-pane__header">
+        <span className="drive-pane__icon">📄</span>
+        <span className="drive-pane__breadcrumb">Drive · Matta Pre-Visit Dossiers</span>
+      </div>
+
+      {showWaiting && !hasContent && (
+        <div className="drive-pane__waiting">Waiting for Stage 2 …</div>
+      )}
+
+      {hasContent && (
+        <div className="dossier-doc">
+          <h1 className="dossier-doc__title">
+            Matta Pre-Visit Dossier — William Cook Sheffield
+          </h1>
+          <div className="dossier-doc__meta">
+            <span>KG: phase1-v1</span>
+            <span className="dossier-doc__meta-sep">·</span>
+            <span>Calibration: phase1-demo-v1</span>
+            {typeof dossier?.deterministic_section_ratio === 'number' && (
+              <>
+                <span className="dossier-doc__meta-sep">·</span>
+                <span>Byte-density ratio: {dossier.deterministic_section_ratio.toFixed(3)}</span>
+              </>
+            )}
           </div>
-          <div className="text-sm mb-4">
-            <h3 className="font-bold mb-1">§2 Defect Hypothesis</h3>
-            <p>With 90% coverage, dominant defect classes are in: porosity.</p>
-          </div>
-          <div className="text-sm mb-4">
-            <h3 className="font-bold mb-1">§3 Comparable Matta Deployment</h3>
-            <p>matta_deployment_metal_casting_unnamed (Line 271)</p>
-            <p className="italic">Dimension: casting_surface_finish_qc</p>
-          </div>
-          <div className="text-sm mb-4">
-            <h3 className="font-bold mb-1">§4 Integration Risk Register</h3>
-            <p>calibration_baseline_unknown: identified</p>
-          </div>
-          <div className="text-sm mb-4">
-            <h3 className="font-bold mb-1">§5 Suggested Approach</h3>
-            <p>two_camera_pilot</p>
-          </div>
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600">Share</button>
+
+          {dossier?.company_facts ? (
+            <section className="dossier-doc__section">
+              <h3>§0 Company Facts</h3>
+              {renderJsonValue(dossier.company_facts)}
+            </section>
+          ) : null}
+
+          {dossier?.process_taxonomy ? (
+            <section className="dossier-doc__section">
+              <h3>§1 Process Taxonomy</h3>
+              {renderJsonValue(dossier.process_taxonomy)}
+            </section>
+          ) : null}
+
+          {dossier?.defect_hypothesis ? (
+            <section className="dossier-doc__section">
+              <h3>§2 Defect Hypothesis (N=3 conformal)</h3>
+              {renderJsonValue(dossier.defect_hypothesis)}
+            </section>
+          ) : null}
+
+          {dossier?.comparable_deployment ? (
+            <section className="dossier-doc__section dossier-doc__section--anchor">
+              <div className="dossier-doc__anchor-tag">
+                Deterministic KG selection — LLM did not pick this anchor
+              </div>
+              <h3>§3 Comparable Matta Deployment</h3>
+              {renderJsonValue(dossier.comparable_deployment)}
+            </section>
+          ) : null}
+
+          {dossier?.risk_register ? (
+            <section className="dossier-doc__section">
+              <h3>§4 Integration Risk Register</h3>
+              {renderJsonValue(dossier.risk_register)}
+            </section>
+          ) : null}
+
+          {dossier?.suggested_approach ? (
+            <section className="dossier-doc__section">
+              <h3>§5 Suggested Approach</h3>
+              {renderJsonValue(dossier.suggested_approach)}
+            </section>
+          ) : null}
+
+          {dossier?.unverified_sections && dossier.unverified_sections.length > 0 && (
+            <div className="dossier-doc__unverified">
+              Sections requiring human review: {dossier.unverified_sections.join(', ')}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="text-gray-400 text-sm">Waiting for Stage 2 completion...</div>
       )}
     </div>
   );

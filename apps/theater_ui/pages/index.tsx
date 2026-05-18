@@ -1,22 +1,33 @@
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import SlackLeftPane from '../components/SlackLeftPane';
 import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
 import CRMRecordInset from '../components/CRMRecordInset';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useDemoState } from '../hooks/useWebSocket';
 
 const IndexPage: NextPage = () => {
-  const router = useRouter();
-  const batchId = (router.query.batchId as string) || 'demo_batch';
-  const { events, connected } = useWebSocket(`/ws/theater/${batchId}`);
+  const demo = useDemoState();
 
   return (
-    <div className="grid grid-cols-3 h-screen relative">
-      <SlackLeftPane events={events} />
-      <TheaterCenterPane events={events} />
-      <DriveDossierRightPane events={events} />
-      <CRMRecordInset events={events} />
+    <div className="theater-grid">
+      <SlackLeftPane
+        phase={demo.phase}
+        elapsedSec={demo.elapsedSec}
+        onClickProspect={demo.clickProspect}
+      />
+      <TheaterCenterPane
+        phase={demo.phase}
+        elapsedSec={demo.elapsedSec}
+        batchId={demo.batchId}
+        dossierId={demo.dossierId}
+        stage2Progress={demo.stage2Progress}
+        byteDensityRatio={demo.byteDensityRatio}
+        error={demo.error}
+        onRunDemo={demo.runDemo}
+        onReset={demo.reset}
+      />
+      <DriveDossierRightPane phase={demo.phase} dossier={demo.dossier} />
+      <CRMRecordInset phase={demo.phase} />
     </div>
   );
 };
