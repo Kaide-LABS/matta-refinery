@@ -38,7 +38,7 @@ function deriveStep(
       id: 'idle',
       title: 'Start the demo',
       body:
-        '124 UK Metals Expo leads arrived in Slack. Click Run Demo to ingest them. The Refinery will score fit, rank the top 12, and route them across Slack, the CRM, and Drive — simultaneously.',
+        '124 trade-show leads arrived in the team\'s Slack. Click Run Demo to ingest them. The Refinery routes everything through your existing Slack, CRM, and Drive — Doug never leaves the tools the team already lives in.',
       targets: ['[data-tutorial-anchor="run-demo"]', '[data-tutorial-anchor="csv-attachment"]'],
     };
   }
@@ -62,7 +62,7 @@ function deriveStep(
     return {
       id: 'm3',
       title: 'Stage 1 complete — top 12 ranked',
-      body: 'Slack, CRM, and Drive updated in one Postgres transaction via the outbox. Click any prospect card to generate the full briefing.',
+      body: 'Slack, CRM, and Drive updated in one Postgres transaction via the outbox — three surfaces, no half-states. In production, Doug clicks "Generate Briefing" inside Slack; the click is embedded in this view so you can see what fires. The trigger is a Slack interaction event hitting /slack/interactions.',
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-inset"]',
@@ -76,7 +76,7 @@ function deriveStep(
     return {
       id: 'm4',
       title: 'Stage 2 dispatched',
-      body: 'Slack-style click handler accepted. Refinery generated a dossier_id and enqueued the William Cook briefing. Five sections will render in order.',
+      body: 'Slack interaction event accepted. The Refinery generated a dossier_id and enqueued the William Cook briefing. Five sections render in order: process taxonomy, defect hypothesis, comparable deployment, risk register, suggested approach.',
       targets: [],
     };
   }
@@ -130,11 +130,11 @@ function deriveStep(
   }
   if (phase === 'complete') {
     const ratioCopy =
-      ratio !== null ? ` Byte-density ratio: ${ratio.toFixed(3)} (floor 0.60).` : '';
+      ratio !== null ? ` Byte-density ratio ${ratio.toFixed(3)} (floor 0.60).` : '';
     return {
       id: 'm12',
       title: 'Briefing ready',
-      body: `The dossier shipped to all three surfaces in one Postgres transaction — no half-states. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
+      body: `The dossier shipped to all three surfaces in one Postgres transaction — no half-states, no Slack-succeeded-CRM-failed split. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-inset"]',
