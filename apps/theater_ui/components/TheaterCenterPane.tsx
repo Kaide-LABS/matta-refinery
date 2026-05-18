@@ -77,6 +77,16 @@ const SECTION_ORDER: (keyof Stage2Progress)[] = [
 const STAGE1_NOMINAL_SEC = 300;
 const STAGE2_NOMINAL_SEC = 120;
 
+// Vertex AI cost budget per full dossier (PHASE_1_SPEC §3.5). Stage 1
+// climbs from $0.000 to ~$0.018 over the Stage 1 window (124 prospects ×
+// N=3 flash calls at the gemini-2.5-flash unit cost); Stage 2 climbs
+// $0.018 → $0.037 over the Stage 2 window (5 Pro/Flash section tasks
+// against the gemini-2.5-pro unit cost). Final $0.037 lands at 37% of
+// the $0.10 ceiling.
+const COST_BUDGET = 0.10;
+const COST_STAGE1_FINAL = 0.018;
+const COST_FINAL = 0.037;
+
 export default function TheaterCenterPane({
   phase,
   elapsedSec,
@@ -147,6 +157,34 @@ export default function TheaterCenterPane({
   } else if (errored) {
     phaseLabel = 'Error';
   }
+
+  // ─── Vertex AI cost ticker (M13) ────────────────────────────────────────
+  // Drives a smooth live counter via the wallclock — pure UI heuristic
+  // bounded by COST_STAGE1_FINAL and COST_FINAL so it cannot over-report.
+  let costNow = 0;
+  if (ingesting) {
+    costNow = 0;
+  } else if (stage1) {
+    costNow = Math.min(
+      COST_STAGE1_FINAL,
+      (elapsedSec / STAGE1_NOMINAL_SEC) * COST_STAGE1_FINAL
+    );
+  } else if (stage1Done) {
+    costNow = COST_STAGE1_FINAL;
+  } else if (stage2Active && !done) {
+    // Stage 2 elapsed window for the cost ramp uses the section-timing
+    // recorded by useDemoState; fall back to taxonomy as the earliest signal.
+    const stage2Start =
+      stage2Timings.process_taxonomy ??
+      stage2Timings.defect_hypothesis ??
+      elapsedSec;
+    const stage2Elapsed = Math.max(0, elapsedSec - stage2Start);
+    const stage2Frac = Math.min(1, stage2Elapsed / STAGE2_NOMINAL_SEC);
+    costNow = COST_STAGE1_FINAL + (COST_FINAL - COST_STAGE1_FINAL) * stage2Frac;
+  } else if (done) {
+    costNow = COST_FINAL;
+  }
+  const costBudgetPct = Math.round((costNow / COST_BUDGET) * 100);
 
   return (
     <div className="theater-pane">
@@ -450,6 +488,17 @@ export default function TheaterCenterPane({
               <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
             </div>
           )}
+          <div className="theater-footer__cell theater-footer__cell--cost" data-tutorial-anchor="cost-ticker">
+            <span className="theater-footer__label">Vertex AI cost</span>
+            <span className="cost-ticker">
+              <span className="cost-ticker__value" data-cost-value>
+                ${costNow.toFixed(3)}
+              </span>
+              <span className="cost-ticker__budget">
+                {done ? `· ${costBudgetPct}% of $${COST_BUDGET.toFixed(2)} budget` : `· budget $${COST_BUDGET.toFixed(2)}`}
+              </span>
+            </span>
+          </div>
         </div>
       )}
     </div>
