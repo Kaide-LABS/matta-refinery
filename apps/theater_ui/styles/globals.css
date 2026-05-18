@@ -1166,39 +1166,115 @@ code, .mono {
   font-family: var(--font-mono);
 }
 
-/* ─── Drive pane ──────────────────────────────────────────────────────── */
+/* ─── Drive pane (fidelity styling) ────────────────────────────────────── */
+.drive-pane {
+  background: var(--matta-cream);
+  padding: 0;
+}
+
 .drive-pane__header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-bottom: 14px;
+  gap: 12px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--matta-warm-border-soft);
-  margin-bottom: 18px;
+  background: var(--matta-pane-bg);
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
-.drive-pane__icon {
+.drive-doc-icon {
+  flex-shrink: 0;
+  display: block;
+}
+
+.drive-pane__title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.drive-pane__title {
   font-size: 15px;
-  opacity: 0.7;
+  font-weight: 500;
+  color: var(--matta-navy);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .drive-pane__breadcrumb {
-  font-size: 12px;
+  font-size: 11px;
+  color: var(--matta-grey);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.drive-pane__crumb-sep {
+  opacity: 0.5;
+}
+
+.drive-pane__count {
+  font-size: 11px;
   color: var(--matta-grey);
   font-family: var(--font-mono);
-  letter-spacing: 0.01em;
+  padding: 3px 8px;
+  background: var(--matta-code-bg);
+  border-radius: var(--radius-sm);
 }
 
-.drive-pane__waiting {
-  color: var(--matta-pulse-grey);
-  font-size: 12px;
-  padding: 40px 0;
+/* Drive document "paper" container — the area where the doc renders */
+.drive-doc-paper {
+  padding: 22px 18px;
+  overflow-y: auto;
+  background: var(--matta-cream);
+}
+
+.drive-doc-paper--empty {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drive-doc-paper__placeholder {
   text-align: center;
-  font-family: var(--font-mono);
+  color: var(--matta-grey);
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
-.dossier-doc {
+.drive-doc-paper__placeholder svg {
+  opacity: 0.35;
+  width: 32px;
+  height: 40px;
+}
+
+.drive-doc-paper__placeholder-sub {
+  font-size: 11px;
+  color: var(--matta-pulse-grey);
+  margin-top: 4px;
+}
+
+/* The styled document "sheet" itself — feels like a Google Doc page */
+.drive-doc-paper__sheet {
   background: var(--matta-pane-bg);
-  padding: 8px 0;
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: var(--radius-sm);
+  padding: 36px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.dossier-doc__header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
 }
 
 .dossier-doc__title {
