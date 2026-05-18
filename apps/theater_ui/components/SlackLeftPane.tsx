@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import type { DemoPhase } from '../hooks/useWebSocket';
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
 import CsvPreviewModal from './CsvPreviewModal';
+import type { SeedCsv } from './seedCsvs';
 
 interface Props {
   phase: DemoPhase;
   elapsedSec: number;
+  activeCsv: SeedCsv;
   onClickProspect: (prospectId: string, companyName: string) => void;
 }
 
@@ -15,14 +17,12 @@ function fmtElapsed(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Props) {
+export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickProspect }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
 
-  // Phase 1.6 Commit 4: hardcoded CSV filename. Commit 5 makes this dynamic
-  // per the variable-CSV demo (random trade-show pick per Run Demo click).
-  const csvPath = '/UK_Metals_Expo_2025_leads.csv';
-  const csvLabel = 'UK_Metals_Expo_2025_leads.csv · 124 leads';
+  const csvPath = activeCsv.publicPath;
+  const csvLabel = `${activeCsv.filename} · ${activeCsv.approxLeadCount} leads`;
 
   const stage1Running = phase === 'stage1';
   const stage1Done =
@@ -36,7 +36,7 @@ export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Pr
     <div className="slack-pane">
       <div className="slack-pane__channel">#fde-lead-refinery</div>
       <div className="slack-pane__msg">
-        <span className="slack-pane__author">Doug</span> UK Metals Expo batch — Stew, can you triage?
+        <span className="slack-pane__author">Doug</span> {activeCsv.dougMessage}
       </div>
       <button
         className="slack-pane__attachment slack-pane__attachment--clickable"

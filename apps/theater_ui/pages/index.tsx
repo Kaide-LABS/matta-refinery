@@ -58,6 +58,7 @@ const IndexPage: NextPage = () => {
         <SlackLeftPane
           phase={demo.phase}
           elapsedSec={demo.elapsedSec}
+          activeCsv={demo.activeCsv}
           onClickProspect={demo.clickProspect}
         />
         <TheaterCenterPane

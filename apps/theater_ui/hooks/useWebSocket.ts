@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { SeedCsv, DEFAULT_SEED_CSV, pickRandomSeedCsv } from '../components/seedCsvs';
 
 export interface TheaterEvent {
   type: string;
@@ -73,6 +74,7 @@ export interface UseDemoStateResult {
   events: TheaterEvent[];
   connected: boolean;
   error: string | null;
+  activeCsv: SeedCsv;
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
   reset: () => void;
@@ -106,6 +108,7 @@ export function useDemoState(): UseDemoStateResult {
   const [events, setEvents] = useState<TheaterEvent[]>([]);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeCsv, setActiveCsv] = useState<SeedCsv>(DEFAULT_SEED_CSV);
 
   const startedAtRef = useRef<number | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -291,14 +294,21 @@ export function useDemoState(): UseDemoStateResult {
   // ─── Actions ──────────────────────────────────────────────────────────────
   const runDemo = useCallback(async () => {
     setError(null);
+    // Pick a fresh random CSV per Run Demo click. UK Metals Expo is the
+    // default before any click; subsequent runs cycle through the seeded
+    // trade shows so the demo reads as input-resilient.
+    const picked = pickRandomSeedCsv();
+    setActiveCsv(picked);
     setPhase('ingesting');
     try {
-      const csvRes = await fetch('/UK_Metals_Expo_2025_leads.csv');
+      const csvRes = await fetch(picked.publicPath);
       if (!csvRes.ok) throw new Error(`CSV fetch failed: HTTP ${csvRes.status}`);
       const csvBlob = await csvRes.blob();
 
       const form = new FormData();
-      form.append('file', csvBlob, 'UK_Metals_Expo_2025_leads.csv');
+      form.append('file', csvBlob, picked.filename);
+      // source_label stays constant so the William Cook prospect_id stays
+      // deterministic at pros_9cb419495484 regardless of which CSV ran.
       form.append('source_label', 'uk_metals_expo_2025');
 
       const res = await fetch(`${API_BASE}/ingest/batch`, {
@@ -373,6 +383,7 @@ export function useDemoState(): UseDemoStateResult {
     setByteDensityRatio(null);
     setEvents([]);
     setError(null);
+    setActiveCsv(DEFAULT_SEED_CSV);
     startedAtRef.current = null;
   }, []);
 
@@ -388,6 +399,7 @@ export function useDemoState(): UseDemoStateResult {
     events,
     connected,
     error,
+    activeCsv,
     runDemo,
     clickProspect,
     reset,

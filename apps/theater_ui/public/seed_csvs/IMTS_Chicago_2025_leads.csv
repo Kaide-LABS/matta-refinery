@@ -1,0 +1,96 @@
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
+W001,William Cook Sheffield,(generated),(generated)@wcook-sheffield.example,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
+W002,Midwest Precision Forge,(generated),(generated)@midwest-pforge.example,forging,medium,closed-die forging surface QC
+W003,Boeing Aerostructures,(generated),(generated)@boeing-aero.example,aluminum machining,large,airframe-grade machining inspection
+W004,Lockheed Martin Skunk Works,(generated),(generated)@lm-skunk.example,composites,large,composite layup defect detection
+W005,Caterpillar Mossville,(generated),(generated)@cat-mossville.example,steel forging,large,track-link forging QC
+W006,John Deere Waterloo,(generated),(generated)@jd-waterloo.example,steel,large,axle housing inspection
+W007,GE Aviation Evendale,(generated),(generated)@ge-evendale.example,aluminum machining,large,turbine component QC
+W008,Pratt & Whitney Hartford,(generated),(generated)@pw-hartford.example,nickel alloy forging,large,jet engine disc forging
+W009,Northrop Grumman Palmdale,(generated),(generated)@ng-palmdale.example,composites,large,B-21 composite skin QC
+W010,Raytheon Technologies,(generated),(generated)@raytheon-tech.example,electronics_assembly,large,missile-guidance assembly QC
+W011,Cleveland Cliffs Steel,(generated),(generated)@cleveland-cliffs.example,steel,large,flat-rolled coil inspection
+W012,Nucor Hickman,(generated),(generated)@nucor-hick.example,steel,large,hot-band surface QC
+W013,US Steel Gary Works,(generated),(generated)@ussteel-gary.example,steel,large,coil mill inspection
+W014,Alcoa Davenport,(generated),(generated)@alcoa-dav.example,aluminum extrusion,large,plate-mill profile QC
+W015,Howmet Aerospace Whitehall,(generated),(generated)@howmet-whitehall.example,nickel alloy casting,large,turbine blade casting porosity
+W016,Precision Castparts Portland,(generated),(generated)@pcc-portland.example,investment casting,large,aerospace casting QC
+W017,Allegheny Technologies,(generated),(generated)@ati.example,steel,large,specialty steel inspection
+W018,Carpenter Technology,(generated),(generated)@carpenter-tech.example,steel,medium,specialty alloy bar QC
+W019,Doncasters Group Smithville,(generated),(generated)@doncasters-sm.example,metal casting,medium,investment casting QC
+W020,Bharat Forge Cleveland,(generated),(generated)@bharat-cle.example,forging,medium,closed-die forging
+W021,Eaton Cleveland,(generated),(generated)@eaton-cle.example,steel forming,large,hydraulic component QC
+W022,Parker Hannifin Cleveland,(generated),(generated)@parker-cle.example,precision machining,large,hydraulic-valve QC
+W023,Cummins Columbus,(generated),(generated)@cummins-col.example,metal casting,large,engine block casting
+W024,Detroit Diesel,(generated),(generated)@detroit-diesel.example,metal casting,large,heavy-truck engine casting
+W025,Mack Trucks Macungie,(generated),(generated)@mack-mac.example,steel forming,large,chassis stamping QC
+W026,Peterbilt Denton,(generated),(generated)@peterbilt-den.example,steel forming,large,cab assembly QC
+W027,Kenworth Chillicothe,(generated),(generated)@kenworth-chi.example,steel forming,large,frame rail QC
+W028,Polaris Industries,(generated),(generated)@polaris.example,steel forming,large,powersports chassis QC
+W029,Harley-Davidson York,(generated),(generated)@hd-york.example,steel forming,large,motorcycle frame QC
+W030,Vermeer Manufacturing,(generated),(generated)@vermeer.example,steel,medium,ag-equipment fabrication QC
+W031,Bobcat Gwinner,(generated),(generated)@bobcat-gwin.example,steel forming,medium,skid-steer chassis QC
+W032,Snap-on Tools Kenosha,(generated),(generated)@snap-on-ken.example,precision machining,medium,hand-tool finish QC
+W033,Stanley Black & Decker,(generated),(generated)@sbd.example,steel forming,medium,power-tool housing QC
+W034,Milwaukee Tool Brookfield,(generated),(generated)@milwaukee-tool.example,precision machining,medium,power-tool component QC
+W035,Cleveland-Cliffs Burns Harbor,(generated),(generated)@cliffs-bh.example,steel,large,plate mill inspection
+W036,Nucor Auburn Steel,(generated),(generated)@nucor-aub.example,steel,large,bar mill QC
+W037,Steel Dynamics Butler,(generated),(generated)@steeldy-but.example,steel,large,structural mill QC
+W038,Olympic Steel Detroit,(generated),(generated)@olympic-det.example,steel,medium,plate processing QC
+W039,Lima Foundry,(generated),(generated)@lima-fdry.example,metal casting,medium,ductile iron casting
+W040,Erie Iron Works,(generated),(generated)@erie-iron.example,metal casting,medium,casting porosity
+W041,Pennsylvania Forge,(generated),(generated)@pa-forge.example,forging,medium,die forging QC
+W042,Buffalo Forge & Steel,(generated),(generated)@buffalo-forge.example,forging,medium,open-die forging
+W043,Texas Forge & Stamping,(generated),(generated)@tx-forge.example,forging,medium,stamping inspection
+W044,Houston Aerospace Machining,(generated),(generated)@houston-aero.example,aluminum machining,medium,airframe component QC
+W045,Wichita Falls Industries,(generated),(generated)@wf-ind.example,metal casting,medium,investment casting
+W046,Tulsa Welding & Fab,(generated),(generated)@tulsa-weld.example,steel welding,medium,structural weld QC
+W047,Dallas Precision Casting,(generated),(generated)@dallas-pcast.example,metal casting,small,investment casting
+W048,Phoenix Forge Group,(generated),(generated)@phoenix-forge.example,forging,medium,closed-die forging
+W049,Seattle Composites,(generated),(generated)@seattle-comp.example,composites,medium,aerospace layup QC
+W050,Portland Foundry,(generated),(generated)@portland-fdry.example,metal casting,small,custom alloy casting
+W051,Denver Steel Erectors,(generated),(generated)@denver-steel.example,steel,medium,structural fabrication QC
+W052,Salt Lake Aluminum,(generated),(generated)@slc-alu.example,aluminum extrusion,medium,profile inspection
+W053,Atlanta Stamping Co,(generated),(generated)@atlanta-stamp.example,steel forming,medium,deep-draw inspection
+W054,Charlotte Forge Works,(generated),(generated)@charlotte-forge.example,forging,medium,die forging QC
+W055,Nashville Iron Castings,(generated),(generated)@nash-iron.example,metal casting,medium,iron casting porosity
+W056,Indianapolis Forge,(generated),(generated)@indy-forge.example,forging,medium,heavy forging QC
+W057,Louisville Steel,(generated),(generated)@louisville-st.example,steel,medium,plate processing QC
+W058,Cincinnati Milacron,(generated),(generated)@cincinnati-mil.example,precision machining,medium,machine-tool QC
+W059,Toledo Machine & Tool,(generated),(generated)@toledo-mt.example,precision machining,medium,machine-tool component QC
+W060,Akron Polymer Solutions,(generated),(generated)@akron-poly.example,polymer extrusion,medium,polymer profile QC
+W061,Detroit Tool & Engineering,(generated),(generated)@det-tool.example,precision machining,medium,die / mould inspection
+W062,Grand Rapids Casting,(generated),(generated)@gr-cast.example,metal casting,medium,sand casting QC
+W063,Saginaw Steering,(generated),(generated)@saginaw-st.example,precision machining,large,automotive steering QC
+W064,Flint Stamping,(generated),(generated)@flint-stamp.example,steel forming,large,automotive panel QC
+W065,Pontiac Tool & Die,(generated),(generated)@pontiac-td.example,precision machining,medium,die inspection
+W066,Kansas City Precision,(generated),(generated)@kc-prec.example,precision machining,medium,small-bore machining
+W067,Omaha Industrial Forge,(generated),(generated)@omaha-forge.example,forging,small,small-die forging
+W068,Des Moines Polymer Tech,(generated),(generated)@dm-poly.example,polymer extrusion,small,pipe extrusion QC
+W069,Madison Wisconsin Steel,(generated),(generated)@madison-st.example,steel,medium,plate fabrication QC
+W070,Minneapolis Aerospace,(generated),(generated)@minn-aero.example,aluminum machining,medium,airframe component QC
+W071,St Paul Foundry,(generated),(generated)@stpaul-fdry.example,metal casting,small,casting QC
+W072,Fargo Steel Erectors,(generated),(generated)@fargo-steel.example,steel,small,structural QC
+W073,Boise Composite Tech,(generated),(generated)@boise-comp.example,composites,small,layup defect detection
+W074,Anchorage Marine Forge,(generated),(generated)@anchorage-marine.example,forging,small,marine-grade forging
+W075,Albuquerque Aluminum,(generated),(generated)@albq-alu.example,aluminum extrusion,medium,profile inspection
+W076,Las Vegas Precision,(generated),(generated)@lv-prec.example,precision machining,small,small-bore machining
+W077,San Diego Aerospace Machining,(generated),(generated)@sd-aero.example,aluminum machining,medium,airframe component QC
+W078,Long Beach Composites,(generated),(generated)@lb-comp.example,composites,medium,aerospace layup QC
+W079,Bay Area Investment Casting,(generated),(generated)@bay-icast.example,investment casting,medium,aerospace casting QC
+W080,Sacramento Steel,(generated),(generated)@sac-steel.example,steel,small,plate fab QC
+W081,Reno Tool & Die,(generated),(generated)@reno-td.example,precision machining,small,die inspection
+W082,Salt Lake Forge,(generated),(generated)@slc-forge.example,forging,small,small-die forging
+W083,Phoenix Polymer Profiles,(generated),(generated)@phx-poly.example,polymer extrusion,small,polymer profile QC
+W084,Mesa Composite Solutions,(generated),(generated)@mesa-comp.example,composites,small,small-batch layup QC
+W085,Tucson Aluminum Works,(generated),(generated)@tucson-alu.example,aluminum extrusion,small,profile QC
+W086,El Paso Steel Fab,(generated),(generated)@elpaso-st.example,steel,medium,fabrication QC
+W087,San Antonio Casting Co,(generated),(generated)@sa-cast.example,metal casting,medium,ductile casting
+W088,Austin Precision Manufacturing,(generated),(generated)@austin-prec.example,precision machining,small,small-bore machining
+W089,Memphis Forge Works,(generated),(generated)@memphis-forge.example,forging,medium,die forging QC
+W090,Birmingham Iron Foundry,(generated),(generated)@bham-iron.example,metal casting,medium,iron casting porosity
+W091,Mobile Marine Casting,(generated),(generated)@mobile-marine.example,metal casting,medium,marine-grade casting QC
+W092,New Orleans Industrial,(generated),(generated)@nola-ind.example,steel,medium,port-grade plate QC
+W093,Jacksonville Steel Fab,(generated),(generated)@jax-steel.example,steel,medium,structural QC
+W094,Tampa Bay Composites,(generated),(generated)@tampa-comp.example,composites,small,marine composite QC
+W095,Miami Aerospace Sub,(generated),(generated)@miami-aero.example,aluminum machining,small,airframe component QC

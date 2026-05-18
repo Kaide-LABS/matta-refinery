@@ -1,0 +1,103 @@
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
+W001,William Cook Sheffield,(generated),(generated)@wcook-sheffield.example,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
+W002,Sheffield Forgemasters,(generated),(generated)@sheffield-forge.example,forging,large,large open-die forgings
+W003,Brush Group Loughborough,(generated),(generated)@brush-group.example,forging,large,turbine forgings
+W004,Caparo Forging,(generated),(generated)@caparo.example,forging,medium,automotive forging
+W005,Bharat Forge Mundhwa,(generated),(generated)@bharat-forge.example,forging,large,large-bore forgings
+W006,Sundram Fasteners,(generated),(generated)@sundram.example,forging,medium,fastener forging
+W007,RAMKRISHNA Forgings,(generated),(generated)@ramkrishna.example,forging,large,heavy forging QC
+W008,Tianjin Tianduan Press,(generated),(generated)@tianjin-press.example,forging,large,press-forging cell
+W009,Bohai Forge & Machinery,(generated),(generated)@bohai-forge.example,forging,large,marine-grade forging
+W010,Hyundai Forge Korea,(generated),(generated)@hyundai-forge.example,forging,large,automotive forging
+W011,Aichi Steel Tokai,(generated),(generated)@aichi-steel.example,forging,large,specialty steel forging
+W012,Daido Steel Nagoya,(generated),(generated)@daido-steel.example,forging,large,bearing-grade forging
+W013,Kobe Steel Kakogawa,(generated),(generated)@kobesteel.example,forging,large,aerospace forging
+W014,JFE Holdings Chiba,(generated),(generated)@jfe.example,forging,large,heavy-bore forging
+W015,Mitsubishi Heavy Forging,(generated),(generated)@mhi-forge.example,forging,large,turbine forging
+W016,Doosan Heavy Changwon,(generated),(generated)@doosan-heavy.example,forging,large,power-gen forging
+W017,Hyundai Steel Dangjin,(generated),(generated)@hyundai-steel.example,forging,large,steel forging
+W018,POSCO Pohang Works,(generated),(generated)@posco.example,forging,large,heavy-section forging
+W019,Tata Steel Jamshedpur,(generated),(generated)@tatasteel-jam.example,forging,large,steel forging
+W020,Jindal Steel Raigarh,(generated),(generated)@jindal-steel.example,forging,large,rail-grade forging
+W021,Steel Authority of India,(generated),(generated)@sail.example,forging,large,structural forging
+W022,Voest Alpine Linz,(generated),(generated)@voestalpine.example,forging,large,rail forging
+W023,Buderus Edelstahl Wetzlar,(generated),(generated)@buderus-edel.example,forging,medium,specialty steel forging
+W024,Saarstahl Völklingen,(generated),(generated)@saarstahl.example,forging,large,bar-stock forging
+W025,Schmiedewerke Gröditz,(generated),(generated)@gr-schmiede.example,forging,medium,heavy forging QC
+W026,Walter AG Tübingen,(generated),(generated)@walter-ag.example,precision machining,medium,tooling-grade forging
+W027,Mannesmann Düsseldorf,(generated),(generated)@mannesmann.example,forging,medium,seamless tube forging
+W028,Salzgitter Forge,(generated),(generated)@salzgitter-forge.example,forging,medium,plate forging
+W029,Hammerwerk Fridingen,(generated),(generated)@fridingen.example,forging,small,small-die forging
+W030,Doerken Heavy Forge,(generated),(generated)@doerken.example,forging,medium,heavy forging
+W031,KSB Pumpen Frankenthal,(generated),(generated)@ksb-pumpen.example,forging,medium,pump-impeller forging
+W032,GKN Driveline,(generated),(generated)@gkn-drive.example,forging,large,driveshaft forging
+W033,Bharat Earth Movers,(generated),(generated)@bharat-em.example,forging,large,construction-eq forging
+W034,Volvo Construction Equipment,(generated),(generated)@volvo-ce.example,forging,large,construction-eq forging
+W035,Doosan Infracore Bobcat,(generated),(generated)@doosan-infra.example,forging,large,construction-eq forging
+W036,Hyundai Heavy Construction,(generated),(generated)@hyundai-heavy.example,forging,large,construction-eq forging
+W037,Komatsu Awazu,(generated),(generated)@komatsu.example,forging,large,heavy-equipment forging
+W038,Caterpillar East Peoria,(generated),(generated)@cat-eastp.example,forging,large,track-link forging
+W039,John Deere Forge Davenport,(generated),(generated)@jd-forge.example,forging,large,ag-eq forging
+W040,Bridgestone Forging,(generated),(generated)@bridgestone-forge.example,forging,medium,tire-mould forging
+W041,Continental Forge,(generated),(generated)@conti-forge.example,forging,medium,automotive forging
+W042,Michelin Forge Centre,(generated),(generated)@michelin-forge.example,forging,medium,tire-mould forging
+W043,Goodyear Forge Ohio,(generated),(generated)@goodyear-forge.example,forging,medium,tire-mould forging
+W044,Pirelli Industrial Forge,(generated),(generated)@pirelli-forge.example,forging,medium,industrial forging
+W045,Brembo Stezzano,(generated),(generated)@brembo.example,forging,large,brake-caliper forging
+W046,ZF Friedrichshafen Forge,(generated),(generated)@zf-forge.example,forging,large,driveline forging
+W047,Schaeffler Forge,(generated),(generated)@schaeffler-forge.example,forging,large,bearing-grade forging
+W048,SKF Göteborg Forge,(generated),(generated)@skf-forge.example,forging,large,bearing-race forging
+W049,FAG Bearings Schweinfurt,(generated),(generated)@fag.example,forging,large,bearing-race forging
+W050,NSK Bearings Fujisawa,(generated),(generated)@nsk.example,forging,large,bearing-race forging
+W051,NTN Bearings Iwata,(generated),(generated)@ntn.example,forging,large,bearing-race forging
+W052,Hitachi Metals Yasugi,(generated),(generated)@hitachi-metal.example,forging,medium,specialty forging
+W053,Kobelco Construction,(generated),(generated)@kobelco-c.example,forging,large,construction forging
+W054,IHI Forge Yokohama,(generated),(generated)@ihi-forge.example,forging,large,heavy-bore forging
+W055,Sumitomo Heavy Forge,(generated),(generated)@sumitomo-forge.example,forging,large,turbine forging
+W056,JSW Steel Maharashtra,(generated),(generated)@jsw-steel.example,forging,large,plate forging
+W057,Essar Steel Hazira,(generated),(generated)@essar.example,forging,medium,steel forging
+W058,Mahindra Forge Pune,(generated),(generated)@mahindra-forge.example,forging,medium,automotive forging
+W059,Ashok Leyland Forge,(generated),(generated)@al-forge.example,forging,medium,commercial-vehicle forging
+W060,Eicher Motors Forge,(generated),(generated)@eicher-forge.example,forging,medium,commercial-vehicle forging
+W061,Tata Motors Pune Forge,(generated),(generated)@tata-forge.example,forging,medium,automotive forging
+W062,Force Motors Pune,(generated),(generated)@force-mot.example,forging,medium,commercial-vehicle forging
+W063,Aerospace Forge Yorkshire,(generated),(generated)@aero-forge-uk.example,forging,medium,aerospace-grade forging
+W064,Aubert & Duval Pamiers,(generated),(generated)@aubert-duval.example,forging,medium,nickel-alloy forging
+W065,Wyman-Gordon Houston,(generated),(generated)@wyman-gordon.example,forging,large,aerospace forging
+W066,Scot Forge Spring Grove,(generated),(generated)@scot-forge.example,forging,medium,open-die forging
+W067,Ellwood City Forge,(generated),(generated)@ellwood-forge.example,forging,medium,open-die forging
+W068,Erie Press Systems,(generated),(generated)@erie-press.example,forging,medium,press-cell forging
+W069,Hatebur Switzerland,(generated),(generated)@hatebur.example,forging,medium,hot-former forging
+W070,Schuler Press Goeppingen,(generated),(generated)@schuler.example,forging,large,press-cell forging
+W071,Komatsu Press Toyama,(generated),(generated)@komatsu-press.example,forging,large,stamping-press forging
+W072,Vincent Forge Pittsburgh,(generated),(generated)@vincent-forge.example,forging,medium,small-batch forging
+W073,Indiana Forge & Steel,(generated),(generated)@in-forge.example,forging,medium,specialty forging
+W074,Anchor Harvey Norristown,(generated),(generated)@anchor-harvey.example,forging,medium,small-die forging
+W075,Walker Forge Clintonville,(generated),(generated)@walker-forge.example,forging,medium,closed-die forging
+W076,Trenton Forging Michigan,(generated),(generated)@trenton-forge.example,forging,medium,closed-die forging
+W077,Bauer-Bodoni Cleveland,(generated),(generated)@bauer-bod.example,forging,small,small-die forging
+W078,Pittsburgh Forging,(generated),(generated)@pgh-forge.example,forging,medium,heavy forging
+W079,Cleveland Steel Forge,(generated),(generated)@cle-steel-forge.example,forging,medium,steel forging
+W080,National Forge Irvine,(generated),(generated)@nat-forge.example,forging,large,large-bore forging
+W081,Buckeye Forge Akron,(generated),(generated)@buckeye-forge.example,forging,medium,specialty forging
+W082,Steel City Forge,(generated),(generated)@steel-city-forge.example,forging,medium,structural forging
+W083,Niagara Forge & Steel,(generated),(generated)@niagara-forge.example,forging,medium,heavy forging
+W084,Lake Erie Forge,(generated),(generated)@lake-erie-forge.example,forging,medium,small-batch forging
+W085,Great Lakes Forge,(generated),(generated)@gl-forge.example,forging,medium,small-die forging
+W086,Buckhorn Forging,(generated),(generated)@buckhorn.example,forging,small,small-die forging
+W087,Heritage Forge Kentucky,(generated),(generated)@heritage-forge.example,forging,medium,small-die forging
+W088,Appalachian Steel Forge,(generated),(generated)@appalachian-forge.example,forging,medium,structural forging
+W089,Smoky Mountain Forge,(generated),(generated)@smoky-forge.example,forging,small,small-batch forging
+W090,Carolina Forge Works,(generated),(generated)@carolina-forge.example,forging,medium,closed-die forging
+W091,Atlantic Coast Forging,(generated),(generated)@atlantic-forge.example,forging,medium,marine forging
+W092,Gulf Coast Forge,(generated),(generated)@gulf-forge.example,forging,medium,marine forging
+W093,Pacific Northwest Forge,(generated),(generated)@pnw-forge.example,forging,medium,marine forging
+W094,Rocky Mountain Forge,(generated),(generated)@rm-forge.example,forging,small,small-die forging
+W095,Mojave Forging Group,(generated),(generated)@mojave-forge.example,forging,medium,aerospace forging
+W096,Cascade Forge Oregon,(generated),(generated)@cascade-forge.example,forging,small,small-batch forging
+W097,Sierra Pacific Forge,(generated),(generated)@sierra-forge.example,forging,medium,industrial forging
+W098,Sonora Forge Mexicali,(generated),(generated)@sonora-forge.example,forging,medium,cross-border forging
+W099,Coahuila Heavy Forge,(generated),(generated)@coahuila-forge.example,forging,medium,heavy forging
+W100,Bajío Industrial Forge,(generated),(generated)@bajio-forge.example,forging,medium,automotive forging
+W101,Sao Paulo Forja,(generated),(generated)@sp-forja.example,forging,large,heavy forging
+W102,Minas Gerais Forge Works,(generated),(generated)@mg-forge.example,forging,large,iron-ore-grade forging

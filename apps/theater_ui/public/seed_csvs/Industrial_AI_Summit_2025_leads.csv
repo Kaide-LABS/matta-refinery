@@ -1,0 +1,79 @@
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
+W001,William Cook Sheffield,(generated),(generated)@wcook-sheffield.example,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
+W002,Caracol AM Lombardia,(generated),(generated)@caracol-am.example,additive_manufacturing,medium,large-format robot AM cell QC
+W003,Stratasys Eden Prairie,(generated),(generated)@stratasys.example,additive_manufacturing,large,FDM build-plate inspection
+W004,3D Systems Rock Hill,(generated),(generated)@3dsys.example,additive_manufacturing,large,SLA part QC
+W005,EOS North America,(generated),(generated)@eos-na.example,additive_manufacturing,large,SLS powder-bed defect detection
+W006,Velo3D Campbell,(generated),(generated)@velo3d.example,additive_manufacturing,medium,support-free AM inspection
+W007,Markforged Watertown,(generated),(generated)@markforged.example,additive_manufacturing,medium,fibre-reinforced AM QC
+W008,Desktop Metal Burlington,(generated),(generated)@desktopmetal.example,additive_manufacturing,medium,bound-metal AM QC
+W009,Carbon Inc Redwood City,(generated),(generated)@carbon3d.example,additive_manufacturing,medium,DLS resin part QC
+W010,Formlabs Somerville,(generated),(generated)@formlabs.example,additive_manufacturing,medium,SLA build QC
+W011,Renishaw Stone,(generated),(generated)@renishaw.example,additive_manufacturing,large,LPBF in-process monitoring
+W012,SLM Solutions Lübeck,(generated),(generated)@slm.example,additive_manufacturing,large,laser powder bed inspection
+W013,Trumpf Ditzingen,(generated),(generated)@trumpf.example,additive_manufacturing,large,laser cell QC
+W014,Open AI Robotics,(generated),(generated)@openai-rob.example,electronics_assembly,medium,robotic-arm assembly QC
+W015,Anduril Industries,(generated),(generated)@anduril.example,electronics_assembly,large,sentry-tower assembly QC
+W016,Hadrian Automation,(generated),(generated)@hadrian.example,precision machining,medium,autonomous machining cell QC
+W017,Atomic Industries,(generated),(generated)@atomic-ind.example,precision machining,small,AI-optimized tooling QC
+W018,Path Robotics Columbus,(generated),(generated)@path-rob.example,steel welding,medium,autonomous welding cell QC
+W019,Bright Machines San Francisco,(generated),(generated)@bright-mach.example,electronics_assembly,medium,microfactory assembly QC
+W020,Veo Robotics Waltham,(generated),(generated)@veo-rob.example,electronics_assembly,small,collaborative cell QC
+W021,RIOS Intelligent Machines,(generated),(generated)@rios.example,electronics_assembly,small,pick-and-pack QC
+W022,Apex AI Manufacturing,(generated),(generated)@apex-ai.example,precision machining,small,vision-guided machining QC
+W023,Sight Machine Detroit,(generated),(generated)@sight-mach.example,steel,medium,plant analytics integration
+W024,Augury New York,(generated),(generated)@augury.example,steel,medium,vibration analytics deploy
+W025,Falkonry Sunnyvale,(generated),(generated)@falkonry.example,metal casting,medium,time-series anomaly deploy
+W026,Litmus Automation,(generated),(generated)@litmus.example,steel,medium,edge-data platform deploy
+W027,Tulip Interfaces,(generated),(generated)@tulip.example,electronics_assembly,medium,operator UX deploy
+W028,Instrumental Inc,(generated),(generated)@instrumental.example,electronics_assembly,medium,assembly-line vision deploy
+W029,Drishti Technologies,(generated),(generated)@drishti.example,electronics_assembly,medium,manual-line video analytics
+W030,Tempo Automation,(generated),(generated)@tempo-auto.example,electronics_assembly,medium,PCB assembly QC
+W031,Macrofab Houston,(generated),(generated)@macrofab.example,electronics_assembly,medium,PCB rapid-prototype QC
+W032,Foxconn Mt Pleasant,(generated),(generated)@foxconn-wi.example,electronics_assembly,large,display panel QC
+W033,Jabil Saint Petersburg,(generated),(generated)@jabil.example,electronics_assembly,large,contract-manufacturing QC
+W034,Flex Austin,(generated),(generated)@flex.example,electronics_assembly,large,assembly QC
+W035,Sanmina San Jose,(generated),(generated)@sanmina.example,electronics_assembly,large,server assembly QC
+W036,Celestica Toronto,(generated),(generated)@celestica.example,electronics_assembly,large,server backplane QC
+W037,Plexus Neenah,(generated),(generated)@plexus.example,electronics_assembly,medium,medical-device QC
+W038,Benchmark Tempe,(generated),(generated)@benchmark.example,electronics_assembly,medium,aerospace electronics QC
+W039,IEC Electronics Newark,(generated),(generated)@iec-elec.example,electronics_assembly,small,defence electronics QC
+W040,Creation Technologies,(generated),(generated)@creation-tech.example,electronics_assembly,medium,medical-device QC
+W041,Fictiv San Francisco,(generated),(generated)@fictiv.example,precision machining,medium,distributed-manufacturing QC
+W042,Xometry Gaithersburg,(generated),(generated)@xometry.example,precision machining,medium,distributed-manufacturing QC
+W043,Protolabs Maple Plain,(generated),(generated)@protolabs.example,precision machining,large,rapid-prototype QC
+W044,Hubs (formerly 3D Hubs),(generated),(generated)@hubs.example,additive_manufacturing,medium,distributed AM QC
+W045,Shapeways Long Island City,(generated),(generated)@shapeways.example,additive_manufacturing,medium,marketplace AM QC
+W046,Sculpteo Paris,(generated),(generated)@sculpteo.example,additive_manufacturing,small,small-batch AM QC
+W047,Materialise Leuven,(generated),(generated)@materialise.example,additive_manufacturing,medium,medical AM QC
+W048,Imperial College Spinout,(generated),(generated)@imperial-spin.example,additive_manufacturing,small,research-grade AM QC
+W049,MIT Material Genome,(generated),(generated)@mit-mg.example,additive_manufacturing,small,novel-material AM QC
+W050,Stanford AI Manufacturing,(generated),(generated)@stanford-ai.example,electronics_assembly,small,research-grade vision QC
+W051,Cambridge AM Centre,(generated),(generated)@cam-am.example,additive_manufacturing,small,research AM QC
+W052,Oxford Material Innovations,(generated),(generated)@oxford-mat.example,composites,small,novel-composite QC
+W053,ETH Zürich Manufacturing,(generated),(generated)@eth-mfg.example,precision machining,small,research-grade machining
+W054,TU Munich Robotics Lab,(generated),(generated)@tum-rob.example,electronics_assembly,small,robot assembly research
+W055,Fraunhofer IPK Berlin,(generated),(generated)@fraunhofer-ipk.example,steel,medium,applied-research QC
+W056,Carnegie Mellon Manufacturing,(generated),(generated)@cmu-mfg.example,additive_manufacturing,small,research AM QC
+W057,Georgia Tech Composites,(generated),(generated)@gt-comp.example,composites,small,research composite QC
+W058,University of Michigan Forge,(generated),(generated)@umich-forge.example,forging,small,research forging QC
+W059,Texas A&M Aerospace,(generated),(generated)@tamu-aero.example,composites,small,research aerospace QC
+W060,Berkeley Robotics Lab,(generated),(generated)@berkeley-rob.example,electronics_assembly,small,research robotics QC
+W061,Argonne National Lab,(generated),(generated)@argonne.example,steel,medium,national-lab QC
+W062,Oak Ridge MDF,(generated),(generated)@ornl-mdf.example,additive_manufacturing,medium,large-format AM research
+W063,NIST Manufacturing Lab,(generated),(generated)@nist-mfg.example,precision machining,small,metrology research
+W064,Sandia National Lab,(generated),(generated)@sandia.example,additive_manufacturing,medium,national-lab AM QC
+W065,NASA Marshall AM,(generated),(generated)@nasa-am.example,additive_manufacturing,medium,rocket-engine AM QC
+W066,Relativity Space Long Beach,(generated),(generated)@relativity.example,additive_manufacturing,large,rocket structure AM
+W067,Astra Space Alameda,(generated),(generated)@astra.example,additive_manufacturing,medium,rocket-engine AM QC
+W068,Rocket Lab Long Beach,(generated),(generated)@rocketlab.example,additive_manufacturing,medium,launch-vehicle AM QC
+W069,Firefly Aerospace,(generated),(generated)@firefly.example,additive_manufacturing,medium,launch vehicle AM
+W070,Stoke Space Kent,(generated),(generated)@stoke.example,additive_manufacturing,small,reusable-stage AM QC
+W071,Hermeus Atlanta,(generated),(generated)@hermeus.example,aluminum machining,medium,hypersonic machining QC
+W072,Boom Supersonic Denver,(generated),(generated)@boom.example,composites,medium,supersonic composite QC
+W073,Joby Aviation San Carlos,(generated),(generated)@joby.example,composites,medium,eVTOL composite QC
+W074,Archer Aviation San Jose,(generated),(generated)@archer.example,composites,medium,eVTOL composite QC
+W075,Lilium Munich,(generated),(generated)@lilium.example,composites,medium,eVTOL composite QC
+W076,Volocopter Bruchsal,(generated),(generated)@volocopter.example,composites,small,eVTOL composite QC
+W077,Bye Aerospace Englewood,(generated),(generated)@bye-aero.example,composites,small,electric-aircraft composite QC
+W078,Beta Technologies Burlington,(generated),(generated)@beta-tech.example,composites,medium,electric-aircraft composite QC

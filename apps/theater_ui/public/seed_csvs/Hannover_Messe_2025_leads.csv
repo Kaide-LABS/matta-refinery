@@ -1,0 +1,111 @@
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
+W001,William Cook Sheffield,(generated),(generated)@wcook-sheffield.example,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
+W002,Brüggen Metallwerke GmbH,(generated),(generated)@brueggen-metall.example,steel forming,large,sheet-metal forming yields below target
+W003,Schmitz Cargobull AG,(generated),(generated)@schmitz-cargobull.example,steel welding,large,trailer chassis weld inspection scope
+W004,Klüber Lubrication,(generated),(generated)@klueber.example,polymer extrusion,medium,seal-grade polymer line uptime issues
+W005,Heller Maschinenfabrik,(generated),(generated)@heller-machines.example,precision machining,medium,5-axis cell scrap rate triage
+W006,Bayerische Metallwerke,(generated),(generated)@bayerische-metall.example,metal casting,medium,sand casting porosity
+W007,DMG Mori Bielefeld,(generated),(generated)@dmgmori-bielefeld.example,precision machining,large,turret inspection retrofit
+W008,Rheinmetall Defence,(generated),(generated)@rheinmetall-def.example,steel forging,large,large-bore forging surface QC
+W009,KION Group Stahl,(generated),(generated)@kion-stahl.example,steel,large,fork mast weld inspection
+W010,Wenglor sensoric GmbH,(generated),(generated)@wenglor.example,electronics_assembly,medium,sensor enclosure machining QC
+W011,Siemens Energy Mülheim,(generated),(generated)@siemens-energy.example,steel forging,large,turbine blade forging
+W012,KSB Aktiengesellschaft,(generated),(generated)@ksb.example,metal casting,large,pump impeller casting
+W013,Voith Hydro Heidenheim,(generated),(generated)@voith-hydro.example,metal casting,large,large hydro runner casting
+W014,GMN Paul Müller Industrie,(generated),(generated)@gmn-paul-mueller.example,precision machining,medium,bearing finish inspection
+W015,Erbslöh Aluminium GmbH,(generated),(generated)@erbsloeh-al.example,aluminum extrusion,medium,profile defect detection
+W016,SMS group Düsseldorf,(generated),(generated)@sms-group.example,steel,large,rolling mill metrology
+W017,Wieland-Werke AG,(generated),(generated)@wieland.example,copper extrusion,large,copper tube finish inspection
+W018,thyssenkrupp Steel Europe,(generated),(generated)@tk-steel.example,steel,large,hot strip mill QC
+W019,Salzgitter Flachstahl,(generated),(generated)@salzgitter.example,steel,large,flat steel coil inspection
+W020,Aurubis Hamburg,(generated),(generated)@aurubis.example,copper smelting,large,casting porosity
+W021,Bavarian Nordic Pharma,(generated),(generated)@bavarian-nordic.example,glass,medium,vial bottling line vision
+W022,Stuttgart Forging GmbH,(generated),(generated)@stuttgart-forge.example,forging,medium,die wear monitoring
+W023,Hamburg Hafenstahl,(generated),(generated)@hamburg-hafenstahl.example,steel,medium,port-grade plate inspection
+W024,Pforzheim Präzision,(generated),(generated)@pforzheim-prazi.example,precision machining,small,jewellery-grade machining QC
+W025,Münster Polymer Technik,(generated),(generated)@muenster-poly.example,polymer extrusion,small,PE-HD pipe wall thickness
+W026,Frankfurt Industriewerke,(generated),(generated)@frankfurt-ind.example,steel forming,medium,deep-draw QC
+W027,Köln Casting Solutions,(generated),(generated)@koeln-casting.example,metal casting,medium,investment casting
+W028,Berlin Metalltechnik,(generated),(generated)@berlin-metall.example,metal casting,small,low-volume casting
+W029,Leipzig Forge & Stamp,(generated),(generated)@leipzig-forge.example,forging,medium,upset forging QC
+W030,Karlsruhe Composites,(generated),(generated)@karlsruhe-comp.example,composites,small,fibre-layup defect detection
+W031,Augsburg Aerospace Tech,(generated),(generated)@augsburg-aero.example,aluminum machining,medium,airframe component QC
+W032,Dresden Halbleiterwerke,(generated),(generated)@dresden-halb.example,electronics_assembly,large,wafer handling vision
+W033,Hannover Walzstahl,(generated),(generated)@hannover-walz.example,steel,medium,bar-mill inspection
+W034,Dortmund Industriestahl,(generated),(generated)@dortmund-stahl.example,steel,medium,plate inspection
+W035,Essen Spezialgüsse,(generated),(generated)@essen-spez.example,metal casting,medium,specialty alloy casting
+W036,Mainz Maschinenbau,(generated),(generated)@mainz-mb.example,precision machining,medium,machine-tool component QC
+W037,Bremen Marine Forge,(generated),(generated)@bremen-marine.example,forging,medium,marine-grade forging
+W038,Düsseldorf Polymerwerk,(generated),(generated)@dusseldorf-poly.example,polymer extrusion,medium,pipe extrusion QC
+W039,Erfurt Präzisionsguss,(generated),(generated)@erfurt-pgus.example,metal casting,small,investment casting porosity
+W040,Wolfsburg Tooling,(generated),(generated)@wolfsburg-tool.example,steel,medium,tooling steel finish
+W041,Stuttgart Glasprodukte,(generated),(generated)@stuttgart-glas.example,glass,medium,container glass inspection
+W042,Magdeburg Metallform,(generated),(generated)@magdeburg-metall.example,steel forming,medium,deep-draw inspection
+W043,Saarbrücken Stahlwerke,(generated),(generated)@saar-stahl.example,steel,large,coil surface QC
+W044,Aachen Sintertechnik,(generated),(generated)@aachen-sinter.example,powder metallurgy,small,sintered part QC
+W045,Tübingen Ceramics,(generated),(generated)@tuebingen-cer.example,ceramic,small,ceramic substrate inspection
+W046,Würzburg Schweißtechnik,(generated),(generated)@wurzburg-weld.example,steel welding,small,robotic weld QC
+W047,Bielefeld Maschinenbau,(generated),(generated)@bielefeld-mb.example,precision machining,medium,gear-grinding QC
+W048,Hamburg Schiffsguss,(generated),(generated)@hamburg-schiff.example,metal casting,large,marine casting porosity
+W049,Wuppertal Federtechnik,(generated),(generated)@wuppertal-feder.example,steel forming,small,spring forming QC
+W050,Mannheim Industrieofen,(generated),(generated)@mannheim-ind.example,steel,medium,heat-treated bar inspection
+W051,Regensburg Stahlbau,(generated),(generated)@regensburg-bau.example,steel,medium,structural beam inspection
+W052,Ingolstadt Aluwerke,(generated),(generated)@ingolstadt-alu.example,aluminum extrusion,large,automotive profile QC
+W053,Heilbronn Schmiedewerk,(generated),(generated)@heilbronn-schmie.example,forging,medium,closed-die forging
+W054,Rostock Metallguss,(generated),(generated)@rostock-metall.example,metal casting,medium,sand casting QC
+W055,Kiel Werften Stahl,(generated),(generated)@kiel-werften.example,steel welding,large,hull plate weld QC
+W056,Bonn Präzisionstechnik,(generated),(generated)@bonn-prazi.example,precision machining,small,medical-device machining
+W057,Frankfurt Wärmebehand.,(generated),(generated)@frankfurt-wb.example,steel,medium,heat-treat surface inspection
+W058,Halle Polymerprofile,(generated),(generated)@halle-poly.example,polymer extrusion,small,window profile QC
+W059,Nürnberg Schraubenwerk,(generated),(generated)@nurnberg-schr.example,steel,medium,fastener QC
+W060,Lübeck Marinetechnik,(generated),(generated)@luebeck-marine.example,steel forging,medium,marine-grade forging
+W061,Chemnitz Werkzeugmasch.,(generated),(generated)@chemnitz-wz.example,precision machining,medium,machine-tool component QC
+W062,Mönchengladbach Stahl,(generated),(generated)@moenchengl-stahl.example,steel,medium,structural steel QC
+W063,Krefeld Edelstahlwerk,(generated),(generated)@krefeld-edel.example,steel,large,stainless coil inspection
+W064,Aalen Präzisionsguss,(generated),(generated)@aalen-pgus.example,metal casting,small,precision investment casting
+W065,Solingen Schneidwaren,(generated),(generated)@solingen-schneid.example,steel,small,blade-grade finish inspection
+W066,Görlitz Stahlfertigung,(generated),(generated)@gorlitz-stahl.example,steel,medium,structural plate QC
+W067,Iserlohn Metallzieher.,(generated),(generated)@iserlohn-metall.example,steel forming,small,deep-draw inspection
+W068,Kassel Schmiede,(generated),(generated)@kassel-schmiede.example,forging,small,small-bore forging QC
+W069,Erlangen Sintertechnik,(generated),(generated)@erlangen-sinter.example,powder metallurgy,medium,sintered automotive QC
+W070,Fürth Präzisionsteile,(generated),(generated)@furth-prazi.example,precision machining,small,small-bore machining QC
+W071,Sindelfingen Karosserie,(generated),(generated)@sindel-karo.example,steel forming,large,body-in-white inspection
+W072,Pforzheim Druckguss,(generated),(generated)@pforzheim-dg.example,metal casting,medium,die-casting porosity
+W073,Hagen Stahlblech,(generated),(generated)@hagen-stahl.example,steel,medium,coil-fed forming QC
+W074,Heidelberg Polymerguss,(generated),(generated)@heidelberg-poly.example,polymer extrusion,small,injection-mould part QC
+W075,Ulm Walzwerke,(generated),(generated)@ulm-walz.example,steel,medium,rolled bar inspection
+W076,Bochum Industriebau,(generated),(generated)@bochum-ind.example,steel,medium,structural plate inspection
+W077,Ravensburg Stahlhandel,(generated),(generated)@ravensburg-st.example,steel,small,distributor cut-to-length QC
+W078,Aschaffenburg Forge,(generated),(generated)@ascha-forge.example,forging,small,small-die forging
+W079,Trier Maschinenbau,(generated),(generated)@trier-mb.example,precision machining,medium,gear-cutting QC
+W080,Cottbus Stahlguss,(generated),(generated)@cottbus-stahl.example,metal casting,medium,structural casting QC
+W081,Friedrichshafen Aero,(generated),(generated)@fhafen-aero.example,aluminum machining,medium,airframe-component QC
+W082,Görmar Schmiedewerk,(generated),(generated)@goermar-schmie.example,forging,small,small-batch forging
+W083,Tuttlingen Medizintech.,(generated),(generated)@tuttlingen-med.example,precision machining,medium,surgical-instrument QC
+W084,Saalfeld Stahlgießerei,(generated),(generated)@saalfeld-gus.example,metal casting,medium,heavy casting porosity
+W085,Witten Wälzlager,(generated),(generated)@witten-wlager.example,precision machining,medium,bearing race QC
+W086,Limburg Stahlhandel,(generated),(generated)@limburg-stahl.example,steel,small,sheet steel inspection
+W087,Coburg Werkzeugbau,(generated),(generated)@coburg-wzb.example,precision machining,small,die / mould inspection
+W088,Schweinfurt Wälzlager,(generated),(generated)@schweinfurt-wlag.example,precision machining,large,bearing finish QC
+W089,Marl Polymerwerk,(generated),(generated)@marl-poly.example,polymer extrusion,medium,blow-moulded part QC
+W090,Recklinghausen Stahl,(generated),(generated)@reckling-stahl.example,steel,medium,structural plate QC
+W091,Plauen Schmiede,(generated),(generated)@plauen-schmie.example,forging,small,small forging QC
+W092,Suhl Edelstahl,(generated),(generated)@suhl-edel.example,steel,medium,specialty stainless QC
+W093,Eberswalde Walzwerk,(generated),(generated)@eberswalde-walz.example,steel,medium,bar mill inspection
+W094,Bautzen Stahlbau,(generated),(generated)@bautzen-bau.example,steel,small,structural QC
+W095,Wismar Schiffbau,(generated),(generated)@wismar-schiff.example,steel welding,large,hull-section weld QC
+W096,Lüneburg Walzlager,(generated),(generated)@luneburg-wlag.example,precision machining,small,bearing inspection
+W097,Schweinau Sinter,(generated),(generated)@schweinau-sint.example,powder metallurgy,small,small-batch sinter QC
+W098,Würzburg Glaswerke,(generated),(generated)@wurzburg-glas.example,glass,medium,container glass QC
+W099,Passau Stahlguss,(generated),(generated)@passau-stahl.example,metal casting,medium,casting porosity
+W100,Konstanz Präzisionsteile,(generated),(generated)@konstanz-prazi.example,precision machining,small,medical-device machining
+W101,Cologne Wärmebehand.,(generated),(generated)@cologne-wb.example,steel,medium,heat-treat QC
+W102,Erfurt Stahlbau,(generated),(generated)@erfurt-bau.example,steel,small,structural QC
+W103,Naumburg Schmiedewerk,(generated),(generated)@naumburg-schmie.example,forging,small,small-bore forging
+W104,Halle Polymerlinie,(generated),(generated)@halle-line.example,polymer extrusion,medium,pipe extrusion QC
+W105,Suhl Werkzeugbau,(generated),(generated)@suhl-wzb.example,precision machining,small,die / mould inspection
+W106,Erlangen Halbleitertech.,(generated),(generated)@erlangen-hl.example,electronics_assembly,large,wafer handling
+W107,Marburg Glasprodukte,(generated),(generated)@marburg-glas.example,glass,small,container glass QC
+W108,Hof Gießereitechnik,(generated),(generated)@hof-gus.example,metal casting,medium,sand-casting QC
+W109,Coburg Walzwerk,(generated),(generated)@coburg-walz.example,steel,medium,coil mill inspection
+W110,Frankfurt Aerospace,(generated),(generated)@frankfurt-aero.example,aluminum machining,medium,airframe component QC
