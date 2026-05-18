@@ -59,12 +59,15 @@ const API_BASE =
 const STAGE1_UNLOCK_MS = 300_000;
 const DOSSIER_POLL_MS = 5_000;
 
+export type Stage2SectionTimings = Record<Stage2Section, number | null>;
+
 export interface UseDemoStateResult {
   phase: DemoPhase;
   batchId: string | null;
   dossierId: string | null;
   elapsedSec: number;
   stage2Progress: Stage2Progress;
+  stage2Timings: Stage2SectionTimings;
   dossier: DossierPayload | null;
   byteDensityRatio: number | null;
   events: TheaterEvent[];
@@ -83,12 +86,21 @@ const initialStage2: Stage2Progress = {
   suggested_approach: 'pending',
 };
 
+const initialStage2Timings: Stage2SectionTimings = {
+  process_taxonomy: null,
+  defect_hypothesis: null,
+  comparable_deployment: null,
+  risk_register: null,
+  suggested_approach: null,
+};
+
 export function useDemoState(): UseDemoStateResult {
   const [phase, setPhase] = useState<DemoPhase>('idle');
   const [batchId, setBatchId] = useState<string | null>(null);
   const [dossierId, setDossierId] = useState<string | null>(null);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [stage2Progress, setStage2Progress] = useState<Stage2Progress>(initialStage2);
+  const [stage2Timings, setStage2Timings] = useState<Stage2SectionTimings>(initialStage2Timings);
   const [dossier, setDossier] = useState<DossierPayload | null>(null);
   const [byteDensityRatio, setByteDensityRatio] = useState<number | null>(null);
   const [events, setEvents] = useState<TheaterEvent[]>([]);
@@ -189,6 +201,7 @@ export function useDemoState(): UseDemoStateResult {
         }
         setStage2Progress((prev) => {
           const next = { ...prev };
+          const newlyCompleted: Stage2Section[] = [];
           (
             [
               'process_taxonomy',
@@ -200,8 +213,23 @@ export function useDemoState(): UseDemoStateResult {
           ).forEach((s) => {
             if (body[s] && next[s] !== 'complete') {
               next[s] = 'complete';
+              newlyCompleted.push(s);
             }
           });
+          if (newlyCompleted.length > 0 && startedAtRef.current) {
+            const elapsedAtCompletion = Math.floor(
+              (Date.now() - startedAtRef.current) / 1000
+            );
+            setStage2Timings((prevTimings) => {
+              const nextTimings = { ...prevTimings };
+              newlyCompleted.forEach((s) => {
+                if (nextTimings[s] === null) {
+                  nextTimings[s] = elapsedAtCompletion;
+                }
+              });
+              return nextTimings;
+            });
+          }
           return next;
         });
         const allComplete =
@@ -340,6 +368,7 @@ export function useDemoState(): UseDemoStateResult {
     setDossierId(null);
     setElapsedSec(0);
     setStage2Progress(initialStage2);
+    setStage2Timings(initialStage2Timings);
     setDossier(null);
     setByteDensityRatio(null);
     setEvents([]);
@@ -353,6 +382,7 @@ export function useDemoState(): UseDemoStateResult {
     dossierId,
     elapsedSec,
     stage2Progress,
+    stage2Timings,
     dossier,
     byteDensityRatio,
     events,

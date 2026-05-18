@@ -486,6 +486,142 @@ code, .mono {
 
 .theater-section--moment .theater-section__heading {
   color: var(--matta-navy);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theater-section--moment-compact {
+  padding: 12px 14px;
+}
+
+.theater-section--moment-compact .theater-section__heading {
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.theater-section--moment-compact .theater-section__body {
+  font-size: 11px;
+}
+
+.theater-section__moment-tag {
+  display: inline-block;
+  padding: 2px 7px;
+  background: var(--matta-peach);
+  color: var(--matta-navy);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+}
+
+.theater-section__heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.theater-section__heading-row .theater-section__heading {
+  margin-bottom: 0;
+}
+
+.theater-mono--inline {
+  margin: 0;
+}
+
+/* ─── Theater timeline (top of pane during Stage 1 / 2) ───────────────── */
+.theater-timeline {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  background: var(--matta-code-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: var(--radius-md);
+}
+
+.theater-timeline__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.theater-timeline__phase {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--matta-navy);
+  letter-spacing: -0.005em;
+}
+
+.theater-timeline__elapsed {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--matta-grey);
+}
+
+.theater-timeline__bar {
+  position: relative;
+  height: 4px;
+  background: var(--matta-pane-bg);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.theater-timeline__fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s linear, background-color 400ms var(--ease-standard);
+}
+
+.theater-timeline__fill--peach {
+  background: var(--matta-peach);
+}
+
+.theater-timeline__fill--forest {
+  background: var(--matta-forest);
+}
+
+.theater-timeline__markers {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--matta-grey);
+}
+
+.theater-timeline__marker-mid {
+  flex: 1;
+  text-align: center;
+}
+
+/* ─── Theater footer (ADC + idempotency, demoted from prime real estate) ─ */
+.theater-footer {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 12px 14px;
+  margin-top: 18px;
+  background: var(--matta-code-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.theater-footer__cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theater-footer__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-grey);
+  font-weight: 500;
 }
 
 .adc-pill {
@@ -583,7 +719,47 @@ code, .mono {
 
 .section-row__name {
   color: var(--matta-navy);
-  font-weight: 400;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: -0.005em;
+}
+
+.section-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.section-row__detail {
+  font-size: 11px;
+  color: var(--matta-grey);
+  font-family: var(--font-mono);
+  line-height: 1.4;
+}
+
+.section-row--complete .section-row__detail {
+  color: var(--matta-forest);
+}
+
+.section-row--active .section-row__detail {
+  color: var(--matta-peach-dark);
+}
+
+.section-row__spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--matta-warm-border-soft);
+  border-top-color: var(--matta-peach-dark);
+  animation: section-spinner 900ms linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes section-spinner {
+  to { transform: rotate(360deg); }
 }
 
 /* ─── Byte-density meter ──────────────────────────────────────────────── */

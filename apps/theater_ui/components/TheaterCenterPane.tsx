@@ -1,5 +1,9 @@
 import React from 'react';
-import type { DemoPhase, Stage2Progress } from '../hooks/useWebSocket';
+import type {
+  DemoPhase,
+  Stage2Progress,
+  Stage2SectionTimings,
+} from '../hooks/useWebSocket';
 
 interface Props {
   phase: DemoPhase;
@@ -7,16 +11,23 @@ interface Props {
   batchId: string | null;
   dossierId: string | null;
   stage2Progress: Stage2Progress;
+  stage2Timings: Stage2SectionTimings;
   byteDensityRatio: number | null;
   error: string | null;
   onRunDemo: () => void;
   onReset: () => void;
 }
 
-function fmtElapsed(sec: number): string {
+function fmtMin(sec: number): string {
   const m = Math.floor(sec / 60);
   const s = sec % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+function fmtTplus(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `T+${m}m ${s.toString().padStart(2, '0')}s`;
 }
 
 const SECTION_LABELS: Record<keyof Stage2Progress, string> = {
@@ -27,6 +38,29 @@ const SECTION_LABELS: Record<keyof Stage2Progress, string> = {
   suggested_approach: 'Suggested Approach',
 };
 
+const SECTION_DETAIL: Record<keyof Stage2Progress, { active: string; pending: string }> = {
+  process_taxonomy: {
+    active: 'Pro single-call in flight',
+    pending: 'awaiting upstream',
+  },
+  defect_hypothesis: {
+    active: 'Flash N=3 ensemble · conformal coverage gate',
+    pending: 'awaiting taxonomy',
+  },
+  comparable_deployment: {
+    active: 'Deterministic KG selector · Pro prose ≤250 chars',
+    pending: 'awaiting defect',
+  },
+  risk_register: {
+    active: 'Pillar-keyed findings · severity scoring',
+    pending: 'awaiting comparable',
+  },
+  suggested_approach: {
+    active: 'Template + deterministic phase breakdown',
+    pending: 'awaiting risk',
+  },
+};
+
 const SECTION_ORDER: (keyof Stage2Progress)[] = [
   'process_taxonomy',
   'defect_hypothesis',
@@ -35,12 +69,19 @@ const SECTION_ORDER: (keyof Stage2Progress)[] = [
   'suggested_approach',
 ];
 
+// Nominal stage windows used to drive the top progress bar.
+// Stage 1 fan-out ≈ 5 minutes wallclock at 124 prospects × N=3 flash.
+// Stage 2 chain ≈ 2 minutes wallclock for the five-section pipeline.
+const STAGE1_NOMINAL_SEC = 300;
+const STAGE2_NOMINAL_SEC = 120;
+
 export default function TheaterCenterPane({
   phase,
   elapsedSec,
   batchId,
   dossierId,
   stage2Progress,
+  stage2Timings,
   byteDensityRatio,
   error,
   onRunDemo,
@@ -54,14 +95,75 @@ export default function TheaterCenterPane({
   const done = phase === 'complete';
   const errored = phase === 'error';
 
+  // Derive the top progress bar state. During Stage 1 it fills peach 0→100
+  // over STAGE1_NOMINAL_SEC; during/after Stage 2 it fills forest 0→100
+  // over STAGE2_NOMINAL_SEC of Stage-2 elapsed time.
+  let progressFill = 0;
+  let progressColor: 'peach' | 'forest' = 'peach';
+  let phaseLabel = '';
+  if (idle) {
+    phaseLabel = 'Idle · ready to ingest';
+  } else if (ingesting) {
+    phaseLabel = 'Ingesting batch';
+    progressFill = 4;
+  } else if (stage1) {
+    phaseLabel = 'Stage 1 · ranking 124 leads';
+    progressFill = Math.min(100, (elapsedSec / STAGE1_NOMINAL_SEC) * 100);
+  } else if (stage1Done) {
+    phaseLabel = 'Stage 1 complete · awaiting click';
+    progressFill = 100;
+  } else if (stage2Active) {
+    // Stage-2 elapsed = elapsed since first non-null section timing, or
+    // approximate by (elapsedSec - STAGE1_NOMINAL_SEC) when no timings yet.
+    const stage2Start = Math.min(
+      ...SECTION_ORDER.map((s) => stage2Timings[s]).filter(
+        (t): t is number => t !== null
+      ),
+      elapsedSec
+    );
+    const stage2Elapsed = Math.max(0, elapsedSec - stage2Start);
+    progressFill = Math.min(100, (stage2Elapsed / STAGE2_NOMINAL_SEC) * 100);
+    progressColor = 'forest';
+    phaseLabel = 'Stage 2 · assembling briefing';
+  } else if (done) {
+    progressFill = 100;
+    progressColor = 'forest';
+    phaseLabel = 'Complete';
+  } else if (errored) {
+    phaseLabel = 'Error';
+  }
+
   return (
     <div className="theater-pane">
       <div className="theater-pane__header">
         <h2 className="theater-pane__title">Theater Console</h2>
         {!idle && (
-          <div className="theater-pane__elapsed">T+{fmtElapsed(elapsedSec)}</div>
+          <div className="theater-pane__elapsed">{fmtTplus(elapsedSec)}</div>
         )}
       </div>
+
+      {!idle && (
+        <div className="theater-timeline">
+          <div className="theater-timeline__top">
+            <span className="theater-timeline__phase">{phaseLabel}</span>
+            <span className="theater-timeline__elapsed">
+              Elapsed {fmtMin(elapsedSec)}
+            </span>
+          </div>
+          <div className="theater-timeline__bar">
+            <div
+              className={`theater-timeline__fill theater-timeline__fill--${progressColor}`}
+              style={{ width: `${progressFill}%` }}
+            />
+          </div>
+          <div className="theater-timeline__markers">
+            <span>T+0</span>
+            <span className="theater-timeline__marker-mid">Stage 1 · ~5m</span>
+            <span className="theater-timeline__marker-mid">Stage 2 · ~2m</span>
+            <span>~T+7m</span>
+          </div>
+        </div>
+      )}
 
       {idle && (
         <div className="theater-cta">
@@ -86,56 +188,53 @@ export default function TheaterCenterPane({
         </div>
       )}
 
-      {(stage1 || stage1Done || stage2Active || done) && batchId && (
-        <div className="theater-section">
-          <div className="theater-section__label">ADC Route</div>
-          <div className="adc-pill">PRIORITIZATION</div>
-
-          <div className="theater-section__label" style={{ marginTop: 12 }}>
-            Idempotency
-          </div>
-          <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
-        </div>
-      )}
-
       {stage1 && (
         <div className="theater-section">
           <div className="theater-section__heading">
             Stage 1 — Deep Ensemble Scoring
           </div>
-          <div className="theater-progress">
-            <div className="theater-progress__bar">
-              <div
-                className="theater-progress__fill"
-                style={{ width: `${Math.min(100, (elapsedSec / 300) * 100)}%` }}
-              />
-            </div>
-            <div className="theater-progress__label">
-              Classifying vertical · scoring fit · 124 leads × N=3
-            </div>
+          <div className="theater-section__body">
+            124 prospects × N=3 ensemble (gemini-2.5-flash, temps 0.1 / 0.5 / 0.9) ·
+            confidence-weighted majority vote · deterministic fit scoring.
           </div>
         </div>
       )}
 
       {stage1Done && !stage2Active && !done && (
-        <div className="theater-section theater-section--moment" data-tutorial-anchor="magic-moment-1">
-          <div className="theater-section__heading">Magic Moment 1 fired</div>
+        <div
+          className="theater-section theater-section--moment theater-section--moment-compact"
+          data-tutorial-anchor="magic-moment-1"
+        >
+          <div className="theater-section__heading">
+            <span className="theater-section__moment-tag">M3</span> Magic Moment 1 fired
+          </div>
           <div className="theater-section__body">
-            Top 12 ranked · Slack canvas, CRM fields, Drive priority index updated.
-            Click a prospect card to generate the full briefing.
+            Top 12 ranked · Slack canvas, CRM fields, Drive priority index updated in one
+            Postgres transaction. Click a prospect card to generate the full briefing.
           </div>
         </div>
       )}
 
       {(stage2Active || done) && dossierId && (
         <div className="theater-section">
-          <div className="theater-section__heading">
-            Stage 2 — William Cook Briefing
+          <div className="theater-section__heading-row">
+            <div className="theater-section__heading">
+              Stage 2 — William Cook Briefing
+            </div>
+            <code className="theater-mono theater-mono--inline">
+              dossier:{dossierId.slice(0, 8)}…
+            </code>
           </div>
-          <code className="theater-mono">dossier:{dossierId.slice(0, 8)}…</code>
           <ul className="section-list">
             {SECTION_ORDER.map((s) => {
               const state = stage2Progress[s];
+              const t = stage2Timings[s];
+              const detail =
+                state === 'complete' && t !== null
+                  ? `persisted at ${fmtTplus(t)}`
+                  : state === 'active'
+                  ? SECTION_DETAIL[s].active
+                  : SECTION_DETAIL[s].pending;
               return (
                 <li
                   key={s}
@@ -145,7 +244,13 @@ export default function TheaterCenterPane({
                   <span className="section-row__indicator">
                     {state === 'complete' ? '✓' : state === 'active' ? '●' : '○'}
                   </span>
-                  <span className="section-row__name">{SECTION_LABELS[s]}</span>
+                  <div className="section-row__body">
+                    <span className="section-row__name">{SECTION_LABELS[s]}</span>
+                    <span className="section-row__detail">{detail}</span>
+                  </div>
+                  {state === 'active' && (
+                    <span className="section-row__spinner" aria-hidden="true" />
+                  )}
                 </li>
               );
             })}
@@ -180,11 +285,16 @@ export default function TheaterCenterPane({
       )}
 
       {done && (
-        <div className="theater-section theater-section--moment" data-tutorial-anchor="magic-moment-2">
-          <div className="theater-section__heading">Magic Moment 2 fired</div>
+        <div
+          className="theater-section theater-section--moment theater-section--moment-compact"
+          data-tutorial-anchor="magic-moment-2"
+        >
+          <div className="theater-section__heading">
+            <span className="theater-section__moment-tag">M12</span> Magic Moment 2 fired
+          </div>
           <div className="theater-section__body">
             Briefing materialized across Slack canvas, CRM note, and Drive document.
-            Total elapsed {fmtElapsed(elapsedSec)}.
+            Total elapsed {fmtMin(elapsedSec)}.
           </div>
           <button className="btn btn-secondary" onClick={onReset} type="button">
             Reset Demo
@@ -198,6 +308,19 @@ export default function TheaterCenterPane({
           <button className="btn btn-secondary" onClick={onReset} type="button">
             Reset
           </button>
+        </div>
+      )}
+
+      {(stage1 || stage1Done || stage2Active || done) && batchId && (
+        <div className="theater-footer">
+          <div className="theater-footer__cell">
+            <span className="theater-footer__label">ADC Route</span>
+            <span className="adc-pill">PRIORITIZATION</span>
+          </div>
+          <div className="theater-footer__cell">
+            <span className="theater-footer__label">Idempotency</span>
+            <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
+          </div>
         </div>
       )}
     </div>

@@ -66,6 +66,7 @@ const IndexPage: NextPage = () => {
           batchId={demo.batchId}
           dossierId={demo.dossierId}
           stage2Progress={demo.stage2Progress}
+          stage2Timings={demo.stage2Timings}
           byteDensityRatio={demo.byteDensityRatio}
           error={demo.error}
           onRunDemo={demo.runDemo}
