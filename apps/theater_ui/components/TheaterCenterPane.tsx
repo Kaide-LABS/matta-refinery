@@ -219,19 +219,46 @@ export default function TheaterCenterPane({
       )}
 
       {idle && (
-        <div className="theater-cta">
-          <button
-            className="btn btn-primary"
-            onClick={onRunDemo}
-            type="button"
-            data-tutorial-anchor="run-demo"
-          >
-            Run Demo
-          </button>
-          <div className="theater-cta__hint">
-            Ingest 124 UK Metals Expo leads · Rank by fit · Route top 12 to Slack, CRM, Drive
+        <>
+          <div className="theater-cta">
+            <button
+              className="btn btn-primary"
+              onClick={onRunDemo}
+              type="button"
+              data-tutorial-anchor="run-demo"
+            >
+              Run Demo
+            </button>
+            <div className="theater-cta__hint">
+              Ingest 124 trade-show leads · Rank by fit · Route top 12 to Slack, CRM, Drive
+            </div>
           </div>
-        </div>
+          <div className="theater-section theater-section--preview">
+            <div className="theater-section__heading">
+              Stage 2 sections (preview)
+            </div>
+            <div className="theater-section__body">
+              These five sections fire after a prospect is selected in Slack.
+            </div>
+            <ul className="section-list">
+              {SECTION_ORDER.map((s) => (
+                <li
+                  key={s}
+                  className="section-row section-row--pending"
+                  data-section={s}
+                >
+                  <div className="section-row__main">
+                    <span className="section-row__indicator">○</span>
+                    <div className="section-row__body">
+                      <span className="section-row__name">{SECTION_LABELS[s]}</span>
+                      <span className="section-row__detail">{SECTION_DETAIL[s].pending}</span>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
       )}
 
       {ingesting && (
@@ -454,7 +481,7 @@ export default function TheaterCenterPane({
         </div>
       )}
 
-      {(!idle && !ingesting) && (
+      {!errored && (
         <div className="theater-footer">
           <div className="theater-footer__cell theater-footer__cell--adc">
             <span className="theater-footer__label">ADC Route</span>
@@ -462,7 +489,7 @@ export default function TheaterCenterPane({
               <span
                 className={`adc-pill ${
                   stage1 || stage1Done ? 'adc-pill--active' : ''
-                }`}
+                } ${idle ? 'adc-pill--next' : ''}`}
                 data-route="prioritization"
                 title="Stage 1 batch scoring route"
               >
@@ -482,10 +509,15 @@ export default function TheaterCenterPane({
               deterministic routing · 0 LLM calls · packages/adc/rules.py
             </span>
           </div>
-          {batchId && (
+          {batchId ? (
             <div className="theater-footer__cell">
               <span className="theater-footer__label">Idempotency</span>
               <code className="theater-mono">batch:{batchId.slice(0, 8)}…</code>
+            </div>
+          ) : (
+            <div className="theater-footer__cell">
+              <span className="theater-footer__label">Idempotency</span>
+              <code className="theater-mono theater-mono--pending">batch:—</code>
             </div>
           )}
           <div className="theater-footer__cell theater-footer__cell--cost" data-tutorial-anchor="cost-ticker">

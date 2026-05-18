@@ -916,6 +916,16 @@ code, .mono {
   animation: pane-pulse 900ms var(--ease-standard);
 }
 
+/* Pre-demo preview state — section list visible but de-emphasized */
+.theater-section--preview {
+  opacity: 0.78;
+  border-style: dashed;
+}
+
+.theater-section--preview .theater-section__heading {
+  color: var(--matta-grey);
+}
+
 .theater-section--milestone .theater-section__heading {
   color: var(--matta-navy);
   display: flex;
@@ -1083,6 +1093,14 @@ code, .mono {
   animation: adc-pill-activate 600ms var(--ease-standard);
 }
 
+/* Pre-demo state: PRIORITIZATION shown as "next up" with a subtle peach
+   border accent (no fill, no animation) so the viewer sees which route
+   is about to fire when Run Demo is clicked. */
+.adc-pill--next {
+  border-color: var(--matta-peach);
+  color: var(--matta-peach-dark);
+}
+
 @keyframes adc-pill-activate {
   0% { background: var(--matta-code-bg); box-shadow: 0 0 0 0 rgba(242, 194, 165, 0); }
   40% { background: var(--matta-peach); box-shadow: 0 0 0 4px rgba(242, 194, 165, 0.28); }
@@ -1138,6 +1156,11 @@ code, .mono {
   font-size: 11px;
   color: var(--matta-navy);
   line-height: 1.4;
+}
+
+.theater-mono--pending {
+  color: var(--matta-grey);
+  opacity: 0.7;
 }
 
 /* ─── Ensemble counters (Stage 1 N=3 visibility) ──────────────────────── */
