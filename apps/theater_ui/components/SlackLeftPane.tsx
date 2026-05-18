@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { DemoPhase } from '../hooks/useWebSocket';
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
+import CsvPreviewModal from './CsvPreviewModal';
 
 interface Props {
   phase: DemoPhase;
@@ -16,6 +17,12 @@ function fmtElapsed(sec: number): string {
 
 export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
+  const [csvModalOpen, setCsvModalOpen] = useState(false);
+
+  // Phase 1.6 Commit 4: hardcoded CSV filename. Commit 5 makes this dynamic
+  // per the variable-CSV demo (random trade-show pick per Run Demo click).
+  const csvPath = '/UK_Metals_Expo_2025_leads.csv';
+  const csvLabel = 'UK_Metals_Expo_2025_leads.csv · 124 leads';
 
   const stage1Running = phase === 'stage1';
   const stage1Done =
@@ -31,10 +38,23 @@ export default function SlackLeftPane({ phase, elapsedSec, onClickProspect }: Pr
       <div className="slack-pane__msg">
         <span className="slack-pane__author">Doug</span> UK Metals Expo batch — Stew, can you triage?
       </div>
-      <div className="slack-pane__attachment" data-tutorial-anchor="csv-attachment">
+      <button
+        className="slack-pane__attachment slack-pane__attachment--clickable"
+        data-tutorial-anchor="csv-attachment"
+        onClick={() => setCsvModalOpen(true)}
+        type="button"
+        aria-label="Preview CSV input"
+      >
         <span className="slack-pane__attachment-icon">📎</span>
-        UK_Metals_Expo_2025_leads.csv · 124 leads
-      </div>
+        <span className="slack-pane__attachment-label">{csvLabel}</span>
+        <span className="slack-pane__attachment-hint">Preview →</span>
+      </button>
+      <CsvPreviewModal
+        open={csvModalOpen}
+        csvPath={csvPath}
+        csvLabel={csvLabel}
+        onClose={() => setCsvModalOpen(false)}
+      />
 
       {stage1Running && (
         <div className="slack-pane__status slack-pane__status--inflight">
