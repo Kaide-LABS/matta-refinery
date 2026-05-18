@@ -28,7 +28,7 @@
   --radius-md: 4px;
   --radius-lg: 6px;
 
-  --header-height: 56px;
+  --header-height: 68px;
   --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
@@ -76,7 +76,7 @@ code, .mono {
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
-  padding: 0 24px;
+  padding: 0 28px;
   background: var(--matta-navy);
   color: #fff;
   border-bottom: 1px solid var(--matta-navy);
@@ -87,37 +87,41 @@ code, .mono {
 .app-header__brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 18px;
 }
 
 .app-header__wordmark {
-  height: 28px;
+  height: 34px;
   display: block;
   filter: brightness(0) invert(1);
 }
 
 /* Fallback text wordmark when the PNG asset is missing — styled to
-   approximate the Matta humanist sans wordmark on a navy background. */
+   approximate the Matta humanist sans wordmark on a navy background.
+   Sized to dominate the header as the visual anchor; title text becomes
+   secondary context. */
 .app-header__wordmark-fallback {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 18px;
-  letter-spacing: -0.01em;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  line-height: 1;
   color: #fff;
   user-select: none;
 }
 
 .app-header__divider {
   width: 1px;
-  height: 18px;
-  background: rgba(255, 255, 255, 0.18);
+  height: 26px;
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .app-header__title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: none;
 }
 
 .app-header__right {
@@ -132,17 +136,21 @@ code, .mono {
   display: flex;
   align-items: center;
   gap: 6px;
+  cursor: help;
+  padding: 6px;
 }
 
 .app-header__connection-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--matta-forest);
+  box-shadow: 0 0 0 2px rgba(92, 122, 107, 0.22);
 }
 
 .app-header__connection-dot--off {
   background: var(--matta-pulse-grey);
+  box-shadow: 0 0 0 2px rgba(122, 125, 128, 0.16);
 }
 
 /* ─── Theater grid layout ─────────────────────────────────────────────── */

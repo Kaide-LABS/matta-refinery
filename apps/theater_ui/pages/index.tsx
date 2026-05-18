@@ -38,15 +38,18 @@ const IndexPage: NextPage = () => {
         </div>
         <div className="app-header__right">
           {demo.batchId && (
-            <div className="app-header__connection">
+            <div
+              className="app-header__connection"
+              title={demo.connected ? 'WebSocket live' : 'WebSocket awaiting events'}
+            >
               <span
                 className={
                   demo.connected
                     ? 'app-header__connection-dot'
                     : 'app-header__connection-dot app-header__connection-dot--off'
                 }
+                aria-label={demo.connected ? 'Live' : 'Awaiting events'}
               />
-              <span>{demo.connected ? 'connected' : 'awaiting events'}</span>
             </div>
           )}
         </div>
