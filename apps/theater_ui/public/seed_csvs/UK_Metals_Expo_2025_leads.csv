@@ -1,125 +1,125 @@
 external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
-W001,William Cook Sheffield,(generated),(generated)@wcook-sheffield.example,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
-T002,Tata Steel UK,(generated),(generated)@tatasteel.example,steel,large,
-E003,Ernest Wright,(generated),(generated)@ernestwright.example,blade-grinding,small,
-C004,Centriblast,(generated),(generated)@centriblast.example,abrasive blasting,medium,
-S005,Safran Seats GB,(generated),(generated)@safran.example,aerospace seat assembly,large,
-S006,Synthetic Company 6,(generated),contact6@example.com,unknown,medium,
-S007,Synthetic Company 7,(generated),contact7@example.com,unknown,medium,
-S008,Synthetic Company 8,(generated),contact8@example.com,unknown,medium,
-S009,Synthetic Company 9,(generated),contact9@example.com,unknown,medium,
-S010,Synthetic Company 10,(generated),contact10@example.com,unknown,medium,
-S011,Synthetic Company 11,(generated),contact11@example.com,unknown,medium,
-S012,Synthetic Company 12,(generated),contact12@example.com,unknown,medium,
-S013,Synthetic Company 13,(generated),contact13@example.com,unknown,medium,
-S014,Synthetic Company 14,(generated),contact14@example.com,unknown,medium,
-S015,Synthetic Company 15,(generated),contact15@example.com,unknown,medium,
-S016,Synthetic Company 16,(generated),contact16@example.com,unknown,medium,
-S017,Synthetic Company 17,(generated),contact17@example.com,unknown,medium,
-S018,Synthetic Company 18,(generated),contact18@example.com,unknown,medium,
-S019,Synthetic Company 19,(generated),contact19@example.com,unknown,medium,
-S020,Synthetic Company 20,(generated),contact20@example.com,unknown,medium,
-S021,Synthetic Company 21,(generated),contact21@example.com,unknown,medium,
-S022,Synthetic Company 22,(generated),contact22@example.com,unknown,medium,
-S023,Synthetic Company 23,(generated),contact23@example.com,unknown,medium,
-S024,Synthetic Company 24,(generated),contact24@example.com,unknown,medium,
-S025,Synthetic Company 25,(generated),contact25@example.com,unknown,medium,
-S026,Synthetic Company 26,(generated),contact26@example.com,unknown,medium,
-S027,Synthetic Company 27,(generated),contact27@example.com,unknown,medium,
-S028,Synthetic Company 28,(generated),contact28@example.com,unknown,medium,
-S029,Synthetic Company 29,(generated),contact29@example.com,unknown,medium,
-S030,Synthetic Company 30,(generated),contact30@example.com,unknown,medium,
-S031,Synthetic Company 31,(generated),contact31@example.com,unknown,medium,
-S032,Synthetic Company 32,(generated),contact32@example.com,unknown,medium,
-S033,Synthetic Company 33,(generated),contact33@example.com,unknown,medium,
-S034,Synthetic Company 34,(generated),contact34@example.com,unknown,medium,
-S035,Synthetic Company 35,(generated),contact35@example.com,unknown,medium,
-S036,Synthetic Company 36,(generated),contact36@example.com,unknown,medium,
-S037,Synthetic Company 37,(generated),contact37@example.com,unknown,medium,
-S038,Synthetic Company 38,(generated),contact38@example.com,unknown,medium,
-S039,Synthetic Company 39,(generated),contact39@example.com,unknown,medium,
-S040,Synthetic Company 40,(generated),contact40@example.com,unknown,medium,
-S041,Synthetic Company 41,(generated),contact41@example.com,unknown,medium,
-S042,Synthetic Company 42,(generated),contact42@example.com,unknown,medium,
-S043,Synthetic Company 43,(generated),contact43@example.com,unknown,medium,
-S044,Synthetic Company 44,(generated),contact44@example.com,unknown,medium,
-S045,Synthetic Company 45,(generated),contact45@example.com,unknown,medium,
-S046,Synthetic Company 46,(generated),contact46@example.com,unknown,medium,
-S047,Synthetic Company 47,(generated),contact47@example.com,unknown,medium,
-S048,Synthetic Company 48,(generated),contact48@example.com,unknown,medium,
-S049,Synthetic Company 49,(generated),contact49@example.com,unknown,medium,
-S050,Synthetic Company 50,(generated),contact50@example.com,unknown,medium,
-S051,Synthetic Company 51,(generated),contact51@example.com,unknown,medium,
-S052,Synthetic Company 52,(generated),contact52@example.com,unknown,medium,
-S053,Synthetic Company 53,(generated),contact53@example.com,unknown,medium,
-S054,Synthetic Company 54,(generated),contact54@example.com,unknown,medium,
-S055,Synthetic Company 55,(generated),contact55@example.com,unknown,medium,
-S056,Synthetic Company 56,(generated),contact56@example.com,unknown,medium,
-S057,Synthetic Company 57,(generated),contact57@example.com,unknown,medium,
-S058,Synthetic Company 58,(generated),contact58@example.com,unknown,medium,
-S059,Synthetic Company 59,(generated),contact59@example.com,unknown,medium,
-S060,Synthetic Company 60,(generated),contact60@example.com,unknown,medium,
-S061,Synthetic Company 61,(generated),contact61@example.com,unknown,medium,
-S062,Synthetic Company 62,(generated),contact62@example.com,unknown,medium,
-S063,Synthetic Company 63,(generated),contact63@example.com,unknown,medium,
-S064,Synthetic Company 64,(generated),contact64@example.com,unknown,medium,
-S065,Synthetic Company 65,(generated),contact65@example.com,unknown,medium,
-S066,Synthetic Company 66,(generated),contact66@example.com,unknown,medium,
-S067,Synthetic Company 67,(generated),contact67@example.com,unknown,medium,
-S068,Synthetic Company 68,(generated),contact68@example.com,unknown,medium,
-S069,Synthetic Company 69,(generated),contact69@example.com,unknown,medium,
-S070,Synthetic Company 70,(generated),contact70@example.com,unknown,medium,
-S071,Synthetic Company 71,(generated),contact71@example.com,unknown,medium,
-S072,Synthetic Company 72,(generated),contact72@example.com,unknown,medium,
-S073,Synthetic Company 73,(generated),contact73@example.com,unknown,medium,
-S074,Synthetic Company 74,(generated),contact74@example.com,unknown,medium,
-S075,Synthetic Company 75,(generated),contact75@example.com,unknown,medium,
-S076,Synthetic Company 76,(generated),contact76@example.com,unknown,medium,
-S077,Synthetic Company 77,(generated),contact77@example.com,unknown,medium,
-S078,Synthetic Company 78,(generated),contact78@example.com,unknown,medium,
-S079,Synthetic Company 79,(generated),contact79@example.com,unknown,medium,
-S080,Synthetic Company 80,(generated),contact80@example.com,unknown,medium,
-S081,Synthetic Company 81,(generated),contact81@example.com,unknown,medium,
-S082,Synthetic Company 82,(generated),contact82@example.com,unknown,medium,
-S083,Synthetic Company 83,(generated),contact83@example.com,unknown,medium,
-S084,Synthetic Company 84,(generated),contact84@example.com,unknown,medium,
-S085,Synthetic Company 85,(generated),contact85@example.com,unknown,medium,
-S086,Synthetic Company 86,(generated),contact86@example.com,unknown,medium,
-S087,Synthetic Company 87,(generated),contact87@example.com,unknown,medium,
-S088,Synthetic Company 88,(generated),contact88@example.com,unknown,medium,
-S089,Synthetic Company 89,(generated),contact89@example.com,unknown,medium,
-S090,Synthetic Company 90,(generated),contact90@example.com,unknown,medium,
-S091,Synthetic Company 91,(generated),contact91@example.com,unknown,medium,
-S092,Synthetic Company 92,(generated),contact92@example.com,unknown,medium,
-S093,Synthetic Company 93,(generated),contact93@example.com,unknown,medium,
-S094,Synthetic Company 94,(generated),contact94@example.com,unknown,medium,
-S095,Synthetic Company 95,(generated),contact95@example.com,unknown,medium,
-S096,Synthetic Company 96,(generated),contact96@example.com,unknown,medium,
-S097,Synthetic Company 97,(generated),contact97@example.com,unknown,medium,
-S098,Synthetic Company 98,(generated),contact98@example.com,unknown,medium,
-S099,Synthetic Company 99,(generated),contact99@example.com,unknown,medium,
-S100,Synthetic Company 100,(generated),contact100@example.com,unknown,medium,
-S101,Synthetic Company 101,(generated),contact101@example.com,unknown,medium,
-S102,Synthetic Company 102,(generated),contact102@example.com,unknown,medium,
-S103,Synthetic Company 103,(generated),contact103@example.com,unknown,medium,
-S104,Synthetic Company 104,(generated),contact104@example.com,unknown,medium,
-S105,Synthetic Company 105,(generated),contact105@example.com,unknown,medium,
-S106,Synthetic Company 106,(generated),contact106@example.com,unknown,medium,
-S107,Synthetic Company 107,(generated),contact107@example.com,unknown,medium,
-S108,Synthetic Company 108,(generated),contact108@example.com,unknown,medium,
-S109,Synthetic Company 109,(generated),contact109@example.com,unknown,medium,
-S110,Synthetic Company 110,(generated),contact110@example.com,unknown,medium,
-S111,Synthetic Company 111,(generated),contact111@example.com,unknown,medium,
-S112,Synthetic Company 112,(generated),contact112@example.com,unknown,medium,
-S113,Synthetic Company 113,(generated),contact113@example.com,unknown,medium,
-S114,Synthetic Company 114,(generated),contact114@example.com,unknown,medium,
-S115,Synthetic Company 115,(generated),contact115@example.com,unknown,medium,
-S116,Synthetic Company 116,(generated),contact116@example.com,unknown,medium,
-S117,Synthetic Company 117,(generated),contact117@example.com,unknown,medium,
-S118,Synthetic Company 118,(generated),contact118@example.com,unknown,medium,
-S119,Synthetic Company 119,(generated),contact119@example.com,unknown,medium,
-S120,Synthetic Company 120,(generated),contact120@example.com,unknown,medium,
-S121,Synthetic Company 121,(generated),contact121@example.com,unknown,medium,
-S122,Synthetic Company 122,(generated),contact122@example.com,unknown,medium,
-S123,Synthetic Company 123,(generated),contact123@example.com,unknown,medium,
-S124,Synthetic Company 124,(generated),contact124@example.com,unknown,medium,
+W001,William Cook Sheffield,James Mitchell,jmitchell@wcook-sheffield.co.uk,ductile iron casting,medium,booth-conversation:porosity-spike-on-pour-A
+W002,Tata Steel UK,Sarah Henderson,s.henderson@tatasteel.com,steel,enterprise,asked about hot-strip mill QC retrofit
+W003,Sheffield Forgemasters,David Brennan,d.brennan@sheffieldforge.co.uk,open-die forging,large,currently evaluating in-line metrology vendors
+W004,Goodwin PLC,Claire Foster,claire.foster@goodwin-plc.co.uk,investment casting,medium,
+W005,Doncasters Group,Rajesh Patel,rpatel@doncasters.com,investment casting / aerospace alloys,large,expanding Lincoln site Q3 2026
+W006,Brush Group Loughborough,Michael Walker,michael.walker@brush.co.uk,turbine generator forgings,large,
+W007,Caparo Forging,Amrit Singh,amrit.singh@caparoforge.com,automotive forging tier 2,medium,Tata supplier; interested in calibration drift detection
+W008,Liberty Steel Rotherham,Emma Thompson,emma.thompson@libertysteel.com,specialty steel bar,enterprise,
+W009,Brunel Bearings,Paul Murphy,p.murphy@brunelbearings.co.uk,precision bearings,medium,asked about bearing-race finish inspection
+W010,Severn Glocon,Rachel Foster,r.foster@severnglocon.com,valve castings,medium,
+W011,Weir Minerals Todmorden,Andrew Macdonald,a.macdonald@weirgroup.com,pump impeller castings,large,decision maker not at booth — follow up
+W012,Cosworth Manufacturing,Lisa Bennett,l.bennett@cosworth.com,high-performance engine castings,medium,F1 supply chain; cycle time pressure
+W013,Renishaw Castings Division,Joanna Harrison,j.harrison@renishaw.com,metrology-grade castings,medium,
+W014,Hayward Tyler,Stefan Kowalski,s.kowalski@haywardtyler.com,submersible motor components,medium,asked specifically about porosity Pareto
+W015,Edwards Vacuum Burgess Hill,Joanne Taylor,j.taylor@edwardsvacuum.com,vacuum pump castings,large,
+W016,Smiths Detection Watford,,,precision aerospace assemblies,large,
+W017,Spirit AeroSystems Belfast,Niamh O'Connor,n.oconnor@spiritaero.com,aerospace composite skins,enterprise,Airbus A220 fuselage supply
+W018,Bridon-Bekaert Doncaster,Dipak Chowdhury,d.chowdhury@bridon-bekaert.com,high-tensile steel cable,medium,
+W019,BAE Land Systems Telford,Group inquiry,,armoured vehicle weld inspection,enterprise,OFFICIAL-SENSITIVE channel only
+W020,Castings PLC Brownhills,Peter Shaw,p.shaw@castingsplc.com,iron casting jobbing foundry,medium,cycle time spike on grade EN-GJL-300
+W021,Yorkshire Casting Co,Harpreet Kaur,h.kaur@yorkshirecasting.co.uk,ductile iron casting,small,
+W022,Sheffield Castings,Bilal Akhtar,b.akhtar@sheffieldcastings.co.uk,iron casting,small,
+W023,Birmingham Forge Works,Tom Collins,t.collins@bhamforge.co.uk,drop forging,medium,expanding heat-treat capacity
+W024,Coventry Precision,Karen Adamson,k.adamson@coventryprecision.co.uk,5-axis precision machining,medium,
+W025,Black Country Foundry,Jamie Evans,j.evans@bcfoundry.co.uk,non-ferrous casting,small,
+W026,Northern Steel & Alloys,,,specialty steel distribution,small,distributor — limited inspection scope
+W027,Manchester Iron Works,Fariha Ahmed,f.ahmed@manchesteriron.co.uk,structural iron casting,medium,
+W028,Wolverhampton Pressings,Graham Wright,g.wright@wolvepressings.co.uk,deep-drawn pressings,medium,automotive tier 2 — surface defect priority
+W029,Stoke Ceramics & Refractory,Phillip Bailey,p.bailey@stokeceramics.co.uk,ceramic substrate casting,small,
+W030,Leeds Cast Metals,Imran Rashid,i.rashid@leedscastmetals.com,aluminium die casting,medium,Mercedes supplier; ITAR-adjacent
+W031,Newcastle Steel Erectors,Hannah Thompson,h.thompson@newcastlesteel.co.uk,structural steel fabrication,medium,
+W032,Aero Engineering Services Bristol,Nathaniel Fletcher,n.fletcher@aero-bristol.com,airframe component machining,medium,BAE / Rolls partnership
+W033,Filton Composites,Zara Ali,z.ali@filtoncomposites.co.uk,aerospace composite layup,medium,
+W034,Prestwick Aerospace,Catherine Macleod,c.macleod@prestwickaero.co.uk,wing-component machining,medium,
+W035,Magellan Aerospace Wrexham,Vikram Kumar,v.kumar@magellan-wrexham.com,engine component castings,medium,interested in N=3 ensemble methodology — saw paper
+W036,Meggitt Aerospace Coventry,Jennifer Allen,j.allen@meggitt.com,thermal management components,large,
+W037,Harland & Wolff Belfast,Declan Murphy,d.murphy@harland-wolff.com,marine-grade plate fabrication,large,asked specifically about hull-section weld inspection
+W038,Caledonian Forge Glasgow,Mhairi Fraser,m.fraser@caledonianforge.co.uk,shipbuilding-grade forgings,medium,
+W039,Babcock Marine Rosyth,,,submarine pressure hull,enterprise,OFFICIAL-SENSITIVE — limited substrate
+W040,Clyde Engineering,team@clydeengineering.co.uk,,marine engineering castings,medium,
+W041,Brüggen Metallwerke GmbH,Andreas Köhler,a.koehler@brueggen-metall.de,sheet steel forming,large,
+W042,Klüber Lubrication Munich,Nadia Hofmann,n.hofmann@klueber.com,seal-grade polymer extrusion,medium,
+W043,Heller Maschinenfabrik Nürtingen,Jens Brandt,j.brandt@heller-machines.de,5-axis machining centres,medium,wants to qualify our system for Heller line
+W044,Doosan Heavy Changwon (UK rep),UK rep at booth,,power-gen forgings,enterprise,
+W045,Voith Hydro Heidenheim,Ursula Weber,u.weber@voith.com,hydroelectric runner casting,large,asked about ductile cast surface qc
+W046,Erbslöh Aluminium GmbH,Jürgen Schmidt,j.schmidt@erbsloeh.de,automotive aluminium extrusion,medium,
+W047,ELG Haniel Sheffield (UK subsidiary),Stefan Becker,s.becker@elg-haniel.co.uk,stainless scrap processing,medium,
+W048,Triumph Group Bristol,Tom Brennan,t.brennan@triumphgroup-uk.com,aerospace structures,large,
+W049,Avon Protection Melksham,Booth manager,,ballistic helmet composites,medium,ITAR — limited scope discussion
+W050,Smiths Group Aerospace Cheltenham,Anna Morgan,a.morgan@smiths.com,actuator forgings,large,
+W051,Rotork Bath,Paul Bennett,p.bennett@rotork.com,industrial actuator castings,medium,
+W052,IMI Plc Birmingham,Neil Shah,n.shah@imi.com,fluid control valve castings,large,asked about porosity & dimensional drift correlation
+W053,Spectris Egham,Alex Kim,a.kim@spectris.com,test & measurement assemblies,medium,
+W054,Vesuvius Plc Doncaster,Hossam Elias,h.elias@vesuvius.com,refractory ceramic casting,large,
+W055,Bodycote Macclesfield,Julian Davies,j.davies@bodycote.com,heat treatment & HIP,enterprise,post-process inspection of HIP'd parts
+W056,Independent Forgings Sheffield,Ranjit Singh,r.singh@indepforgings.com,open-die heavy forging,medium,saw fitness scoring methodology demo
+W057,Hawkins Forge & Stamping Walsall,Kerry O'Neill,k.oneill@hawkinsforge.co.uk,automotive stampings,medium,
+W058,Brookhouse Forgings Oldham,Muhammad Tahir,m.tahir@brookhouseforgings.co.uk,automotive crankshafts,medium,decision maker requested follow-up Q2
+W059,Special Steels Manchester,John Dobson,j.dobson@specialsteelsmcr.co.uk,tool steel bar,small,
+W060,RPC Group Rushden,Kieran O'Sullivan,k.osullivan@rpc-bpi.com,polymer injection mouldings,large,
+W061,Continental Engineering Plastics,Marta Lange,m.lange@conti-eng-plastics.com,engineering polymer extrusion,medium,wall thickness drift after die wear
+W062,Victrex Lancashire,Laura Holt,l.holt@victrex.com,PEEK polymer extrusion,large,high-temp polymer; aerospace-grade
+W063,Renishaw AM Stone,Gareth Wilkins,g.wilkins@renishaw-am.com,laser powder bed fusion,large,Renishaw subsidiary; LPBF in-process monitoring
+W064,LPW Technology Runcorn,Helena Fischer,h.fischer@lpwtechnology.com,AM metal powder QC,small,
+W065,Croft Additive Manufacturing,Daniel Evans,d.evans@croftam.co.uk,AM filter components,small,small batch industrial AM
+W066,Phoenix Calibration Services,Grace Hayward,g.hayward@phoenix-calib.co.uk,calibration substrate vendor,small,interested in our calibration methodology
+W067,Beswick Engineering Manchester,Marek Kowalski,m.kowalski@beswick.co.uk,precision sub-contract machining,small,
+W068,J&J Castings Glasgow,Jamie Ferguson,j.ferguson@jjcastings.co.uk,small-batch iron casting,small,
+W069,Heat Treatment Services Halifax,,,steel heat treatment,small,
+W070,Wilson Welding Inspection,Tom Wilson,t.wilson@wilsonweld.co.uk,weld NDT consultancy,small,wants to integrate with QMS — out of scope
+W071,Penso Composites Coventry,Francesca Bianchi,f.bianchi@penso.co.uk,automotive composite layup,medium,
+W072,Jaguar Land Rover Castle Bromwich,,,automotive body-in-white,enterprise,JLR Q&A team — assembly line vision
+W073,Rolls-Royce Civil Aerospace Derby,Group inquiry,,turbine blade investment casting,enterprise,Trent series; ITAR-adjacent
+W074,Airbus UK Broughton,,,wing assembly inspection,enterprise,Airbus A320 wing line
+W075,BAE Systems Submarines Barrow,,,naval pressure hull,enterprise,OFFICIAL-SENSITIVE
+W076,Nissan Sunderland,,,automotive body stamping,enterprise,asked about scrap rate reduction Q2 target
+W077,Toyota Manufacturing UK Burnaston,,,engine machining,enterprise,
+W078,Nestle Confectionery York,,,food packaging,enterprise,out of scope — food sector
+W079,Unilever Port Sunlight,,,personal care packaging,enterprise,out of scope — FMCG
+W080,Diageo Edinburgh,Hamish Macdonald,h.macdonald@diageo.com,whisky bottling line,enterprise,interesting — global drinks brand parallel
+W081,Britvic Lutterworth,Kavita Patel,k.patel@britvic.co.uk,beverage bottling,large,
+W082,Coca-Cola Enterprises Wakefield,,,beverage canning,enterprise,out of scope — FMCG canning
+W083,Greenfield Metalworks,,,jobbing fabrication,small,under 10 employees; one-off work
+W084,Steve's Welding Sheffield,Steve,,small welding shop,small,owner-operator; curiosity visit
+W085,Heritage Iron Foundry Devon,John Pearce,owner@heritageironfoundry.co.uk,artisan iron casting,small,art / heritage castings
+W086,Industrial Engineering Cambridge,Michael Brown,m.brown@industrial-cambridge.co.uk,metal fabrication / sheet metal,medium,
+W087,Manufacturing Solutions Reading,Kate Davies,k.davies@manusol.co.uk,aerospace + automotive tier 2,medium,
+W088,Precision Group Stoke,Peter Morris,p.morris@precisiongroup.co.uk,automotive precision components,medium,
+W089,Bowers Manufacturing,team,info@bowersmfg,unknown - booth signage unclear,medium,
+W090,Apex Forge & Steel,Adam Thomas,a.thomas@,,medium,
+W091,Northtech Limited,,,unknown,small,
+W092,Sigma Metals,Sigma Metals team,s.metals@example,metal processing,medium,
+W093,Pendragon Castings,,,iron casting,small,interested in calibration substrate methodology
+W094,Albion Forge Birmingham,Anita Bailey,a.bailey@albionforgebirmingham.co.uk,drop forging,medium,
+W095,Mercia Steel Solihull,Sarah Quinn,s.quinn@merciasteelsolihull.co.uk,structural steel,medium,asked specifically about ductile iron porosity baseline
+W096,Wessex Metal Services,,,metal distribution,small,
+W097,Anglia Foundry Norwich,Daniel O'Connor,d.o'connor@angliafoundrynorwich.com,iron casting,small,
+W098,Highland Forge Inverness,Eva O'Connor,e.o'connor@highlandforgeinverness.co.uk,marine forging,small,
+W099,Border Steel Fabrications,,,fabrication,medium,
+W100,Tyne Engineering Newcastle,Christopher O'Connor,c.o'connor@tyneengineeringnewcastle.com,machining sub-contract,medium,
+W101,Wear Valley Castings,Sophie Kelly,s.kelly@wearvalleycastings.co.uk,iron casting,small,expanding line 4 in Q2 2026
+W102,Pennine Precision Tooling,,,tool making,small,
+W103,Cumbria Heat Treatment,,,heat treat,small,post-process inspection scope; HIP'd parts
+W104,Lakeland Forge & Steel,Michael Taylor,m.taylor@lakelandforgeandsteel.com,forging,small,
+W105,Dales Metal Spinning,,,metal spinning,small,
+W106,Cotswolds Engineering,Steven Campbell,s.campbell@cotswoldsengineering.co.uk,unknown,small,decision maker not at booth — follow up
+W107,Surrey Surface Treatment,Ola Mackenzie,o.mackenzie@surreysurfacetreatment.com,surface treatment,small,
+W108,Kent Casting Services,Zara Bailey,z.bailey@kentcastingservices.com,unknown,small,
+W109,Essex Forge Works,Steven Adamski,s.adamski@essexforgeworks.co.uk,forging,small,
+W110,Suffolk Steel Fabrication,,,fabrication,small,
+W111,Norfolk Iron Foundry,Meera Brown,m.brown@norfolkironfoundry.com,iron casting,small,asked about porosity detection retrofit
+W112,Lincolnshire Heavy Engineering,Hannah Adamski,h.adamski@lincolnshireheavyenginee.com,heavy fabrication,medium,
+W113,Yorkshire Wire Drawers,Niall Singh,n.singh@yorkshirewiredrawers.com,wire drawing,small,
+W114,Lancashire Sheet Metal,Kasia Macdonald,k.macdonald@lancashiresheetmetal.com,sheet metal,medium,
+W115,Cheshire Aluminium Castings,,,die casting,medium,
+W116,Staffordshire Precision Castings,Zara Ahmed,z.ahmed@staffordshireprecisionca.com,investment casting,medium,cycle time pressure; scrap rate priority
+W117,Worcestershire Forge,Ola Walker,o.walker@worcestershireforge.co.uk,forging,small,
+W118,Shropshire Engineering Co,Stefan Walker,,unknown,small,Tier 2 supplier; OEM mandate driving inspection upgrade
+W119,Hertfordshire Polymer Mouldings,Karen Shah,k.shah@hertfordshirepolymermoul.com,polymer moulding,medium,
+W120,Bedfordshire Industrial Coatings,Ashwin Harris,a.harris@bedfordshireindustrialco.com,surface coating,small,saw N=3 ensemble methodology — recognises Brion's work
+W121,Buckinghamshire Aerospace Sub,Tariq O'Brien,t.o'brien@buckinghamshireaerospace.com,aerospace machining,medium,
+W122,Oxfordshire Composites Ltd,Magda Bennett,m.bennett@oxfordshirecompositesltd.co.uk,composite layup,small,
+W123,Hampshire Marine Castings,Sarah O'Brien,s.o'brien@hampshiremarinecastings.co.uk,marine casting,small,
+W124,Dorset Heavy Machining,Patrick Bailey,p.bailey@dorsetheavymachining.com,heavy machining,medium,saw N=3 ensemble methodology — recognises Brion's work
