@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import redis.asyncio as aioredis
 from celery import Celery
 from google import genai
@@ -22,6 +23,21 @@ async def lifespan(app: FastAPI):
     await app.state.engine.dispose()
 
 app = FastAPI(lifespan=lifespan)
+
+# CORS for the Theater UI dev server. Permissive on localhost only — the
+# refinery_api runs behind a reverse proxy in production where CORS is
+# handled at the edge. This middleware is for the local docker-compose
+# demo flow (UI at :3000 → API at :8080).
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(ingest.router)
 app.include_router(slack_events.router)
