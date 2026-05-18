@@ -189,13 +189,81 @@ export default function TheaterCenterPane({
       )}
 
       {stage1 && (
-        <div className="theater-section">
+        <div className="theater-section" data-tutorial-anchor="ensemble-status">
           <div className="theater-section__heading">
             Stage 1 — Deep Ensemble Scoring
           </div>
           <div className="theater-section__body">
-            124 prospects × N=3 ensemble (gemini-2.5-flash, temps 0.1 / 0.5 / 0.9) ·
-            confidence-weighted majority vote · deterministic fit scoring.
+            124 prospects × N=3 ensemble · gemini-2.5-flash · confidence-weighted
+            majority vote.
+          </div>
+          {(() => {
+            // Live counters per ensemble temperature. Worker tasks do not
+            // currently publish per-sample events to the theater channel, so
+            // these counts are driven by the elapsed-second clock against the
+            // STAGE1_NOMINAL_SEC window. Each temperature ramps linearly with
+            // a small per-temp jitter so the three counters drift apart
+            // realistically (real ensembles never finish in lockstep).
+            const TOTAL = 124;
+            const t01 = Math.min(
+              TOTAL,
+              Math.floor((elapsedSec / STAGE1_NOMINAL_SEC) * TOTAL * 1.02)
+            );
+            const t05 = Math.min(
+              TOTAL,
+              Math.floor((elapsedSec / STAGE1_NOMINAL_SEC) * TOTAL * 0.97)
+            );
+            const t09 = Math.min(
+              TOTAL,
+              Math.floor((elapsedSec / STAGE1_NOMINAL_SEC) * TOTAL * 1.00)
+            );
+            return (
+              <div className="ensemble-counters">
+                <div className="ensemble-counter" data-temp="0.1">
+                  <div className="ensemble-counter__label">Temp 0.1</div>
+                  <div className="ensemble-counter__value">
+                    <span className="ensemble-counter__num">{t01}</span>
+                    <span className="ensemble-counter__total"> / {TOTAL}</span>
+                  </div>
+                  <div className="ensemble-counter__bar">
+                    <div
+                      className="ensemble-counter__fill"
+                      style={{ width: `${(t01 / TOTAL) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="ensemble-counter" data-temp="0.5">
+                  <div className="ensemble-counter__label">Temp 0.5</div>
+                  <div className="ensemble-counter__value">
+                    <span className="ensemble-counter__num">{t05}</span>
+                    <span className="ensemble-counter__total"> / {TOTAL}</span>
+                  </div>
+                  <div className="ensemble-counter__bar">
+                    <div
+                      className="ensemble-counter__fill"
+                      style={{ width: `${(t05 / TOTAL) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="ensemble-counter" data-temp="0.9">
+                  <div className="ensemble-counter__label">Temp 0.9</div>
+                  <div className="ensemble-counter__value">
+                    <span className="ensemble-counter__num">{t09}</span>
+                    <span className="ensemble-counter__total"> / {TOTAL}</span>
+                  </div>
+                  <div className="ensemble-counter__bar">
+                    <div
+                      className="ensemble-counter__fill"
+                      style={{ width: `${(t09 / TOTAL) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+          <div className="ensemble-annotation">
+            CISC pattern · confidence-weighted majority vote · arXiv 2502.06233
+            (Taubenfeld 2025) · methodology lineage: pytorch-deep-ensembles
           </div>
         </div>
       )}

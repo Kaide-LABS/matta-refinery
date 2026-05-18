@@ -943,6 +943,70 @@ code, .mono {
   line-height: 1.4;
 }
 
+/* ─── Ensemble counters (Stage 1 N=3 visibility) ──────────────────────── */
+.ensemble-counters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ensemble-counter {
+  padding: 10px 12px;
+  background: var(--matta-code-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-radius: var(--radius-sm);
+}
+
+.ensemble-counter__label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--matta-grey);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.ensemble-counter__value {
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.ensemble-counter__num {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--matta-navy);
+}
+
+.ensemble-counter__total {
+  font-size: 11px;
+  color: var(--matta-grey);
+}
+
+.ensemble-counter__bar {
+  height: 2px;
+  background: var(--matta-pane-bg);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.ensemble-counter__fill {
+  height: 100%;
+  background: var(--matta-peach);
+  transition: width 800ms var(--ease-standard);
+}
+
+.ensemble-annotation {
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--matta-grey);
+  font-family: var(--font-mono);
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
 .theater-progress {
   margin-top: 10px;
 }
