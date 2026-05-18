@@ -1386,72 +1386,203 @@ code, .mono {
   font-style: italic;
 }
 
-/* ─── CRM inset ───────────────────────────────────────────────────────── */
+/* ─── CRM inset (HubSpot-fidelity contact-record card) ────────────────── */
 .crm-inset {
   position: fixed;
   bottom: 18px;
   right: 18px;
-  width: 320px;
+  width: 340px;
   background: var(--matta-pane-bg);
   border: 1px solid var(--matta-warm-border);
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: 0;
   z-index: 40;
   font-size: 12px;
+  overflow: hidden;
 }
 
 .crm-inset__header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 10px;
+  align-items: center;
+  padding: 10px 14px;
   border-bottom: 1px solid var(--matta-warm-border-soft);
-  margin-bottom: 12px;
+  background: var(--matta-pane-bg);
+}
+
+.crm-inset__brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.crm-inset__logo-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
 }
 
 .crm-inset__logo {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--matta-peach-dark);
+  font-size: 13px;
   font-weight: 600;
+  color: var(--matta-navy);
+  letter-spacing: -0.005em;
+}
+
+.crm-inset__type {
+  font-size: 11px;
+  color: var(--matta-grey);
+  margin-left: 2px;
+}
+
+.crm-inset__menu {
+  background: none;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--matta-grey);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 120ms var(--ease-standard), color 120ms var(--ease-standard);
+}
+
+.crm-inset__menu:hover {
+  background: var(--matta-code-bg);
+  color: var(--matta-navy);
+}
+
+.crm-inset__identity {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+
+.crm-inset__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--matta-code-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--matta-navy);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.crm-inset__name-block {
+  flex: 1;
+  min-width: 0;
 }
 
 .crm-inset__contact {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--matta-navy);
   letter-spacing: -0.005em;
 }
 
+.crm-inset__company {
+  font-size: 11px;
+  color: var(--matta-grey);
+  margin-top: 2px;
+}
+
+.crm-inset__section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-grey);
+  font-weight: 500;
+  padding: 10px 14px 6px;
+}
+
 .crm-inset__kv {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 5px 14px;
+  grid-template-columns: 1fr auto;
   margin: 0;
+  padding: 0 14px 12px;
 }
 
 .crm-inset__kv dt {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--matta-grey);
+  padding: 7px 0;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+
+.crm-inset__kv dt:last-of-type {
+  border-bottom: none;
 }
 
 .crm-inset__kv dd {
-  font-size: 11px;
+  font-size: 12px;
   margin: 0;
   color: var(--matta-navy);
+  padding: 7px 0;
+  text-align: right;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+  font-family: var(--font-mono);
+}
+
+.crm-inset__kv dd:last-of-type {
+  border-bottom: none;
+}
+
+.crm-inset__value--pulse {
+  animation: crm-field-pulse 1200ms var(--ease-standard);
+  border-radius: 3px;
+}
+
+@keyframes crm-field-pulse {
+  0% { background: var(--matta-pane-bg); }
+  40% { background: var(--matta-peach-tint); }
+  100% { background: var(--matta-pane-bg); }
 }
 
 .crm-inset__note {
-  margin-top: 12px;
-  padding: 9px 11px;
-  background: var(--matta-code-bg);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 14px 14px;
+  padding: 10px 12px;
+  background: rgba(92, 122, 107, 0.07);
+  border: 1px solid rgba(92, 122, 107, 0.18);
   border-radius: var(--radius-sm);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--matta-charcoal);
-  font-family: var(--font-mono);
   line-height: 1.5;
+}
+
+.crm-inset__note-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.crm-inset__note-title {
+  font-weight: 500;
+  color: var(--matta-navy);
+  margin-bottom: 2px;
+}
+
+.crm-inset__note-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matta-forest);
+  text-decoration: none;
+}
+
+.crm-inset__note-link:hover {
+  text-decoration: underline;
 }
 
 /* ─── Tutorial callout ────────────────────────────────────────────────── */
