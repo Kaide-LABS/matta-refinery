@@ -2206,17 +2206,49 @@ code, .mono {
 /* ─── Tutorial callout ────────────────────────────────────────────────── */
 .tutorial-callout {
   position: fixed;
-  top: calc(var(--header-height) + 20px);
-  right: 20px;
   width: 340px;
-  background: var(--matta-pane-bg);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border: 1px solid var(--matta-peach);
   border-radius: var(--radius-md);
   padding: 14px 16px 12px;
   z-index: 60;
   font-size: 13px;
   color: var(--matta-charcoal);
-  transition: opacity 280ms var(--ease-standard);
+  transition:
+    opacity 280ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    top 220ms var(--ease-standard),
+    bottom 220ms var(--ease-standard),
+    left 220ms var(--ease-standard),
+    right 220ms var(--ease-standard);
+}
+
+.tutorial-callout:hover {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+/* Dock positions — three deterministic corners, animated transitions. */
+.tutorial-callout[data-dock-position="top-right"] {
+  top: calc(var(--header-height) + 20px);
+  right: 20px;
+  bottom: auto;
+  left: auto;
+}
+
+.tutorial-callout[data-dock-position="bottom-right"] {
+  top: auto;
+  right: 20px;
+  bottom: 20px;
+  left: auto;
+}
+
+.tutorial-callout[data-dock-position="bottom-left"] {
+  top: auto;
+  right: auto;
+  bottom: 20px;
+  left: 20px;
 }
 
 .tutorial-callout--fading {
@@ -2238,20 +2270,118 @@ code, .mono {
   color: var(--matta-peach-dark);
 }
 
-.tutorial-callout__close {
-  background: none;
-  border: none;
-  font-size: 16px;
-  line-height: 1;
-  color: var(--matta-grey);
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  transition: background 140ms var(--ease-standard), color 140ms var(--ease-standard);
+.tutorial-callout__controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 
-.tutorial-callout__close:hover {
+.tutorial-callout__ctrl {
+  background: none;
+  border: none;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--matta-grey);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 140ms var(--ease-standard), color 140ms var(--ease-standard);
+  font-family: inherit;
+}
+
+.tutorial-callout__ctrl:hover {
   background: var(--matta-code-bg);
   color: var(--matta-navy);
+}
+
+.tutorial-callout__close {
+  font-size: 16px;
+}
+
+/* ─── Tutorial pill (minimized state) ────────────────────────────────── */
+.tutorial-pill {
+  position: fixed;
+  width: 220px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid var(--matta-warm-border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px 6px;
+  z-index: 60;
+  font-size: 11px;
+  color: var(--matta-charcoal);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  transition:
+    background 180ms var(--ease-standard),
+    border-color 140ms var(--ease-standard),
+    top 220ms var(--ease-standard),
+    bottom 220ms var(--ease-standard),
+    left 220ms var(--ease-standard),
+    right 220ms var(--ease-standard);
+  overflow: hidden;
+}
+
+.tutorial-pill:hover {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--matta-peach);
+}
+
+.tutorial-pill[data-dock-position="top-right"] {
+  top: calc(var(--header-height) + 20px);
+  right: 20px;
+}
+
+.tutorial-pill[data-dock-position="bottom-right"] {
+  bottom: 20px;
+  right: 20px;
+}
+
+.tutorial-pill[data-dock-position="bottom-left"] {
+  bottom: 20px;
+  left: 20px;
+}
+
+.tutorial-pill__step {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matta-grey);
+  white-space: nowrap;
+}
+
+.tutorial-pill__sep {
+  color: var(--matta-warm-border);
+}
+
+.tutorial-pill__title {
+  font-weight: 500;
+  color: var(--matta-navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.tutorial-pill__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--matta-warm-border-soft);
+}
+
+.tutorial-pill__progress-fill {
+  height: 100%;
+  background: var(--matta-peach);
+  transition: width 600ms var(--ease-standard);
 }
 
 .tutorial-callout__body {

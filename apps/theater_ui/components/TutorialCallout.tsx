@@ -177,6 +177,10 @@ const ALL_STEP_IDS = [
 
 const HIGHLIGHT_CLASS = 'tutorial-target';
 
+type DockPosition = 'top-right' | 'bottom-right' | 'bottom-left';
+
+const DOCK_CYCLE: DockPosition[] = ['top-right', 'bottom-right', 'bottom-left'];
+
 export default function TutorialCallout({
   phase,
   elapsedSec,
@@ -187,7 +191,19 @@ export default function TutorialCallout({
   const [dismissed, setDismissed] = useState(false);
   const [prevStepId, setPrevStepId] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  // Minimize / dock state persists across step transitions within the
+  // session (page reload resets — no localStorage). Step changes update the
+  // pill's title + progress bar in place without auto-expanding.
+  const [minimized, setMinimized] = useState(false);
+  const [dockPosition, setDockPosition] = useState<DockPosition>('top-right');
   const highlightedRef = useRef<Element[]>([]);
+
+  const cycleDock = () => {
+    setDockPosition((prev) => {
+      const idx = DOCK_CYCLE.indexOf(prev);
+      return DOCK_CYCLE[(idx + 1) % DOCK_CYCLE.length];
+    });
+  };
 
   const step = useMemo(
     () => deriveStep(phase, elapsedSec, stage2Progress, byteDensityRatio, tracerName),
@@ -243,22 +259,75 @@ export default function TutorialCallout({
   if (dismissed) return null;
   if (!step.title) return null;
 
+  // Minimized pill — click to expand, same dock position, narrower width
+  if (minimized) {
+    return (
+      <button
+        className="tutorial-pill"
+        type="button"
+        data-tutorial-anchor="guided-demo-card"
+        data-tutorial-state="minimized"
+        data-dock-position={dockPosition}
+        onClick={() => setMinimized(false)}
+        aria-label={`Expand guided demo (Step ${stepNumber} of ${stepTotal})`}
+      >
+        <span className="tutorial-pill__step">
+          Step {stepNumber ?? '–'} of {stepTotal}
+        </span>
+        <span className="tutorial-pill__sep">·</span>
+        <span className="tutorial-pill__title">{step.title}</span>
+        {stepNumber !== null && (
+          <div className="tutorial-pill__progress">
+            <div
+              className="tutorial-pill__progress-fill"
+              style={{ width: `${(stepNumber / stepTotal) * 100}%` }}
+            />
+          </div>
+        )}
+      </button>
+    );
+  }
+
   return (
     <aside
       className={`tutorial-callout ${isTransitioning ? 'tutorial-callout--fading' : ''}`}
       role="status"
       aria-live="polite"
+      data-tutorial-anchor="guided-demo-card"
+      data-tutorial-state="expanded"
+      data-dock-position={dockPosition}
     >
       <div className="tutorial-callout__header">
         <span className="tutorial-callout__tag">Guided demo</span>
-        <button
-          className="tutorial-callout__close"
-          aria-label="Dismiss tutorial"
-          onClick={() => setDismissed(true)}
-          type="button"
-        >
-          ×
-        </button>
+        <div className="tutorial-callout__controls">
+          <button
+            className="tutorial-callout__ctrl"
+            aria-label={`Dock to next corner (currently ${dockPosition})`}
+            title="Cycle dock position"
+            onClick={cycleDock}
+            type="button"
+          >
+            ⊡
+          </button>
+          <button
+            className="tutorial-callout__ctrl"
+            aria-label="Minimize tutorial"
+            title="Minimize"
+            onClick={() => setMinimized(true)}
+            type="button"
+          >
+            ⊟
+          </button>
+          <button
+            className="tutorial-callout__ctrl tutorial-callout__close"
+            aria-label="Dismiss tutorial"
+            title="Dismiss"
+            onClick={() => setDismissed(true)}
+            type="button"
+          >
+            ×
+          </button>
+        </div>
       </div>
       <div className="tutorial-callout__body">
         <h3 className="tutorial-callout__title">{step.title}</h3>
