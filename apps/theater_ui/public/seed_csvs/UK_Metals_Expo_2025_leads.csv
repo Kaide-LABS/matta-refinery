@@ -91,35 +91,35 @@ W089,Bowers Manufacturing,team,info@bowersmfg,unknown - booth signage unclear,me
 W090,Apex Forge & Steel,Adam Thomas,a.thomas@,,medium,
 W091,Northtech Limited,,,unknown,small,
 W092,Sigma Metals,Sigma Metals team,s.metals@example,metal processing,medium,
-W093,Pendragon Castings,,,iron casting,small,interested in calibration substrate methodology
-W094,Albion Forge Birmingham,Anita Bailey,a.bailey@albionforgebirmingham.co.uk,drop forging,medium,
-W095,Mercia Steel Solihull,Sarah Quinn,s.quinn@merciasteelsolihull.co.uk,structural steel,medium,asked specifically about ductile iron porosity baseline
-W096,Wessex Metal Services,,,metal distribution,small,
-W097,Anglia Foundry Norwich,Daniel O'Connor,d.o'connor@angliafoundrynorwich.com,iron casting,small,
-W098,Highland Forge Inverness,Eva O'Connor,e.o'connor@highlandforgeinverness.co.uk,marine forging,small,
-W099,Border Steel Fabrications,,,fabrication,medium,
-W100,Tyne Engineering Newcastle,Christopher O'Connor,c.o'connor@tyneengineeringnewcastle.com,machining sub-contract,medium,
-W101,Wear Valley Castings,Sophie Kelly,s.kelly@wearvalleycastings.co.uk,iron casting,small,expanding line 4 in Q2 2026
-W102,Pennine Precision Tooling,,,tool making,small,
-W103,Cumbria Heat Treatment,,,heat treat,small,post-process inspection scope; HIP'd parts
-W104,Lakeland Forge & Steel,Michael Taylor,m.taylor@lakelandforgeandsteel.com,forging,small,
-W105,Dales Metal Spinning,,,metal spinning,small,
-W106,Cotswolds Engineering,Steven Campbell,s.campbell@cotswoldsengineering.co.uk,unknown,small,decision maker not at booth — follow up
-W107,Surrey Surface Treatment,Ola Mackenzie,o.mackenzie@surreysurfacetreatment.com,surface treatment,small,
-W108,Kent Casting Services,Zara Bailey,z.bailey@kentcastingservices.com,unknown,small,
-W109,Essex Forge Works,Steven Adamski,s.adamski@essexforgeworks.co.uk,forging,small,
-W110,Suffolk Steel Fabrication,,,fabrication,small,
-W111,Norfolk Iron Foundry,Meera Brown,m.brown@norfolkironfoundry.com,iron casting,small,asked about porosity detection retrofit
-W112,Lincolnshire Heavy Engineering,Hannah Adamski,h.adamski@lincolnshireheavyenginee.com,heavy fabrication,medium,
-W113,Yorkshire Wire Drawers,Niall Singh,n.singh@yorkshirewiredrawers.com,wire drawing,small,
-W114,Lancashire Sheet Metal,Kasia Macdonald,k.macdonald@lancashiresheetmetal.com,sheet metal,medium,
-W115,Cheshire Aluminium Castings,,,die casting,medium,
-W116,Staffordshire Precision Castings,Zara Ahmed,z.ahmed@staffordshireprecisionca.com,investment casting,medium,cycle time pressure; scrap rate priority
-W117,Worcestershire Forge,Ola Walker,o.walker@worcestershireforge.co.uk,forging,small,
-W118,Shropshire Engineering Co,Stefan Walker,,unknown,small,Tier 2 supplier; OEM mandate driving inspection upgrade
-W119,Hertfordshire Polymer Mouldings,Karen Shah,k.shah@hertfordshirepolymermoul.com,polymer moulding,medium,
-W120,Bedfordshire Industrial Coatings,Ashwin Harris,a.harris@bedfordshireindustrialco.com,surface coating,small,saw N=3 ensemble methodology — recognises Brion's work
-W121,Buckinghamshire Aerospace Sub,Tariq O'Brien,t.o'brien@buckinghamshireaerospace.com,aerospace machining,medium,
-W122,Oxfordshire Composites Ltd,Magda Bennett,m.bennett@oxfordshirecompositesltd.co.uk,composite layup,small,
-W123,Hampshire Marine Castings,Sarah O'Brien,s.o'brien@hampshiremarinecastings.co.uk,marine casting,small,
-W124,Dorset Heavy Machining,Patrick Bailey,p.bailey@dorsetheavymachining.com,heavy machining,medium,saw N=3 ensemble methodology — recognises Brion's work
+W093,Aberdeen Engineering,,,machining,small,previous vendor missed defects on production run
+W094,Dundee Forge,Anita Bailey,a.bailey@dundeeforge.co.uk,small forging,small,
+W095,Stirling Castings Ltd,Stephen Robinson,s.robinson@stirlingcastingsltd.co.uk,iron casting,small,
+W096,Galway Steel Services,,,steel distribution,small,
+W097,Cork Industrial Solutions,,,fabrication,small,
+W098,Limerick Engineering,Kasia Mackenzie,k.mackenzie@,machining,small,
+W099,Cardiff Forge,James Kelly,j.kelly@cardiffforge.com,small forging,small,
+W100,Swansea Castings Ltd,Rebecca Rashid,,iron casting,small,
+W101,Bangor Steel Services,Steven O'Brien,s.o'brien@bangorsteelservices.co.uk,steel distribution,small,
+W102,Newport Industrial Solutions,Rebecca Murphy,,fabrication,small,compliance audit driving inspection investment
+W103,Wrexham Engineering,Michael Taylor,m.taylor@wrexhamengineering.com,machining,small,
+W104,Carlisle Forge,,,small forging,small,
+W105,Plymouth Castings Ltd,Meera Murray,m.murray@plymouthcastingsltd.co.uk,iron casting,small,currently using vendor X for inspection
+W106,Exeter Steel Services,Marcus Mackenzie,m.mackenzie@exetersteelservices.com,steel distribution,small,
+W107,Brighton Industrial Solutions,Catherine Hussain,c.hussain@,fabrication,small,
+W108,Crawley Engineering,,,machining,small,
+W109,Reading Forge,Anand Hall,a.hall@readingforge.com,small forging,small,
+W110,Slough Castings Ltd,Meera Brown,m.brown@sloughcastingsltd.com,iron casting,small,asked about porosity detection retrofit
+W111,Luton Steel Services,Yasmin Walker,,steel distribution,small,
+W112,Watford Industrial Solutions,Niall Singh,n.singh@watfordindustrialsolutions.com,fabrication,small,
+W113,Romford Engineering,Adebayo Okafor,a.okafor@romfordengineering.co.uk,machining,small,
+W114,Croydon Forge,,,small forging,small,
+W115,Maidstone Castings Ltd,,,iron casting,small,
+W116,Canterbury Steel Services,Chioma Mensah,c.mensah@canterburysteelservices.co.uk,steel distribution,small,
+W117,Pendragon Industrial Solutions,Michael Hall,,fabrication,small,
+W118,Albion Engineering,,,machining,small,
+W119,Mercia Forge,Karen Shah,k.shah@merciaforge.com,small forging,small,
+W120,Wessex Castings Ltd,Yasmin Clark,y.clark@wessexcastingsltd.co.uk,iron casting,small,
+W121,Anglia Steel Services,Richard Clark,r.clark@angliasteelservices.com,steel distribution,small,
+W122,Highland Industrial Solutions,Zara O'Connor,,fabrication,small,asked about porosity detection retrofit
+W123,Border Engineering,,,machining,small,
+W124,Tyne Forge,,,small forging,small,
