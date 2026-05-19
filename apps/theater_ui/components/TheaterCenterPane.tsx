@@ -360,6 +360,10 @@ export default function TheaterCenterPane({
             CISC pattern · confidence-weighted majority vote · arXiv 2502.06233
             (Taubenfeld 2025) · methodology lineage: pytorch-deep-ensembles
           </div>
+          <div className="theater-away-tip" data-tutorial-anchor="away-tip-stage1">
+            ↳ Ranking takes ~5 minutes. Feel free to switch tabs — the tab title
+            will flip to (✓) and a chime will play when the top 12 land.
+          </div>
         </div>
       )}
 
@@ -440,6 +444,12 @@ export default function TheaterCenterPane({
               );
             })}
           </ul>
+          {stage2Active && !done && (
+            <div className="theater-away-tip" data-tutorial-anchor="away-tip-stage2">
+              ↳ Briefing assembly takes ~2 minutes. Tab title will flip to (✓)
+              and a two-note chime will play when the dossier is ready.
+            </div>
+          )}
         </div>
       )}
 

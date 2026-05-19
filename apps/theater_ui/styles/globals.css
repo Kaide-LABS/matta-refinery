@@ -1015,6 +1015,19 @@ code, .mono {
   line-height: 1.6;
 }
 
+/* ─── Away-from-screen tip (during in-flight ranking/briefing) ────────── */
+.theater-away-tip {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--matta-code-bg);
+  border: 1px dashed var(--matta-warm-border);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--matta-charcoal);
+  line-height: 1.55;
+  font-style: italic;
+}
+
 /* ─── CSV selector (dropdown above Run Demo) ──────────────────────────── */
 .csv-selector {
   position: relative;
