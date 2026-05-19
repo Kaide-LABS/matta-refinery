@@ -6,6 +6,7 @@ import DriveDossierRightPane from '../components/DriveDossierRightPane';
 import TutorialCallout from '../components/TutorialCallout';
 import KGValidatorIndicator from '../components/KGValidatorIndicator';
 import { useDemoState } from '../hooks/useWebSocket';
+import { useTabTitle } from '../hooks/useTabTitle';
 
 function MattaWordmark() {
   // PNG asset will replace the text fallback when dropped in
@@ -27,6 +28,7 @@ function MattaWordmark() {
 
 const IndexPage: NextPage = () => {
   const demo = useDemoState();
+  useTabTitle(demo.phase);
 
   return (
     <div className="theater-shell">
