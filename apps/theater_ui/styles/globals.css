@@ -1015,6 +1015,23 @@ code, .mono {
   line-height: 1.6;
 }
 
+/* ─── Reset & try another batch (post-complete affordance) ────────────── */
+.theater-reset-row {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.theater-reset-row__hint {
+  font-size: 11px;
+  color: var(--matta-grey);
+  text-align: center;
+  max-width: 360px;
+  line-height: 1.5;
+}
+
 /* ─── Away-from-screen tip (during in-flight ranking/briefing) ────────── */
 .theater-away-tip {
   margin-top: 14px;

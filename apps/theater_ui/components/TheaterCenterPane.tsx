@@ -491,9 +491,20 @@ export default function TheaterCenterPane({
             Briefing materialized across Slack, CRM, and Drive — one Postgres transaction,
             no half-states. Total elapsed {fmtMin(elapsedSec)}.
           </div>
-          <button className="btn btn-secondary" onClick={onReset} type="button">
-            Reset Demo
-          </button>
+          <div className="theater-reset-row">
+            <button
+              className="btn btn-primary"
+              onClick={onReset}
+              type="button"
+              data-tutorial-anchor="reset-try-another"
+            >
+              ↻ Reset & try another batch
+            </button>
+            <div className="theater-reset-row__hint">
+              Pick a different trade-show CSV to re-run with a fresh cohort —
+              ranking is deterministic per batch.
+            </div>
+          </div>
         </div>
       )}
 
