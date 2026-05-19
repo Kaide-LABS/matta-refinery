@@ -3,6 +3,7 @@ import type { DemoPhase, TopProspect, TracerStatus } from '../hooks/useWebSocket
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
 import CsvPreviewModal from './CsvPreviewModal';
 import type { SeedCsv } from './seedCsvs';
+import { computeFitnessBreakdown } from './scoringWeights';
 
 interface Props {
   phase: DemoPhase;
@@ -33,8 +34,55 @@ function slackTimestamp(offsetMin = 0): string {
 const DOUG_INITIALS = 'DB';
 const REFINERY_ICON_PATH = '/branding/matta_logo_icon.jpg';
 
+interface FitBreakdownTooltipProps {
+  vertical: string;
+  factorySizeBand: string;
+  total: number;
+}
+
+// Fitness-score breakdown tooltip — converts "can we trust this ranking" from
+// a methodology question into a transparency question. The math is the same
+// formula in packages/scoring/fitness.py; the weights are mirrored in
+// scoringWeights.ts. Hovers above the "fit X.XX" label.
+function FitBreakdownTooltip({ vertical, factorySizeBand, total }: FitBreakdownTooltipProps) {
+  // All seeded prospects have trade_show_provenance populated (per the
+  // generator) and capacity_decay=0 (no observed Stage 1 capacity exhaustion
+  // in §H runs). Hardcoding these matches the prospectData fixtures.
+  const breakdown = computeFitnessBreakdown({
+    vertical,
+    factory_size_band: factorySizeBand,
+    trade_show_provenance: true,
+    capacity_decay: 0,
+  });
+  return (
+    <div className="fit-breakdown" role="tooltip">
+      <div className="fit-breakdown__header">Score breakdown</div>
+      <ul className="fit-breakdown__rows">
+        {breakdown.map((row) => (
+          <li key={row.label} className="fit-breakdown__row">
+            <span className="fit-breakdown__label">{row.label}</span>
+            <span className="fit-breakdown__value">
+              {row.contribution >= 0 ? '+' : ''}
+              {row.contribution.toFixed(2)}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="fit-breakdown__divider" />
+      <div className="fit-breakdown__total">
+        <span>total</span>
+        <span>{total.toFixed(2)}</span>
+      </div>
+      <div className="fit-breakdown__footer">
+        packages/scoring/weights.py · deterministic
+      </div>
+    </div>
+  );
+}
+
 export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
+  const [fitTooltipTarget, setFitTooltipTarget] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
   const [refineryIconFailed, setRefineryIconFailed] = useState(false);
 
@@ -227,7 +275,24 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                       <div className="prospect-card__head">
                         <span className="prospect-card__rank">#{p.rank}</span>
                         <span className="prospect-card__name">{displayName}</span>
-                        <span className="prospect-card__fit">fit {displayFit.toFixed(2)}</span>
+                        <span
+                          className="prospect-card__fit"
+                          data-tooltip-target="fitness-breakdown"
+                          onMouseEnter={(e) => {
+                            e.stopPropagation();
+                            setFitTooltipTarget(p.prospectId);
+                          }}
+                          onMouseLeave={() => setFitTooltipTarget(null)}
+                        >
+                          fit {displayFit.toFixed(2)}
+                          {fitTooltipTarget === p.prospectId && (
+                            <FitBreakdownTooltip
+                              vertical={p.vertical}
+                              factorySizeBand={p.rank <= 4 ? 'large' : p.rank <= 9 ? 'medium' : 'small'}
+                              total={displayFit}
+                            />
+                          )}
+                        </span>
                       </div>
                       <div className="prospect-card__meta">
                         <span>{p.vertical.replace(/_/g, ' ')}</span>
