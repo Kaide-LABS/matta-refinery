@@ -62,6 +62,14 @@ const DOSSIER_POLL_MS = 5_000;
 
 export type Stage2SectionTimings = Record<Stage2Section, number | null>;
 
+export interface TopProspect {
+  prospect_id: string;
+  company_name: string;
+  fitness_score: number;
+}
+
+export type TracerStatus = 'idle' | 'resolving' | 'resolved' | 'unavailable';
+
 export interface UseDemoStateResult {
   phase: DemoPhase;
   batchId: string | null;
@@ -75,6 +83,8 @@ export interface UseDemoStateResult {
   connected: boolean;
   error: string | null;
   activeCsv: SeedCsv;
+  tracerProspect: TopProspect | null;
+  tracerStatus: TracerStatus;
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
   reset: () => void;
@@ -109,6 +119,8 @@ export function useDemoState(): UseDemoStateResult {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCsv, setActiveCsv] = useState<SeedCsv>(DEFAULT_SEED_CSV);
+  const [tracerProspect, setTracerProspect] = useState<TopProspect | null>(null);
+  const [tracerStatus, setTracerStatus] = useState<TracerStatus>('idle');
 
   const startedAtRef = useRef<number | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -184,6 +196,51 @@ export function useDemoState(): UseDemoStateResult {
       }
     };
   }, [phase]);
+
+  // ─── Resolve rank-1 tracer prospect via /api/batch/{batch_id}/top_prospect ──
+  // Fires once when the phase first enters 'stage1_complete'. Retries once
+  // after 3s if Stage 1 hasn't fully written fitness scores. On both calls
+  // 404 → tracerStatus='unavailable' and click-handler falls back gracefully.
+  useEffect(() => {
+    if (phase !== 'stage1_complete' || !batchId) return;
+    if (tracerStatus === 'resolved' || tracerStatus === 'resolving') return;
+
+    let cancelled = false;
+    setTracerStatus('resolving');
+
+    const fetchTop = async (): Promise<TopProspect | null> => {
+      try {
+        const res = await fetch(`${API_BASE}/api/batch/${batchId}/top_prospect`);
+        if (!res.ok) return null;
+        const body = (await res.json()) as TopProspect;
+        return body;
+      } catch {
+        return null;
+      }
+    };
+
+    (async () => {
+      let top = await fetchTop();
+      if (!top && !cancelled) {
+        // Retry once after 3s — Stage 1 may have just landed and the write
+        // hasn't propagated yet
+        await new Promise((r) => setTimeout(r, 3000));
+        if (cancelled) return;
+        top = await fetchTop();
+      }
+      if (cancelled) return;
+      if (top) {
+        setTracerProspect(top);
+        setTracerStatus('resolved');
+      } else {
+        setTracerStatus('unavailable');
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [phase, batchId, tracerStatus]);
 
   // ─── Stage 2 dossier polling ──────────────────────────────────────────────
   useEffect(() => {
@@ -333,8 +390,13 @@ export function useDemoState(): UseDemoStateResult {
 
   const clickProspect = useCallback(
     async (prospectId: string, companyName: string) => {
-      // Only William Cook actually triggers Stage 2 in this demo
-      if (!companyName.toLowerCase().includes('william cook')) {
+      // The rank-1 tracer prospect (resolved per-batch via /top_prospect)
+      // is the only card that triggers Stage 2. Cards 2-12 are no-ops with
+      // a tooltip explaining the demo flow. The tracer is determined by
+      // the backend's fitness scoring, not by company-name string match —
+      // so this gate compares against tracerProspect.prospect_id rather
+      // than hardcoding any single company.
+      if (tracerProspect && prospectId !== tracerProspect.prospect_id) {
         return;
       }
       if (phase !== 'stage1_complete') return;
@@ -369,7 +431,7 @@ export function useDemoState(): UseDemoStateResult {
         setPhase('error');
       }
     },
-    [phase]
+    [phase, tracerProspect]
   );
 
   const reset = useCallback(() => {
@@ -384,6 +446,8 @@ export function useDemoState(): UseDemoStateResult {
     setEvents([]);
     setError(null);
     setActiveCsv(DEFAULT_SEED_CSV);
+    setTracerProspect(null);
+    setTracerStatus('idle');
     startedAtRef.current = null;
   }, []);
 
@@ -400,6 +464,8 @@ export function useDemoState(): UseDemoStateResult {
     connected,
     error,
     activeCsv,
+    tracerProspect,
+    tracerStatus,
     runDemo,
     clickProspect,
     reset,

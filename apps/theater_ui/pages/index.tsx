@@ -61,6 +61,8 @@ const IndexPage: NextPage = () => {
           phase={demo.phase}
           elapsedSec={demo.elapsedSec}
           activeCsv={demo.activeCsv}
+          tracerProspect={demo.tracerProspect}
+          tracerStatus={demo.tracerStatus}
           onClickProspect={demo.clickProspect}
         />
         <TheaterCenterPane
@@ -84,6 +86,7 @@ const IndexPage: NextPage = () => {
         elapsedSec={demo.elapsedSec}
         stage2Progress={demo.stage2Progress}
         byteDensityRatio={demo.byteDensityRatio}
+        tracerName={demo.tracerProspect?.company_name ?? demo.activeCsv.tracerCompany}
       />
     </div>
   );

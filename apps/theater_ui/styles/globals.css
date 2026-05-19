@@ -653,6 +653,26 @@ code, .mono {
   gap: 6px;
 }
 
+.slack-blockkit__hint {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: var(--matta-code-bg);
+  border: 1px solid var(--matta-warm-border-soft);
+  border-left: 3px solid var(--matta-peach);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--matta-charcoal);
+  line-height: 1.5;
+}
+
+.slack-blockkit__hint-sub {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matta-grey);
+}
+
 .slack-blockkit--briefing-ready {
   border-left-color: var(--matta-forest);
   background: rgba(92, 122, 107, 0.05);

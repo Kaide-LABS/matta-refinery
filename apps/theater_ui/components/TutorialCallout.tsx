@@ -6,6 +6,7 @@ interface Props {
   elapsedSec: number;
   stage2Progress: Stage2Progress;
   byteDensityRatio: number | null;
+  tracerName: string | null;
 }
 
 // Each step is keyed to a derived demo-state condition rather than a wallclock
@@ -31,14 +32,20 @@ function deriveStep(
   phase: DemoPhase,
   elapsedSec: number,
   stage2: Stage2Progress,
-  ratio: number | null
+  ratio: number | null,
+  tracerName: string | null,
 ): Step {
+  // Tracer name is resolved per-batch by /api/batch/{batch_id}/top_prospect
+  // post-Stage 1. Fall back to "the rank-1 prospect" if the endpoint
+  // hasn't resolved yet — keeps the copy honest rather than naming a
+  // hardcoded company that may not actually be the active CSV's tracer.
+  const tracer = tracerName ?? 'the rank-1 prospect';
   if (phase === 'idle') {
     return {
       id: 'idle',
       title: 'Start the demo',
       body:
-        '124 trade-show leads arrived in the team\'s Slack. Click Run Demo to ingest them. The Refinery routes everything through your existing Slack, CRM, and Drive — Doug never leaves the tools the team already lives in.',
+        "Trade-show leads arrived in the team's Slack. Click Run Demo to ingest them. The Refinery routes everything through your existing Slack, CRM, and Drive — Doug never leaves the tools the team already lives in.",
       targets: ['[data-tutorial-anchor="run-demo"]', '[data-tutorial-anchor="csv-attachment"]'],
     };
   }
@@ -76,7 +83,7 @@ function deriveStep(
     return {
       id: 'm4',
       title: 'Stage 2 dispatched',
-      body: 'Slack interaction event accepted. The Refinery generated a dossier_id and enqueued the William Cook briefing. Five sections render in order: process taxonomy, defect hypothesis, comparable deployment, risk register, suggested approach.',
+      body: `Slack interaction event accepted. The Refinery generated a dossier_id and enqueued the ${tracer} briefing. Five sections render in order: process taxonomy, defect hypothesis, comparable deployment, risk register, suggested approach.`,
       targets: [],
     };
   }
@@ -175,6 +182,7 @@ export default function TutorialCallout({
   elapsedSec,
   stage2Progress,
   byteDensityRatio,
+  tracerName,
 }: Props) {
   const [dismissed, setDismissed] = useState(false);
   const [prevStepId, setPrevStepId] = useState<string | null>(null);
@@ -182,8 +190,8 @@ export default function TutorialCallout({
   const highlightedRef = useRef<Element[]>([]);
 
   const step = useMemo(
-    () => deriveStep(phase, elapsedSec, stage2Progress, byteDensityRatio),
-    [phase, elapsedSec, stage2Progress, byteDensityRatio]
+    () => deriveStep(phase, elapsedSec, stage2Progress, byteDensityRatio, tracerName),
+    [phase, elapsedSec, stage2Progress, byteDensityRatio, tracerName]
   );
 
   // ─── Apply / remove .tutorial-target class on the step's targets ────────

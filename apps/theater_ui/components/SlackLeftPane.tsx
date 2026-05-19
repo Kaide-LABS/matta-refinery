@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { DemoPhase } from '../hooks/useWebSocket';
+import type { DemoPhase, TopProspect, TracerStatus } from '../hooks/useWebSocket';
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
 import CsvPreviewModal from './CsvPreviewModal';
 import type { SeedCsv } from './seedCsvs';
@@ -8,6 +8,8 @@ interface Props {
   phase: DemoPhase;
   elapsedSec: number;
   activeCsv: SeedCsv;
+  tracerProspect: TopProspect | null;
+  tracerStatus: TracerStatus;
   onClickProspect: (prospectId: string, companyName: string) => void;
 }
 
@@ -31,7 +33,7 @@ function slackTimestamp(offsetMin = 0): string {
 const DOUG_INITIALS = 'DB';
 const REFINERY_ICON_PATH = '/branding/matta_logo_icon.jpg';
 
-export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickProspect }: Props) {
+export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
   const [refineryIconFailed, setRefineryIconFailed] = useState(false);
@@ -171,30 +173,52 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
               produce the full pre-visit dossier.
             </div>
 
+            {tracerStatus === 'unavailable' && (
+              <div className="slack-blockkit__hint">
+                Awaiting ranking… <span className="slack-blockkit__hint-sub">/api/batch/{'{batch_id}'}/top_prospect returned 404 twice; click handler temporarily disabled.</span>
+              </div>
+            )}
+
             <div className="slack-blockkit">
               <ul className="slack-blockkit__cards">
                 {TOP_12_PROSPECTS.map((p: ProspectCard) => {
-                  const isWilliamCook = p.companyName.toLowerCase().includes('william cook');
-                  const tooltip = isWilliamCook
-                    ? 'Triggers Stage 2 dossier generation for William Cook Sheffield'
-                    : 'Demo wires Stage 2 through William Cook Sheffield as the tracer prospect';
+                  // The rank-1 card is the live tracer — substitute its
+                  // display fields with the resolved tracer from
+                  // /top_prospect (falls back to activeCsv.tracerCompany +
+                  // hardcoded fitness while the endpoint is resolving).
+                  const isTracer = p.rank === 1;
+                  const displayName = isTracer
+                    ? tracerProspect?.company_name ?? activeCsv.tracerCompany
+                    : p.companyName;
+                  const displayProspectId = isTracer
+                    ? tracerProspect?.prospect_id ?? p.prospectId
+                    : p.prospectId;
+                  const displayFit = isTracer && tracerProspect
+                    ? tracerProspect.fitness_score
+                    : p.fitnessScore;
+                  const cardClickable = clickable && (
+                    !isTracer || (isTracer && tracerStatus !== 'unavailable')
+                  );
+                  const tooltip = isTracer
+                    ? `Triggers Stage 2 dossier generation for ${displayName}`
+                    : `Demo wires Stage 2 through ${tracerProspect?.company_name ?? activeCsv.tracerCompany} as the rank-1 tracer prospect`;
                   return (
                     <li
                       key={p.prospectId}
-                      className={`prospect-card ${!clickable ? 'prospect-card--disabled' : ''}`}
+                      className={`prospect-card ${!cardClickable ? 'prospect-card--disabled' : ''}`}
                       onMouseEnter={() => setHoverTip(p.prospectId)}
                       onMouseLeave={() => setHoverTip(null)}
-                      onClick={() => clickable && onClickProspect(p.prospectId, p.companyName)}
+                      onClick={() => cardClickable && onClickProspect(displayProspectId, displayName)}
                       role="button"
-                      tabIndex={clickable ? 0 : -1}
-                      aria-disabled={!clickable}
+                      tabIndex={cardClickable ? 0 : -1}
+                      aria-disabled={!cardClickable}
                       data-prospect-rank={p.rank}
-                      data-tutorial-anchor={isWilliamCook ? 'prospect-anchor' : undefined}
+                      data-tutorial-anchor={isTracer ? 'prospect-anchor' : undefined}
                     >
                       <div className="prospect-card__head">
                         <span className="prospect-card__rank">#{p.rank}</span>
-                        <span className="prospect-card__name">{p.companyName}</span>
-                        <span className="prospect-card__fit">fit {p.fitnessScore.toFixed(2)}</span>
+                        <span className="prospect-card__name">{displayName}</span>
+                        <span className="prospect-card__fit">fit {displayFit.toFixed(2)}</span>
                       </div>
                       <div className="prospect-card__meta">
                         <span>{p.vertical.replace(/_/g, ' ')}</span>
@@ -207,9 +231,9 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (clickable) onClickProspect(p.prospectId, p.companyName);
+                            if (cardClickable) onClickProspect(displayProspectId, displayName);
                           }}
-                          disabled={!clickable}
+                          disabled={!cardClickable}
                         >
                           Generate Briefing
                         </button>
@@ -238,7 +262,8 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
             </div>
             <div className="slack-blockkit slack-blockkit--briefing-ready">
               <div className="slack-blockkit__header">
-                ✅ Pre-visit briefing ready for <strong>William Cook Sheffield</strong>
+                ✅ Pre-visit briefing ready for{' '}
+                <strong>{tracerProspect?.company_name ?? activeCsv.tracerCompany}</strong>
               </div>
               <div className="slack-blockkit__summary">
                 Process taxonomy · Defect hypothesis (N=3 conformal) · Comparable Matta

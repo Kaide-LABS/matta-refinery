@@ -7,7 +7,7 @@ from google import genai
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from .config import settings
 
-from .routers import ingest, slack_events, slack_interactions, crm_webhooks, crm_actions, dossier, health, websocket
+from .routers import ingest, slack_events, slack_interactions, crm_webhooks, crm_actions, dossier, health, websocket, batch
 from packages.knowledge_graph.verify import validate_graph_or_die
 
 @asynccontextmanager
@@ -47,3 +47,4 @@ app.include_router(crm_actions.router)
 app.include_router(dossier.router)
 app.include_router(health.router)
 app.include_router(websocket.router)
+app.include_router(batch.router)
