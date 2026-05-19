@@ -1332,10 +1332,10 @@ code, .mono {
 }
 
 .section-row__detail {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--matta-grey);
   font-family: var(--font-mono);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .section-row--complete .section-row__detail {
