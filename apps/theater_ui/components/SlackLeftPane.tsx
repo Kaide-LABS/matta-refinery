@@ -220,6 +220,10 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
               Top 12 below — click <strong>Generate Briefing</strong> on any prospect to
               produce the full pre-visit dossier.
             </div>
+            <div className="slack-msg__crm-line" data-tutorial-anchor="crm-sync-line">
+              ↳ CRM contact records updated for all 12 prospects via outbox ·{' '}
+              {tracerProspect?.company_name ?? activeCsv.tracerCompany} slot_readiness = ready_for_dossier
+            </div>
 
             {tracerStatus === 'unavailable' && (
               <div className="slack-blockkit__hint">

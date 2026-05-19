@@ -72,7 +72,7 @@ function deriveStep(
       body: 'Slack, CRM, and Drive updated in one Postgres transaction via the outbox — three surfaces, no half-states. In production, Doug clicks "Generate Briefing" inside Slack; the click is embedded in this view so you can see what fires. The trigger is a Slack interaction event hitting /slack/interactions.',
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
-        '[data-tutorial-anchor="crm-inset"]',
+        '[data-tutorial-anchor="crm-sync-line"]',
         '[data-tutorial-anchor="drive-header"]',
         '[data-tutorial-anchor="stage1-complete"]',
         '[data-tutorial-anchor="prospect-anchor"]',
@@ -144,7 +144,7 @@ function deriveStep(
       body: `The dossier shipped to all three surfaces in one Postgres transaction — no half-states, no Slack-succeeded-CRM-failed split. Total elapsed ${fmtElapsed(elapsedSec)}.${ratioCopy} Reset to run again.`,
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
-        '[data-tutorial-anchor="crm-inset"]',
+        '[data-tutorial-anchor="crm-strip"]',
         '[data-tutorial-anchor="dossier-doc"]',
         '[data-tutorial-anchor="dossier-complete"]',
       ],

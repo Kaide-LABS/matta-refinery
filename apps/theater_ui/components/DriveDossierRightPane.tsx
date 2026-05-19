@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { DemoPhase, DossierPayload, TopProspect } from '../hooks/useWebSocket';
 import type { SeedCsv } from './seedCsvs';
-import CRMRecordInset from './CRMRecordInset';
 
 interface Props {
   phase: DemoPhase;
@@ -104,8 +103,6 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
         </div>
       </div>
 
-      <CRMRecordInset phase={phase} activeCsv={activeCsv} tracerProspect={tracerProspect} />
-
       {showWaiting && !hasContent && (
         <div className="drive-doc-paper drive-doc-paper--empty">
           <div className="drive-doc-paper__placeholder">
@@ -121,6 +118,13 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
       {hasContent && (
         <div className="drive-doc-paper" data-tutorial-anchor="dossier-doc">
           <div className="drive-doc-paper__sheet">
+            <div className="dossier-doc__crm-strip" data-tutorial-anchor="crm-strip">
+              CRM record · {tracerProspect?.company_name ?? activeCsv.tracerCompany}
+              {' · '}fit {(tracerProspect?.fitness_score ?? 0.84).toFixed(2)}
+              {' · '}vertical: metal_casting
+              {' · '}slot_readiness: ready_for_dossier
+              {' · '}dossier attached
+            </div>
             <header className="dossier-doc__header">
               <h1
                 className="dossier-doc__title"
