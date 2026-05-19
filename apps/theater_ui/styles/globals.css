@@ -349,7 +349,12 @@ code, .mono {
 .theater-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: 340px 1fr 480px;
+  /* Equal thirds — the prior 340px / 1fr / 480px fixed-edge layout forced a
+     minimum viewport of ~864px below which the Drive column got pushed off
+     screen and the middle 1fr collapsed too narrow for the CSV selector.
+     1fr 1fr 1fr keeps all three panes proportional at every viewport
+     width. */
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr;
   gap: 16px;
   padding: 16px;
@@ -1010,8 +1015,13 @@ code, .mono {
 /* ─── CSV selector (dropdown above Run Demo) ──────────────────────────── */
 .csv-selector {
   position: relative;
-  width: 360px;
+  /* Responsive width — caps at 360px on wide viewports but shrinks to fit
+     the Theater pane on narrow ones. The prior fixed 360px overflowed when
+     the equal-thirds middle column dropped below ~400px usable width. */
+  width: min(360px, 100%);
+  max-width: 100%;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .csv-selector__label {
