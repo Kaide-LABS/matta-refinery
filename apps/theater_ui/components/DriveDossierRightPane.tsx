@@ -147,6 +147,21 @@ export default function DriveDossierRightPane({ phase, dossier }: Props) {
             {dossier?.process_taxonomy ? (
               <section className="dossier-doc__section" data-doc-section="process_taxonomy">
                 <h3>§1 Process Taxonomy</h3>
+                <aside
+                  className="dossier-doc__caveat"
+                  data-section-caveat="phase1-scope"
+                >
+                  <div className="dossier-doc__caveat-label">Phase 1 scope</div>
+                  <div className="dossier-doc__caveat-body">
+                    §1 represents the verified{' '}
+                    <code className="dossier-doc__inline-code">metal_casting</code>{' '}
+                    baseline; company-specific enrichment (website scrape,
+                    employee count, news mentions) is Phase 2 work. The
+                    load-bearing sections — §3 Comparable Deployment,
+                    §4 Risk Register, §5 Suggested Approach — are anchored
+                    to verified Matta intel.
+                  </div>
+                </aside>
                 {renderJsonValue(dossier.process_taxonomy)}
               </section>
             ) : null}
