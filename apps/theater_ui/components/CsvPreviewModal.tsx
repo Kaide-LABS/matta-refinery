@@ -13,7 +13,9 @@ interface ParsedCsv {
   totalRows: number;
 }
 
-const PREVIEW_ROW_LIMIT = 18;
+// All rows render; the table body scrolls vertically within the modal,
+// and the <thead> uses position:sticky to keep column headers pinned as
+// the viewer scrolls through the full input.
 
 // Minimal CSV parser. Handles quoted fields and embedded commas. The seeded
 // trade-show CSVs in this demo are clean (no embedded newlines, no escaped
@@ -86,7 +88,7 @@ export default function CsvPreviewModal({ open, csvPath, csvLabel, onClose }: Pr
 
   if (!open) return null;
 
-  const visibleRows = parsed?.rows.slice(0, PREVIEW_ROW_LIMIT) ?? [];
+  const visibleRows = parsed?.rows ?? [];
 
   return (
     <div className="csv-modal" role="dialog" aria-modal="true" aria-label="CSV preview">
@@ -145,7 +147,7 @@ export default function CsvPreviewModal({ open, csvPath, csvLabel, onClose }: Pr
         </div>
         {parsed && (
           <div className="csv-modal__footer">
-            Showing {visibleRows.length} of {parsed.totalRows} rows · {parsed.headers.length} columns
+            Showing all {parsed.totalRows} rows · {parsed.headers.length} columns · scroll to inspect
           </div>
         )}
       </div>

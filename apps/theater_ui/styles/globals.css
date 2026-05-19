@@ -2152,7 +2152,7 @@ code, .mono {
   border: 1px solid var(--matta-warm-border);
   border-radius: var(--radius-lg);
   width: min(800px, 70vw);
-  max-height: 80vh;
+  max-height: 88vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2229,7 +2229,12 @@ code, .mono {
 
 .csv-modal__table-wrap {
   overflow: auto;
-  max-height: 60vh;
+  max-height: 70vh;
+  /* Subtle fade at the bottom edge cues the viewer that more rows are
+     scrollable below the visible area. Uses a mask-image fade that fully
+     reveals when the scroll reaches the bottom. */
+  mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 24px), transparent 100%);
 }
 
 .csv-modal__table {
