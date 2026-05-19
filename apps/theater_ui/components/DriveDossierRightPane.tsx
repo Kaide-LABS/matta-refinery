@@ -180,31 +180,46 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
             ) : null}
 
             {dossier?.comparable_deployment ? (
-              <section
-                className="dossier-doc__section dossier-doc__section--anchor"
+              <details
+                className="dossier-doc__section dossier-doc__section--anchor dossier-doc__section--collapsible"
                 data-tutorial-anchor="comparable-anchor"
                 data-doc-section="comparable_deployment"
               >
+                <summary className="dossier-doc__summary">
+                  <h3>§3 Comparable Matta Deployment</h3>
+                  <span className="dossier-doc__peek">verified KG anchor · click to expand</span>
+                </summary>
                 <div className="dossier-doc__anchor-tag">
                   Deterministic KG selection — LLM did not pick this anchor
                 </div>
-                <h3>§3 Comparable Matta Deployment</h3>
                 {renderJsonValue(dossier.comparable_deployment)}
-              </section>
+              </details>
             ) : null}
 
             {dossier?.risk_register ? (
-              <section className="dossier-doc__section" data-doc-section="risk_register">
-                <h3>§4 Integration Risk Register</h3>
+              <details
+                className="dossier-doc__section dossier-doc__section--collapsible"
+                data-doc-section="risk_register"
+              >
+                <summary className="dossier-doc__summary">
+                  <h3>§4 Integration Risk Register</h3>
+                  <span className="dossier-doc__peek">risk pillars · click to expand</span>
+                </summary>
                 {renderJsonValue(dossier.risk_register)}
-              </section>
+              </details>
             ) : null}
 
             {dossier?.suggested_approach ? (
-              <section className="dossier-doc__section" data-doc-section="suggested_approach">
-                <h3>§5 Suggested Approach</h3>
+              <details
+                className="dossier-doc__section dossier-doc__section--collapsible"
+                data-doc-section="suggested_approach"
+              >
+                <summary className="dossier-doc__summary">
+                  <h3>§5 Suggested Approach</h3>
+                  <span className="dossier-doc__peek">phased plan · click to expand</span>
+                </summary>
                 {renderJsonValue(dossier.suggested_approach)}
-              </section>
+              </details>
             ) : null}
 
             {dossier?.unverified_sections && dossier.unverified_sections.length > 0 && (

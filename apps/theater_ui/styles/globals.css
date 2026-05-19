@@ -1015,6 +1015,53 @@ code, .mono {
   line-height: 1.6;
 }
 
+/* ─── Dossier collapsible sections (§3/§4/§5) ─────────────────────────── */
+.dossier-doc__section--collapsible {
+  cursor: default;
+}
+
+.dossier-doc__section--collapsible > .dossier-doc__summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 6px 0;
+  user-select: none;
+}
+
+.dossier-doc__section--collapsible > .dossier-doc__summary::-webkit-details-marker {
+  display: none;
+}
+
+.dossier-doc__section--collapsible > .dossier-doc__summary > h3 {
+  margin: 0;
+}
+
+.dossier-doc__section--collapsible > .dossier-doc__summary::before {
+  content: '▸';
+  font-size: 11px;
+  color: var(--matta-grey);
+  margin-right: 6px;
+  transition: transform 140ms var(--ease-standard);
+}
+
+.dossier-doc__section--collapsible[open] > .dossier-doc__summary::before {
+  transform: rotate(90deg);
+}
+
+.dossier-doc__peek {
+  font-size: 11px;
+  color: var(--matta-grey);
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+.dossier-doc__section--collapsible[open] .dossier-doc__peek {
+  display: none;
+}
+
 /* ─── Reset & try another batch (post-complete affordance) ────────────── */
 .theater-reset-row {
   margin-top: 14px;
