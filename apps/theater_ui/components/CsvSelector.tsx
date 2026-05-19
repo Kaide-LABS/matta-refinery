@@ -35,12 +35,19 @@ export default function CsvSelector({ selectedCsv, activeCsv, disabled, onSelect
   }, [open]);
 
   const isRandom = selectedCsv === RANDOM_ID;
-  const triggerLabel = isRandom
-    ? 'Random pick'
-    : activeCsv.tradeShowDisplay;
-  const triggerSubLabel = isRandom
-    ? 'next Run Demo locks the choice'
-    : `${activeCsv.approxLeadCount} leads`;
+  // Random pre-fire: trigger reads just "Random pick" (the dice icon does the
+  // secondary work). Once Run Demo rolls, selectedCsv is set to the picked
+  // CSV id and the trigger flips to the specific CSV display. Specific
+  // selections always show name + lead count.
+  const triggerLabel = isRandom ? 'Random pick' : activeCsv.tradeShowDisplay;
+  // Lead-count subline only shows for specific selections — random pre-fire
+  // leaves the secondary slot empty so the trigger reads cleanly.
+  const triggerSubLabel = isRandom ? null : `${activeCsv.approxLeadCount} leads`;
+  // The "↳ Run Demo will pick one randomly and lock the choice" hint
+  // surfaces inline beneath the supporting line when the user has selected
+  // Random pick and the demo hasn't fired yet. Suppressed in all other
+  // states (specific selection, mid-run, complete).
+  const showRandomLockHint = isRandom && !disabled;
 
   const handleSelect = (sel: CsvSelection) => {
     onSelect(sel);
@@ -55,7 +62,11 @@ export default function CsvSelector({ selectedCsv, activeCsv, disabled, onSelect
       data-tutorial-anchor="csv-selector"
       ref={containerRef}
     >
+      <label className="csv-selector__label" htmlFor="csv-selector-trigger">
+        Choose a trade-show batch
+      </label>
       <button
+        id="csv-selector-trigger"
         type="button"
         className="csv-selector__trigger"
         onClick={() => !disabled && setOpen((v) => !v)}
@@ -67,8 +78,12 @@ export default function CsvSelector({ selectedCsv, activeCsv, disabled, onSelect
         <div className="csv-selector__trigger-text">
           {isRandom && <span className="csv-selector__random-icon" aria-hidden="true">⚄</span>}
           <span className="csv-selector__trigger-name">{triggerLabel}</span>
-          <span className="csv-selector__trigger-sep">·</span>
-          <span className="csv-selector__trigger-sub">{triggerSubLabel}</span>
+          {triggerSubLabel && (
+            <>
+              <span className="csv-selector__trigger-sep">·</span>
+              <span className="csv-selector__trigger-sub">{triggerSubLabel}</span>
+            </>
+          )}
         </div>
         <span className="csv-selector__chevron" aria-hidden="true">▾</span>
       </button>
@@ -119,8 +134,13 @@ export default function CsvSelector({ selectedCsv, activeCsv, disabled, onSelect
       )}
 
       <div className="csv-selector__caption">
-        Pick a trade show — the engine ranks the cohort deterministically regardless of input.
+        The engine ranks each cohort deterministically — pick any batch to compare.
       </div>
+      {showRandomLockHint && (
+        <div className="csv-selector__hint">
+          ↳ Run Demo will pick one randomly and lock the choice
+        </div>
+      )}
     </div>
   );
 }
