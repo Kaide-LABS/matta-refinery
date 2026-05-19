@@ -48,10 +48,22 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
   const stage2Done = phase === 'complete';
   const clickable = stage1Done;
 
-  // Timestamps locked at first render so they don't shift mid-demo
-  const [dougTimestamp] = useState(() => slackTimestamp(4));
+  // Timestamps must be computed client-side only — server-side render runs
+  // in the container's UTC timezone while the browser renders in the
+  // viewer's local timezone, which produces a hydration mismatch if the
+  // timestamp string is materialized during SSR. Initialise null and
+  // populate in useEffect after hydration.
+  const [dougTimestamp, setDougTimestamp] = useState<string | null>(null);
   const [refineryRankedTimestamp, setRefineryRankedTimestamp] = useState<string | null>(null);
   const [refineryBriefingTimestamp, setRefineryBriefingTimestamp] = useState<string | null>(null);
+
+  // Doug's timestamp is fixed at the first client render (4 minutes earlier
+  // than now, so it reads as a recent message in the channel)
+  React.useEffect(() => {
+    if (dougTimestamp === null) {
+      setDougTimestamp(slackTimestamp(4));
+    }
+  }, [dougTimestamp]);
 
   // Set bot timestamps the first time each message appears
   React.useEffect(() => {
@@ -98,7 +110,7 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, onClickPro
         <div className="slack-msg__body">
           <div className="slack-msg__meta">
             <span className="slack-msg__author">Doug</span>
-            <span className="slack-msg__time">{dougTimestamp}</span>
+            <span className="slack-msg__time">{dougTimestamp ?? ''}</span>
           </div>
           <div className="slack-msg__text">{activeCsv.dougMessage}</div>
           <button
