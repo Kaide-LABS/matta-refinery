@@ -1,9 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { DemoPhase } from '../hooks/useWebSocket';
 
 interface Props {
   phase: DemoPhase;
 }
+
+// HubSpot-pattern record actions for the ⋯ overflow popover. Each action
+// is a UI demonstration of "this connects to HubSpot's record-actions
+// surface"; clicking any action is a silent no-op (closes the popover
+// with no further state change) since wiring real HubSpot integrations
+// is out of scope for the demo.
+const HUBSPOT_RECORD_ACTIONS: { icon: string; label: string }[] = [
+  { icon: '🕒', label: 'View activity timeline' },
+  { icon: '📝', label: 'Add note' },
+  { icon: '☎️', label: 'Log call' },
+  { icon: '🔗', label: 'Copy record link' },
+  { icon: '⚙', label: 'Edit properties' },
+];
 
 // HubSpot's brand orange — adjacent but not pixel-matched to their exact
 // trademark color. Recognizably their family without being a clone.
@@ -37,6 +50,28 @@ export default function CRMRecordInset({ phase }: Props) {
   const [scorePulse, setScorePulse] = useState(false);
   const [slotPulse, setSlotPulse] = useState(false);
   const [lastScored, setLastScored] = useState<string | null>(null);
+
+  // ⋯ overflow popover
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('mousedown', onClick);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('mousedown', onClick);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     if (stage1Done && !lastScored) {
@@ -79,14 +114,38 @@ export default function CRMRecordInset({ phase }: Props) {
           <span className="crm-inset__logo">HubSpot</span>
           <span className="crm-inset__type">· Contact</span>
         </div>
-        <button
-          className="crm-inset__menu"
-          type="button"
-          aria-label="Record actions"
-          title="Record actions"
-        >
-          ⋯
-        </button>
+        <div className="crm-inset__menu-wrap" ref={menuRef}>
+          <button
+            className="crm-inset__menu"
+            type="button"
+            aria-label="Record actions"
+            aria-expanded={menuOpen}
+            title="Record actions"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            ⋯
+          </button>
+          {menuOpen && (
+            <div
+              className="crm-inset__menu-popover"
+              role="menu"
+              data-tutorial-anchor="crm-actions-menu"
+            >
+              {HUBSPOT_RECORD_ACTIONS.map((a) => (
+                <button
+                  key={a.label}
+                  className="crm-inset__menu-item"
+                  role="menuitem"
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="crm-inset__menu-icon" aria-hidden="true">{a.icon}</span>
+                  <span>{a.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="crm-inset__identity">
