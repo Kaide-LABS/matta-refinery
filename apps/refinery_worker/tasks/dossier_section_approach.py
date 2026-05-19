@@ -24,16 +24,23 @@ def dossier_section_approach(self, prospect_id: str, dossier_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.connect() as conn:
         row = conn.execute(
-            text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}
+            text("SELECT vertical, company_name FROM lead_prospects WHERE id = :pid"),
+            {"pid": prospect_id},
         ).first()
     vertical = (row[0] if row else None) or "metal_casting"
+    # company_name was hardcoded to "Mock" — the literal string then surfaced
+    # in the LLM-generated rationale prose ("A two-camera pilot is recommended
+    # for Mock to establish..."), reading as fake data to any technical
+    # reviewer. Now pulled from the same row as vertical. Neutral fallback
+    # ("the prospect") avoids re-introducing a hardcoded company-shaped string.
+    company_name = (row[1] if row and len(row) > 1 else None) or "the prospect"
 
     prompt = APPROACH_PROMPT.format(
-        company_name="Mock",
+        company_name=company_name,
         vertical=vertical,
         process_taxonomy_json="{}",
         conformal_set="[]",
-        risk_findings="[]"
+        risk_findings="[]",
     )
 
     response = client.models.generate_content(
