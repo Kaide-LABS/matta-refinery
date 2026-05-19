@@ -39,6 +39,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 400;
@@ -47,6 +48,13 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
+}
+
+/* Next.js wraps app content in #__next — ensure it inherits full height so
+   .theater-shell's 100vh cascades through every layer without dead gap at
+   the bottom. */
+#__next {
+  height: 100%;
 }
 
 button {
@@ -327,15 +335,22 @@ code, .mono {
 .theater-shell {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   height: 100vh;
   width: 100vw;
   background: var(--matta-cream);
 }
 
+/* CSS Grid without explicit grid-template-rows auto-sizes the single row to
+   content height — that was the root cause of the dead-whitespace bug
+   (panes only filled ~70-80% of the viewport because the grid row hugged
+   its content). `grid-template-rows: 1fr` forces the single row to consume
+   all available vertical space inside the flex parent. */
 .theater-grid {
   flex: 1;
   display: grid;
   grid-template-columns: 340px 1fr 480px;
+  grid-template-rows: 1fr;
   gap: 16px;
   padding: 16px;
   background: var(--matta-cream);
@@ -352,6 +367,8 @@ code, .mono {
   border-radius: var(--radius-lg);
   overflow-y: auto;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
 }
 
 .theater-pane,
