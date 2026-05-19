@@ -196,16 +196,25 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                   const displayFit = isTracer && tracerProspect
                     ? tracerProspect.fitness_score
                     : p.fitnessScore;
-                  const cardClickable = clickable && (
-                    !isTracer || (isTracer && tracerStatus !== 'unavailable')
-                  );
+                  // Tracer card: clickable when Stage 1 done + tracer endpoint
+                  // resolved. Non-tracer cards (rank 2-12): NEVER clickable —
+                  // they're cosmetic top-12 placeholders. The Generate Briefing
+                  // button on those cards is disabled with an explanatory
+                  // tooltip. Card itself stays focusable for TutorialCallout
+                  // highlighting and screen-reader navigation.
+                  const tracerClickable = clickable && tracerStatus !== 'unavailable';
+                  const cardClickable = isTracer && tracerClickable;
                   const tooltip = isTracer
                     ? `Triggers Stage 2 dossier generation for ${displayName}`
-                    : `Demo wires Stage 2 through ${tracerProspect?.company_name ?? activeCsv.tracerCompany} as the rank-1 tracer prospect`;
+                    : `Demo wires Stage 2 through the rank-1 tracer · Phase 1 scope`;
                   return (
                     <li
                       key={p.prospectId}
-                      className={`prospect-card ${!cardClickable ? 'prospect-card--disabled' : ''}`}
+                      className={`prospect-card ${
+                        !isTracer ? 'prospect-card--placeholder' : ''
+                      } ${
+                        isTracer && !cardClickable ? 'prospect-card--disabled' : ''
+                      }`}
                       onMouseEnter={() => setHoverTip(p.prospectId)}
                       onMouseLeave={() => setHoverTip(null)}
                       onClick={() => cardClickable && onClickProspect(displayProspectId, displayName)}
@@ -229,11 +238,11 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                         <button
                           className="prospect-card__cta"
                           type="button"
+                          disabled={!cardClickable}
                           onClick={(e) => {
                             e.stopPropagation();
                             if (cardClickable) onClickProspect(displayProspectId, displayName);
                           }}
-                          disabled={!cardClickable}
                         >
                           Generate Briefing
                         </button>

@@ -764,6 +764,25 @@ code, .mono {
   cursor: not-allowed;
 }
 
+/* Cards 2-12 are placeholder reference rankings — they're visually
+   de-emphasized (0.85 opacity) but readable. Their Generate Briefing
+   button is in disabled state (handled by .prospect-card__cta:disabled).
+   The card body is still hoverable (for tooltip display) but the click
+   handler short-circuits at the cardClickable gate. Keeps the visual
+   honest about Phase 1 scope without aggressive greying. */
+.prospect-card--placeholder {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.prospect-card--placeholder:hover {
+  opacity: 0.92;
+  border-color: var(--matta-warm-border);
+  background: var(--matta-pane-bg);
+  border-left: 1px solid var(--matta-warm-border-soft);
+  padding-left: 12px;
+}
+
 .prospect-card__head {
   display: flex;
   align-items: baseline;
