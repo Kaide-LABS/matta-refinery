@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import type { DemoPhase, DossierPayload } from '../hooks/useWebSocket';
+import type { DemoPhase, DossierPayload, TopProspect } from '../hooks/useWebSocket';
+import type { SeedCsv } from './seedCsvs';
+import CRMRecordInset from './CRMRecordInset';
 
 interface Props {
   phase: DemoPhase;
   dossier: DossierPayload | null;
+  activeCsv: SeedCsv;
+  tracerProspect: TopProspect | null;
 }
 
 function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
@@ -64,7 +68,7 @@ function nowTimestamp(): string {
   return `${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}, ${hh}:${mm} ${ap}`;
 }
 
-export default function DriveDossierRightPane({ phase, dossier }: Props) {
+export default function DriveDossierRightPane({ phase, dossier, activeCsv, tracerProspect }: Props) {
   const showWaiting =
     phase === 'idle' ||
     phase === 'ingesting' ||
@@ -99,6 +103,8 @@ export default function DriveDossierRightPane({ phase, dossier }: Props) {
           {dossierCount} {dossierCount === 1 ? 'dossier' : 'dossiers'}
         </div>
       </div>
+
+      <CRMRecordInset phase={phase} activeCsv={activeCsv} tracerProspect={tracerProspect} />
 
       {showWaiting && !hasContent && (
         <div className="drive-doc-paper drive-doc-paper--empty">

@@ -2177,15 +2177,14 @@ code, .mono {
 
 /* ─── CRM inset (HubSpot-fidelity contact-record card) ────────────────── */
 .crm-inset {
-  position: fixed;
-  bottom: 18px;
-  right: 18px;
-  width: 340px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 14px 0;
   background: var(--matta-pane-bg);
   border: 1px solid var(--matta-warm-border);
   border-radius: var(--radius-md);
   padding: 0;
-  z-index: 40;
   font-size: 12px;
   overflow: hidden;
 }

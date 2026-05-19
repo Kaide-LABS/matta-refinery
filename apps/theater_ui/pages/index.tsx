@@ -3,7 +3,6 @@ import { useState } from 'react';
 import SlackLeftPane from '../components/SlackLeftPane';
 import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
-import CRMRecordInset from '../components/CRMRecordInset';
 import TutorialCallout from '../components/TutorialCallout';
 import KGValidatorIndicator from '../components/KGValidatorIndicator';
 import { useDemoState } from '../hooks/useWebSocket';
@@ -81,9 +80,9 @@ const IndexPage: NextPage = () => {
           onRunDemo={demo.runDemo}
           onReset={demo.reset}
         />
-        <DriveDossierRightPane phase={demo.phase} dossier={demo.dossier} />
-        <CRMRecordInset
+        <DriveDossierRightPane
           phase={demo.phase}
+          dossier={demo.dossier}
           activeCsv={demo.activeCsv}
           tracerProspect={demo.tracerProspect}
         />
