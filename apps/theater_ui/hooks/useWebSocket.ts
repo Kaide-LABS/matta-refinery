@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { SeedCsv, SEED_CSVS, DEFAULT_SEED_CSV, pickRandomSeedCsv } from '../components/seedCsvs';
+import { chimeStage1Complete, chimeStage2Complete } from '../lib/audioChime';
 
 // CsvSelection is either the literal "random" sentinel (next Run Demo
 // picks a CSV at random and locks it in) or a specific SeedCsv id from
@@ -189,6 +190,12 @@ export function useDemoState(): UseDemoStateResult {
         elapsedTimerRef.current = null;
       }
     };
+  }, [phase]);
+
+  // ─── Audio chimes on milestone transitions ────────────────────────────────
+  useEffect(() => {
+    if (phase === 'stage1_complete') chimeStage1Complete();
+    else if (phase === 'complete') chimeStage2Complete();
   }, [phase]);
 
   // ─── Stage 1 → Stage 1 complete transition (timer-based) ──────────────────
