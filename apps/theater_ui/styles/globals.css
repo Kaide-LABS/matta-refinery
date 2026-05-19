@@ -2045,6 +2045,80 @@ code, .mono {
   background: var(--matta-pane-bg);
 }
 
+.crm-inset[data-crm-state="collapsed"] .crm-inset__header {
+  border-bottom: none;
+}
+
+.crm-inset__collapse {
+  background: none;
+  border: none;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--matta-grey);
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 140ms var(--ease-standard), color 140ms var(--ease-standard);
+  font-family: inherit;
+}
+
+.crm-inset__collapse:hover {
+  background: var(--matta-code-bg);
+  color: var(--matta-navy);
+}
+
+/* Collapsed-state 1-line summary */
+.crm-inset__summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  animation: csv-modal-fade 240ms var(--ease-standard);
+}
+
+.crm-inset__avatar--small {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 10px !important;
+  border-width: 1px;
+}
+
+.crm-inset__summary-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+  flex: 1;
+  font-size: 12px;
+}
+
+.crm-inset__summary-name {
+  font-weight: 500;
+  color: var(--matta-navy);
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-inset__summary-sep {
+  color: var(--matta-warm-border);
+}
+
+.crm-inset__summary-score {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--matta-charcoal);
+}
+
+.crm-inset__summary-dossier {
+  font-size: 11px;
+  color: var(--matta-forest);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .crm-inset__brand {
   display: flex;
   align-items: center;

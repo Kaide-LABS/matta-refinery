@@ -82,7 +82,11 @@ const IndexPage: NextPage = () => {
           onReset={demo.reset}
         />
         <DriveDossierRightPane phase={demo.phase} dossier={demo.dossier} />
-        <CRMRecordInset phase={demo.phase} />
+        <CRMRecordInset
+          phase={demo.phase}
+          activeCsv={demo.activeCsv}
+          tracerProspect={demo.tracerProspect}
+        />
       </div>
       <TutorialCallout
         phase={demo.phase}
