@@ -867,18 +867,203 @@ code, .mono {
 }
 
 .theater-cta {
-  margin: 48px 0 32px;
+  margin: 36px 0 32px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .theater-cta__hint {
-  margin-top: 18px;
   font-size: 12px;
   color: var(--matta-grey);
   max-width: 360px;
-  margin-left: auto;
-  margin-right: auto;
   line-height: 1.6;
+}
+
+/* ─── CSV selector (dropdown above Run Demo) ──────────────────────────── */
+.csv-selector {
+  position: relative;
+  width: 320px;
+  text-align: left;
+}
+
+.csv-selector__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px;
+  height: 42px;
+  background: var(--matta-pane-bg);
+  border: 1px solid var(--matta-warm-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--matta-navy);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-standard), background 140ms var(--ease-standard);
+}
+
+.csv-selector__trigger:hover:not(:disabled) {
+  border-color: var(--matta-grey);
+  background: #faf9f6;
+}
+
+.csv-selector__trigger:hover:not(:disabled) .csv-selector__chevron {
+  color: var(--matta-peach-dark);
+}
+
+.csv-selector__trigger:disabled {
+  cursor: not-allowed;
+  background: var(--matta-code-bg);
+  color: var(--matta-grey);
+}
+
+.csv-selector--open .csv-selector__trigger {
+  border-color: var(--matta-peach);
+}
+
+.csv-selector__trigger-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.csv-selector__trigger-name {
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.csv-selector__trigger-sep {
+  color: var(--matta-warm-border);
+  flex-shrink: 0;
+}
+
+.csv-selector__trigger-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--matta-grey);
+  white-space: nowrap;
+}
+
+.csv-selector__random-icon {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--matta-peach-dark);
+}
+
+.csv-selector__chevron {
+  font-size: 11px;
+  color: var(--matta-grey);
+  transition: transform 180ms var(--ease-standard), color 140ms var(--ease-standard);
+  flex-shrink: 0;
+}
+
+.csv-selector--open .csv-selector__chevron {
+  transform: rotate(180deg);
+  color: var(--matta-peach-dark);
+}
+
+.csv-selector__popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--matta-pane-bg);
+  border: 1px solid var(--matta-warm-border);
+  border-radius: var(--radius-md);
+  padding: 6px 0;
+  z-index: 70;
+  animation: csv-modal-fade 160ms var(--ease-standard);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.csv-selector__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px;
+  height: 38px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--matta-navy);
+  text-align: left;
+  cursor: pointer;
+  transition: background 120ms var(--ease-standard);
+}
+
+.csv-selector__option:hover {
+  background: var(--matta-code-bg);
+}
+
+.csv-selector__option--active {
+  color: var(--matta-navy);
+}
+
+.csv-selector__option-indicator {
+  width: 8px;
+  font-size: 10px;
+  color: var(--matta-peach);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.csv-selector__option-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.005em;
+}
+
+.csv-selector__option-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--matta-grey);
+  white-space: nowrap;
+}
+
+.csv-selector__option-hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matta-grey);
+  font-style: italic;
+}
+
+.csv-selector__option--random {
+  color: var(--matta-charcoal);
+}
+
+.csv-selector__divider {
+  height: 1px;
+  background: var(--matta-warm-border-soft);
+  margin: 4px 10px;
+}
+
+.csv-selector__caption {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--matta-grey);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 360px;
 }
 
 .theater-status {

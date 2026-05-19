@@ -4,7 +4,10 @@ import type {
   Stage2Progress,
   Stage2SectionTimings,
   DossierPayload,
+  CsvSelection,
 } from '../hooks/useWebSocket';
+import type { SeedCsv } from './seedCsvs';
+import CsvSelector from './CsvSelector';
 
 interface Props {
   phase: DemoPhase;
@@ -16,6 +19,9 @@ interface Props {
   byteDensityRatio: number | null;
   dossier: DossierPayload | null;
   error: string | null;
+  activeCsv: SeedCsv;
+  selectedCsv: CsvSelection;
+  onSelectCsv: (selection: CsvSelection) => void;
   onRunDemo: () => void;
   onReset: () => void;
 }
@@ -97,6 +103,9 @@ export default function TheaterCenterPane({
   byteDensityRatio,
   dossier,
   error,
+  activeCsv,
+  selectedCsv,
+  onSelectCsv,
   onRunDemo,
   onReset,
 }: Props) {
@@ -221,6 +230,12 @@ export default function TheaterCenterPane({
       {idle && (
         <>
           <div className="theater-cta">
+            <CsvSelector
+              selectedCsv={selectedCsv}
+              activeCsv={activeCsv}
+              disabled={false}
+              onSelect={onSelectCsv}
+            />
             <button
               className="btn btn-primary"
               onClick={onRunDemo}
@@ -230,7 +245,7 @@ export default function TheaterCenterPane({
               Run Demo
             </button>
             <div className="theater-cta__hint">
-              Ingest 124 trade-show leads · Rank by fit · Route top 12 to Slack, CRM, Drive
+              Ingest {activeCsv.approxLeadCount} trade-show leads · Rank by fit · Route top 12 to Slack, CRM, Drive
             </div>
           </div>
           <div className="theater-section theater-section--preview">

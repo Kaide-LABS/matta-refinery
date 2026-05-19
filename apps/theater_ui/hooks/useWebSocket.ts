@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { SeedCsv, DEFAULT_SEED_CSV, pickRandomSeedCsv } from '../components/seedCsvs';
+import { SeedCsv, SEED_CSVS, DEFAULT_SEED_CSV, pickRandomSeedCsv } from '../components/seedCsvs';
+
+// CsvSelection is either the literal "random" sentinel (next Run Demo
+// picks a CSV at random and locks it in) or a specific SeedCsv id from
+// the SEED_CSVS registry.
+export type CsvSelection = 'random' | string;
 
 export interface TheaterEvent {
   type: string;
@@ -83,8 +88,10 @@ export interface UseDemoStateResult {
   connected: boolean;
   error: string | null;
   activeCsv: SeedCsv;
+  selectedCsv: CsvSelection;
   tracerProspect: TopProspect | null;
   tracerStatus: TracerStatus;
+  selectCsv: (selection: CsvSelection) => void;
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
   reset: () => void;
@@ -119,6 +126,7 @@ export function useDemoState(): UseDemoStateResult {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCsv, setActiveCsv] = useState<SeedCsv>(DEFAULT_SEED_CSV);
+  const [selectedCsv, setSelectedCsv] = useState<CsvSelection>(DEFAULT_SEED_CSV.id);
   const [tracerProspect, setTracerProspect] = useState<TopProspect | null>(null);
   const [tracerStatus, setTracerStatus] = useState<TracerStatus>('idle');
 
@@ -349,12 +357,35 @@ export function useDemoState(): UseDemoStateResult {
   }, [phase]);
 
   // ─── Actions ──────────────────────────────────────────────────────────────
+  // Update the selector state. If a specific CSV id is chosen the activeCsv
+  // and the Slack-pane attachment label switch immediately (before Run Demo
+  // fires) so the viewer can see the input they're about to ingest.
+  // Selecting "random" leaves activeCsv on whatever was previously visible —
+  // the actual roll happens at Run Demo time and locks the selector.
+  const selectCsv = useCallback((sel: CsvSelection) => {
+    setSelectedCsv(sel);
+    if (sel !== 'random') {
+      const found = SEED_CSVS.find((c) => c.id === sel);
+      if (found) {
+        setActiveCsv(found);
+      }
+    }
+  }, []);
+
   const runDemo = useCallback(async () => {
     setError(null);
-    // Pick a fresh random CSV per Run Demo click. UK Metals Expo is the
-    // default before any click; subsequent runs cycle through the seeded
-    // trade shows so the demo reads as input-resilient.
-    const picked = pickRandomSeedCsv();
+    // If selectedCsv === 'random', pick at Run-Demo time and lock the
+    // selector to the chosen CSV so the viewer can see which one fired.
+    // If a specific CSV was chosen via the selector, use that. The activeCsv
+    // state is already current per the selectCsv callback above.
+    let picked: SeedCsv;
+    if (selectedCsv === 'random') {
+      picked = pickRandomSeedCsv();
+      setSelectedCsv(picked.id);
+    } else {
+      const found = SEED_CSVS.find((c) => c.id === selectedCsv);
+      picked = found ?? DEFAULT_SEED_CSV;
+    }
     setActiveCsv(picked);
     setPhase('ingesting');
     try {
@@ -386,7 +417,7 @@ export function useDemoState(): UseDemoStateResult {
       setError(msg);
       setPhase('error');
     }
-  }, []);
+  }, [selectedCsv]);
 
   const clickProspect = useCallback(
     async (prospectId: string, companyName: string) => {
@@ -446,6 +477,7 @@ export function useDemoState(): UseDemoStateResult {
     setEvents([]);
     setError(null);
     setActiveCsv(DEFAULT_SEED_CSV);
+    setSelectedCsv(DEFAULT_SEED_CSV.id);
     setTracerProspect(null);
     setTracerStatus('idle');
     startedAtRef.current = null;
@@ -464,8 +496,10 @@ export function useDemoState(): UseDemoStateResult {
     connected,
     error,
     activeCsv,
+    selectedCsv,
     tracerProspect,
     tracerStatus,
+    selectCsv,
     runDemo,
     clickProspect,
     reset,

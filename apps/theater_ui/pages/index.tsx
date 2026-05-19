@@ -75,6 +75,9 @@ const IndexPage: NextPage = () => {
           byteDensityRatio={demo.byteDensityRatio}
           dossier={demo.dossier}
           error={demo.error}
+          activeCsv={demo.activeCsv}
+          selectedCsv={demo.selectedCsv}
+          onSelectCsv={demo.selectCsv}
           onRunDemo={demo.runDemo}
           onReset={demo.reset}
         />
