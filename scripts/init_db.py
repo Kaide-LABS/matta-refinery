@@ -58,6 +58,16 @@ def init_db():
         conn.execute(text("CREATE TABLE dossier_stubs (stub_id TEXT PRIMARY KEY, prospect_id TEXT, batch_id TEXT, company_facts JSONB, verified_vertical TEXT, headline_kg_anchor TEXT, slot_readiness TEXT, generated_at TIMESTAMP)"))
         conn.execute(text("CREATE TABLE IF NOT EXISTS event_idempotency (id TEXT PRIMARY KEY, event_id TEXT, processed_at TIMESTAMP)"))
         
+    # Idempotent demo-enrichment seed — populates enrichment_artifacts for
+    # any tracer prospects that already exist. On first boot, lead_prospects
+    # is empty so this seeds nothing; on subsequent runs after CSV ingest
+    # for a tracer batch, this populates the deterministic demo enrichment.
+    try:
+        from scripts.seed_demo_enrichment import seed_demo_enrichment
+        seed_demo_enrichment()
+    except Exception as e:
+        print(f"  (demo enrichment seed skipped: {e})")
+
     print("Database initialized successfully.")
 
 if __name__ == "__main__":
