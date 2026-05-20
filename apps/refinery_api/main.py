@@ -9,9 +9,11 @@ from .config import settings
 
 from .routers import ingest, slack_events, slack_interactions, crm_webhooks, crm_actions, dossier, health, websocket, batch
 from packages.knowledge_graph.verify import validate_graph_or_die
+from packages.observability.logging_config import configure_logging
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    configure_logging(service_name="refinery-api")
     validate_graph_or_die()
     app.state.redis = aioredis.from_url(settings.redis_url)
     app.state.celery = Celery("refinery", broker=settings.celery_broker)

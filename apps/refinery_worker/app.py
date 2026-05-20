@@ -1,5 +1,8 @@
 from celery import Celery
 from apps.refinery_api.config import settings
+from packages.observability.logging_config import configure_logging
+
+configure_logging(service_name="refinery-worker")
 
 app = Celery("refinery")
 app.conf.update(
