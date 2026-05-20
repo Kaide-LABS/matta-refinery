@@ -9,6 +9,119 @@ interface Props {
   tracerProspect: TopProspect | null;
 }
 
+// §0 Company Facts — structured render distinguishing CSV-provided vs
+// verified-public provenance buckets. The compose_dossier task emits
+// company_facts with csv_provided_facts + verified_public_facts +
+// ingest_provenance sub-dicts; the generic renderJsonValue would emit
+// a deep nested mess. This component surfaces the provenance distinction
+// explicitly so Damjan's "where does this come from" probe has a visible
+// answer in the UI.
+function renderEnrichmentBlock(label: string, block: unknown): React.ReactNode {
+  if (!block || typeof block !== 'object') return null;
+  const b = block as { status: string; data?: unknown; reason?: string };
+
+  if (b.status === 'fetched' && b.data) {
+    return (
+      <div className="dossier-doc__enrich-source dossier-doc__enrich-source--fetched">
+        <div className="dossier-doc__enrich-label">
+          <span className="dossier-doc__enrich-source-name">{label}</span>
+          <span className="dossier-doc__enrich-status dossier-doc__enrich-status--fetched">
+            ✓ fetched
+          </span>
+        </div>
+        {renderJsonValue(b.data)}
+      </div>
+    );
+  }
+
+  if (b.status === 'not_applicable') {
+    return (
+      <div className="dossier-doc__enrich-source dossier-doc__enrich-source--na">
+        <span className="dossier-doc__enrich-source-name">{label}</span>
+        <span className="dossier-doc__enrich-status dossier-doc__enrich-status--na">
+          not applicable
+        </span>
+        <span className="dossier-doc__enrich-reason">
+          {b.reason === 'non_uk_jurisdiction_heuristic'
+            ? '(non-UK jurisdiction)'
+            : b.reason}
+        </span>
+      </div>
+    );
+  }
+
+  // fallback_empty / failed / not_attempted
+  return (
+    <div className="dossier-doc__enrich-source dossier-doc__enrich-source--empty">
+      <span className="dossier-doc__enrich-source-name">{label}</span>
+      <span className="dossier-doc__enrich-status dossier-doc__enrich-status--empty">
+        no data
+      </span>
+      <span className="dossier-doc__enrich-reason">{b.reason}</span>
+    </div>
+  );
+}
+
+function renderCompanyFacts(facts: Record<string, unknown>): React.ReactNode {
+  const csv = facts.csv_provided_facts as Record<string, string> | undefined;
+  const verified = facts.verified_public_facts as Record<string, unknown> | undefined;
+  const ingest = facts.ingest_provenance as Record<string, string> | undefined;
+
+  return (
+    <div className="dossier-doc__company-facts">
+      <div className="dossier-doc__facts-header">
+        <span className="dossier-doc__facts-name">
+          {(facts.company_name as string) || '—'}
+        </span>
+        <span className="dossier-doc__facts-vertical">
+          {(facts.vertical as string) || 'vertical_uncertain'}
+        </span>
+        <span className="dossier-doc__facts-size">
+          {(facts.factory_size_band as string) || 'unknown'}
+        </span>
+      </div>
+
+      {csv && (
+        <div className="dossier-doc__facts-block dossier-doc__facts-block--csv">
+          <div className="dossier-doc__facts-block-label">
+            From the trade-show lead CSV
+          </div>
+          <dl className="dossier-kv">
+            {csv.contact_name && <><dt>contact_name</dt><dd>{csv.contact_name}</dd></>}
+            {csv.contact_email && <><dt>contact_email</dt><dd>{csv.contact_email}</dd></>}
+            {csv.sector_hint && <><dt>sector_hint</dt><dd>{csv.sector_hint}</dd></>}
+            {csv.raw_notes && <><dt>booth_notes</dt><dd>{csv.raw_notes}</dd></>}
+          </dl>
+        </div>
+      )}
+
+      {verified && (
+        <div className="dossier-doc__facts-block dossier-doc__facts-block--verified">
+          <div className="dossier-doc__facts-block-label">
+            Verified from public sources
+          </div>
+          {renderEnrichmentBlock('Companies House', verified.companies_house)}
+          {renderEnrichmentBlock('Website (scrape)', verified.website_capabilities)}
+          {renderEnrichmentBlock('Recent news', verified.recent_news)}
+        </div>
+      )}
+
+      {ingest && (
+        <div className="dossier-doc__facts-block dossier-doc__facts-block--provenance">
+          <details>
+            <summary>Ingest provenance</summary>
+            <dl className="dossier-kv">
+              <dt>batch_id</dt><dd><code>{ingest.batch_id}</code></dd>
+              <dt>file_sha256</dt><dd><code>{(ingest.file_sha256 || '').slice(0, 16)}…</code></dd>
+              <dt>ingest_day</dt><dd>{ingest.ingest_day}</dd>
+            </dl>
+          </details>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function renderJsonValue(value: unknown, depth = 0): React.ReactNode {
   if (value === null || value === undefined) return <span className="dossier-empty">—</span>;
   if (typeof value === 'string') return <span>{value}</span>;
@@ -150,7 +263,7 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
             {dossier?.company_facts ? (
               <section className="dossier-doc__section" data-doc-section="company_facts">
                 <h3>§0 Company Facts</h3>
-                {renderJsonValue(dossier.company_facts)}
+                {renderCompanyFacts(dossier.company_facts as Record<string, unknown>)}
               </section>
             ) : null}
 

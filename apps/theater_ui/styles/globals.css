@@ -2281,6 +2281,121 @@ code, .mono {
   word-break: break-word;
 }
 
+/* ─── §0 Company Facts — structured provenance buckets ────────────────── */
+.dossier-doc__company-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dossier-doc__facts-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+
+.dossier-doc__facts-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--matta-navy);
+}
+
+.dossier-doc__facts-vertical,
+.dossier-doc__facts-size {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--matta-grey);
+  padding: 2px 7px;
+  background: var(--matta-code-bg);
+  border-radius: var(--radius-sm);
+}
+
+.dossier-doc__facts-block {
+  padding: 10px 12px;
+  border-left: 3px solid var(--matta-warm-border);
+  background: var(--matta-pane-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.dossier-doc__facts-block--csv {
+  border-left-color: var(--matta-grey);
+}
+
+.dossier-doc__facts-block--verified {
+  border-left-color: var(--matta-forest);
+}
+
+.dossier-doc__facts-block--provenance {
+  border-left-color: var(--matta-warm-border);
+  font-size: 11px;
+}
+
+.dossier-doc__facts-block-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-grey);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.dossier-doc__facts-block--verified .dossier-doc__facts-block-label {
+  color: var(--matta-forest);
+}
+
+.dossier-doc__enrich-source {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+
+.dossier-doc__enrich-source:last-child {
+  border-bottom: none;
+}
+
+.dossier-doc__enrich-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dossier-doc__enrich-source-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--matta-navy);
+}
+
+.dossier-doc__enrich-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.dossier-doc__enrich-status--fetched {
+  background: rgba(92, 122, 107, 0.14);
+  color: var(--matta-forest);
+}
+
+.dossier-doc__enrich-status--na {
+  background: var(--matta-code-bg);
+  color: var(--matta-grey);
+}
+
+.dossier-doc__enrich-status--empty {
+  background: rgba(242, 194, 165, 0.20);
+  color: var(--matta-peach-dark);
+}
+
+.dossier-doc__enrich-reason {
+  font-size: 11px;
+  color: var(--matta-grey);
+  font-style: italic;
+}
+
 /* ─── Refinery CRM-sync footer line on Slack ranked message ───────────── */
 .slack-msg__crm-line {
   margin-top: 8px;
