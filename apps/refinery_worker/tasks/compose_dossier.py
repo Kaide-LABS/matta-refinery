@@ -47,6 +47,23 @@ def _render_section(value: object) -> str:
     return json.dumps(value, default=str, sort_keys=True)
 
 
+def _format_enrichment_block(payload, status, fallback_reason):
+    """Render an enrichment block for the dossier. Handles all five
+    status values uniformly so downstream UI can render conditionally:
+    fetched | not_applicable | fallback_empty | failed | not_attempted (NULL)."""
+    if status == "fetched" and payload is not None:
+        # JSONB → dict via SQLAlchemy
+        return {"status": "fetched", "data": payload}
+    if status == "not_applicable":
+        return {"status": "not_applicable", "reason": fallback_reason or "not_applicable"}
+    if status == "fallback_empty":
+        return {"status": "fallback_empty", "reason": fallback_reason or "no_data_returned"}
+    if status == "failed":
+        return {"status": "failed", "reason": fallback_reason or "fetch_failed"}
+    # status is NULL — enrichment task hasn't run yet for this prospect
+    return {"status": "not_attempted", "reason": "enrichment_pending_or_skipped"}
+
+
 @app.task(
     name="refinery.compose_dossier",
     bind=True,
@@ -100,7 +117,9 @@ def compose_dossier(self, dossier_id: str):
     else:
         unverified_sections = json.loads(unverified_sections_json or "[]")
 
-    # Pull verified company facts + ingest provenance (one extra SELECT, reuses engine).
+    # Pull verified company facts + ingest provenance + enrichment payloads.
+    # Three LEFT JOINs on enrichment_artifacts (one per source) — each
+    # row is NULL when the adapter hasn't run yet for this prospect.
     with engine.connect() as conn:
         lp_row = conn.execute(
             text(
@@ -108,9 +127,18 @@ def compose_dossier(self, dossier_id: str):
                 "lp.contact_email, lp.contact_name, lp.sector_hint, lp.source_system, lp.external_lead_id, "
                 "lp.raw_notes, lp.fitness_score, lp.batch_id, lp.last_scored_at, "
                 "lp.enrichment_status, lp.requires_human_review, "
-                "ib.file_sha256, ib.user_id, ib.day, ib.created_at, ib.source_surface "
+                "ib.file_sha256, ib.user_id, ib.day, ib.created_at, ib.source_surface, "
+                "ch.payload AS ch_payload, ch.status AS ch_status, ch.fallback_reason AS ch_reason, "
+                "ws.payload AS ws_payload, ws.status AS ws_status, ws.fallback_reason AS ws_reason, "
+                "tn.payload AS tn_payload, tn.status AS tn_status, tn.fallback_reason AS tn_reason "
                 "FROM lead_prospects lp "
                 "LEFT JOIN ingest_batches ib ON ib.id = lp.batch_id "
+                "LEFT JOIN enrichment_artifacts ch "
+                "  ON ch.prospect_id = lp.id AND ch.source = 'companies_house' "
+                "LEFT JOIN enrichment_artifacts ws "
+                "  ON ws.prospect_id = lp.id AND ws.source = 'web_scrape' "
+                "LEFT JOIN enrichment_artifacts tn "
+                "  ON tn.prospect_id = lp.id AND tn.source = 'tavily_news' "
                 "WHERE lp.id = :pid"
             ),
             {"pid": prospect_id},
@@ -124,6 +152,9 @@ def compose_dossier(self, dossier_id: str):
         lp_external_lead_id, lp_raw_notes, lp_fitness_score, lp_batch_id,
         lp_last_scored_at, lp_enrichment_status, lp_requires_human_review,
         ib_file_sha256, ib_user_id, ib_day, ib_created_at, ib_source_surface,
+        ch_payload, ch_status, ch_reason,
+        ws_payload, ws_status, ws_reason,
+        tn_payload, tn_status, tn_reason,
     ) = lp_row
     lp_fitness_score = float(lp_fitness_score or 0.0)
 
@@ -217,21 +248,35 @@ def compose_dossier(self, dossier_id: str):
     }
 
     # Render deterministic-side payloads.
-    # (1) company_facts — adds ingest provenance (batch_id, file_sha256, day, user_id, source_label).
+    # (1) company_facts — restructured into three provenance buckets:
+    #   csv_provided_facts: verbatim from the trade-show lead form (unaudited claims)
+    #   verified_public_facts: fetched from external sources (Companies House,
+    #                          Playwright scrape, Tavily news) — each block tagged
+    #                          with status so UI can render conditionally
+    #   ingest_provenance: batch + file hash + user + day (audit chain)
+    csv_provided_facts = {
+        "contact_name": lp_contact_name or "",
+        "contact_email": lp_contact_email or "",
+        "sector_hint": lp_sector_hint or "",
+        "raw_notes": (lp_raw_notes or "")[:400],
+    }
+    verified_public_facts = {
+        "companies_house": _format_enrichment_block(ch_payload, ch_status, ch_reason),
+        "website_capabilities": _format_enrichment_block(ws_payload, ws_status, ws_reason),
+        "recent_news": _format_enrichment_block(tn_payload, tn_status, tn_reason),
+    }
     company_facts_payload = {
         "company_name": lp_company_name or "",
         "vertical": lp_vertical or "vertical_uncertain",
         "factory_size_band": lp_size_band or "unknown",
         "trade_show_provenance": str(bool(lp_trade_show)),
-        "contact_email": lp_contact_email or "",
-        "contact_name": lp_contact_name or "",
-        "sector_hint": lp_sector_hint or "",
         "source_system": lp_source_system or "",
         "external_lead_id": lp_external_lead_id or "",
-        "raw_notes": (lp_raw_notes or "")[:400],
         "enrichment_status": lp_enrichment_status or "",
         "requires_human_review": str(bool(lp_requires_human_review)),
         "last_scored_at": str(lp_last_scored_at) if lp_last_scored_at else "",
+        "csv_provided_facts": csv_provided_facts,
+        "verified_public_facts": verified_public_facts,
         "ingest_provenance": {
             "batch_id": lp_batch_id or "",
             "file_sha256": ib_file_sha256 or "",
