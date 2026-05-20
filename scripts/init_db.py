@@ -8,6 +8,10 @@ sys.path.insert(0, str(root_dir))
 
 from sqlalchemy import create_engine, text
 from packages.models.prospects import Base as ProspectsBase
+# Import EnrichmentArtifact so it registers on ProspectsBase.metadata
+# (both share packages/models/base.py). Without this import the
+# enrichment_artifacts table would never be created by create_all().
+from packages.models.enrichment import EnrichmentArtifact  # noqa: F401
 from packages.outbox.models import Base as OutboxBase
 # Try to import settings, fallback to manual if fails
 try:

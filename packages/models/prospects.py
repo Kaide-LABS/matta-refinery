@@ -1,8 +1,7 @@
 from sqlalchemy import Column, String, Integer, DateTime, Date, Float, Boolean, JSON
-from sqlalchemy.orm import declarative_base
 from datetime import datetime
 
-Base = declarative_base()
+from .base import Base
 
 class IngestBatch(Base):
     __tablename__ = "ingest_batches"
