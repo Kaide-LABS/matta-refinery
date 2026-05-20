@@ -24,6 +24,11 @@ dependencies = [
   "structlog>=24",
   "uvicorn[standard]>=0.32",
   "gevent>=24",
+  # Phase 1.7 enrichment
+  "requests>=2.31",
+  "playwright>=1.42,<1.43",
+  "tavily-python>=0.3.3",
+  "google-cloud-logging>=3.10",
 ]
 
 [project.optional-dependencies]

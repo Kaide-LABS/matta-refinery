@@ -10,4 +10,9 @@ WORKDIR /app
 COPY --from=builder /usr/local /usr/local
 COPY . .
 
+# Phase 1.7: install Chromium for Playwright web scraping. --with-deps
+# pulls in the system libraries Chromium needs (libnss3, libatk-bridge,
+# libgbm, etc.). Adds ~300MB to the worker image.
+RUN playwright install --with-deps chromium
+
 ENTRYPOINT ["celery", "-A", "apps.refinery_worker.app", "worker", "--loglevel=INFO", "--concurrency=4", "--pool=gevent"]
