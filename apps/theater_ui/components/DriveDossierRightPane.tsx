@@ -239,6 +239,9 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
               {' · '}dossier attached
             </div>
             <header className="dossier-doc__header">
+              <div className="dossier-doc__role-label">
+                FDE pre-flight briefing · read before factory visit
+              </div>
               <h1
                 className="dossier-doc__title"
                 data-tutorial-anchor="dossier-title"
@@ -257,6 +260,13 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                     <span>Byte-density {dossier.deterministic_section_ratio.toFixed(3)}</span>
                   </>
                 )}
+              </div>
+              <div className="dossier-doc__purpose">
+                This briefing assembles verified public facts and inferred
+                operational signals for FDE pre-deployment scoping. It does
+                not replace on-site diagnostic work — it eliminates the
+                night of unstructured prep that currently happens between
+                the trade-show floor and the factory visit.
               </div>
             </header>
 

@@ -2281,6 +2281,26 @@ code, .mono {
   word-break: break-word;
 }
 
+/* ─── FDE pre-flight briefing framing (role label + purpose) ─────────── */
+.dossier-doc__role-label {
+  font-size: 10px;
+  font-style: italic;
+  color: var(--matta-grey);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.dossier-doc__purpose {
+  font-size: 11px;
+  color: var(--matta-charcoal);
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+
 /* ─── §0 Company Facts — structured provenance buckets ────────────────── */
 .dossier-doc__company-facts {
   display: flex;
