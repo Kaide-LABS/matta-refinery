@@ -336,9 +336,31 @@ def compose_dossier(self, dossier_id: str):
         "deterministic_phase_breakdown": APPROACH_PHASE_BREAKDOWN.get(approach.template, []),
     }
 
+    # (6) process_taxonomy_with_enrichment — wraps the LLM-generated vertical
+    # baseline with verified capabilities / customers / certifications pulled
+    # from the Playwright scrape. The LLM taxonomy is a vertical-template
+    # fallback; the enrichment block is company-specific ground truth.
+    ws_data = ws_payload if (ws_status == "fetched" and isinstance(ws_payload, dict)) else {}
+    process_taxonomy_with_enrichment_payload = {
+        "llm_generated_taxonomy": taxonomy.model_dump(),
+        "verified_capabilities_from_website": ws_data.get("extracted_capabilities", []),
+        "verified_customers_from_website": ws_data.get("extracted_customers", []),
+        "verified_certifications": ws_data.get("extracted_certifications", []),
+        "vertical": lp_vertical or "vertical_uncertain",
+        "phase_1_scope_note": (
+            "§1 maps the prospect to a verified vertical baseline. Where the "
+            "Playwright scrape returned capabilities, customers, or "
+            "certifications, those are listed above as ground-truth from the "
+            "company's own website. The LLM-generated taxonomy below is the "
+            "vertical-template fallback — sub-processes and line-level steps "
+            "characteristic of the vertical, not specific to this prospect."
+        ),
+    }
+
     rendered_sections = {
         # Deterministic-content section renders (counted toward bytes(deterministic_content)).
         "company_facts": _render_section(company_facts_payload),
+        "process_taxonomy_with_enrichment": _render_section(process_taxonomy_with_enrichment_payload),
         "verified_kg_anchors": _render_section(verified_kg_anchors_payload),
         "fitness_score_rationale": _render_section(fitness_score_breakdown),
         "risk_checklist_baseline": _render_section(risk_checklist_baseline_payload),
