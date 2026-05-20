@@ -5,7 +5,7 @@ DO UPDATE. ON DELETE CASCADE cleans up when a prospect is removed.
 """
 import uuid
 
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Index, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
 
@@ -15,7 +15,17 @@ from .base import Base
 class EnrichmentArtifact(Base):
     __tablename__ = "enrichment_artifacts"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    # server_default = gen_random_uuid() so raw-SQL inserts that omit the id
+    # column (e.g. the upsert path in enrich_prospect._upsert_artifact) get
+    # a server-generated UUID. Python-side default=uuid.uuid4 is kept as a
+    # safety net for ORM inserts. Requires pgcrypto extension (enabled in
+    # init_db.py / alembic 0002).
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("gen_random_uuid()"),
+        default=uuid.uuid4,
+    )
     prospect_id = Column(
         String(64),
         ForeignKey("lead_prospects.id", ondelete="CASCADE"),

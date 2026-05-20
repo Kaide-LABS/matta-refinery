@@ -23,7 +23,13 @@ except Exception:
 def init_db():
     engine = create_engine(url)
     print(f"Connecting to {url}...")
-    
+
+    # pgcrypto provides gen_random_uuid() — used by enrichment_artifacts.id
+    # server_default. Must be enabled before create_all so the column DDL's
+    # default function resolves.
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
+
     # Create tables
     ProspectsBase.metadata.drop_all(engine)
     ProspectsBase.metadata.create_all(engine)
