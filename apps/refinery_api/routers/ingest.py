@@ -47,7 +47,14 @@ async def receive_batch(
                 source_system=batch.source_surface,
                 external_lead_id=row.external_lead_id,
                 company_name=row.company_name,
+                contact_name=row.contact_name,
+                contact_email=row.contact_email,
+                sector_hint=row.sector_hint,
+                raw_notes=row.raw_notes,
                 factory_size_band=row.factory_size_band or "unknown",
+                # Phase 1.7 Stage C-prelim: explicit website URL for real-
+                # company seeded rows; WebScraperAdapter consumes when present.
+                website_url=row.website_url,
             )
             await session.merge(prospect)
         await session.commit()

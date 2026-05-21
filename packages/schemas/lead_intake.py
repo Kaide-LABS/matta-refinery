@@ -12,6 +12,9 @@ class LeadIntakeRow(BaseModel):
     sector_hint: Annotated[str | None, Field(max_length=128)] = None
     factory_size_band: Literal["small", "medium", "large", "unknown"] | None = None
     raw_notes: Annotated[str | None, Field(max_length=2048)] = None
+    # Phase 1.7 Stage C-prelim: explicit website URL flows through to
+    # WebScraperAdapter, bypassing the unreliable derive-from-name path.
+    website_url: Annotated[str | None, Field(max_length=2048)] = None
 
 class LeadIntakeBatch(BaseModel):
     model_config = ConfigDict(extra="forbid")

@@ -33,4 +33,8 @@ class LeadProspect(Base):
     last_scored_at = Column(DateTime, nullable=True)
     requires_human_review = Column(Boolean, default=False)
     raw_notes = Column(String, nullable=True)
+    # Phase 1.7 Stage C-prelim: explicit website URL for real-company seeded
+    # rows; WebScraperAdapter consumes when present, falls back to derive-
+    # from-email otherwise.
+    website_url = Column(String(2048), nullable=True)
     defect_hypothesis = Column(JSON, nullable=True) # Added for Stage 2

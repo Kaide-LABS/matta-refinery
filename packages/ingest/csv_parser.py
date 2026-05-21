@@ -17,6 +17,7 @@ def parse_csv_to_batch(file_bytes: bytes, source_label: str, user) -> LeadIntake
             sector_hint=row.get("sector_hint"),
             factory_size_band=row.get("factory_size_band") or "unknown",
             raw_notes=row.get("raw_notes"),
+            website_url=row.get("website_url") or None,
         ))
     
     return LeadIntakeBatch(

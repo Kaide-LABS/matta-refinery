@@ -23,6 +23,9 @@ class LeadProspect(BaseModel):
     signal_hash: str
     last_scored_at: datetime
     requires_human_review: bool = False
+    # Phase 1.7 Stage C-prelim: explicit website URL when known (real-company
+    # seeded rows). WebScraperAdapter consumes when present.
+    website_url: Annotated[str | None, Field(max_length=2048)] = None
 
 
 class PrioritizedQueueEntry(BaseModel):
