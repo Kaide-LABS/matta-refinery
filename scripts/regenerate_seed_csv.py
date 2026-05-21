@@ -210,20 +210,33 @@ UK_TRACER = (
     "booth-conversation:porosity-spike-on-pour-A",
     "jmitchell@wcook-sheffield.co.uk",
     "James Mitchell",
+    "https://www.wcook.co.uk",  # verified canonical URL
 )
 
 UK_COHORT = [
+    # Ranks 2-12 — verified real UK foundries with canonical URLs (Nia web search, Phase 1.7 Stage C-prelim).
+    ("Sheffield Forgemasters", "steel foundry & open-die forging / defence & nuclear castings", "large", "currently evaluating in-line metrology vendors", "d.brennan@sheffieldforgemasters.com", "David Brennan", "https://www.sheffieldforgemasters.com"),
+    ("Newby Foundries", "iron/steel/aluminium sand & investment casting", "medium", None, "claire.foster@newbyfoundries.co.uk", "Claire Foster", "https://www.newbyfoundries.co.uk"),
+    ("Furniss & White Foundries", "SG iron & grey iron castings for rail and industrial", "medium", "rail OEM Tier-1", "rpatel@f-w-f.co.uk", "Rajesh Patel", "https://www.f-w-f.co.uk"),
+    ("Cerdic Foundries", "Lloyds-registered sand castings / OEM Tier-1", "medium", None, "michael.walker@cerdicfoundries.co.uk", "Michael Walker", "https://www.cerdicfoundries.co.uk"),
+    ("J&J Siddons", "grey & ductile (SG) iron specialists", "medium", "Tata supplier; calibration drift discussion", "amrit.singh@jjsiddons.co.uk", "Amrit Singh", "https://www.jjsiddons.co.uk"),
+    ("The Boro' Foundry", "iron, steel & alloy castings / heavy industrial", "medium", None, "emma.thompson@borofoundry.co.uk", "Emma Thompson", "https://borofoundry.co.uk"),
+    ("Lestercast", "investment / lost-wax casting for OEMs", "medium", "asked about bearing-race finish inspection", "p.murphy@lestercast.co.uk", "Paul Murphy", "https://lestercast.co.uk"),
+    ("PI Castings", "ferrous & non-ferrous precision investment castings", "medium", None, "r.foster@pi-castings.co.uk", "Rachel Foster", "https://pi-castings.co.uk"),
+    ("Investacast", "precision investment castings / aerospace & defence", "medium", "decision maker not at booth — follow up", "a.macdonald@investacast.com", "Andrew Macdonald", "https://investacast.com"),
+    ("C.H. Coward Foundry", "ferrous & non-ferrous Sheffield foundry", "small", "F1 supply chain; cycle time pressure", "l.bennett@chcsheffield.co.uk", "Lisa Bennett", "https://chcsheffield.co.uk"),
+    ("TD Foundry", "sand-cast foundry services / Midlands", "small", "sand-cast jobbing shop", "j.harrison@tdfoundry.co.uk", "Joanna Harrison", "https://www.tdfoundry.co.uk"),
+    # Ranks 13+ — legacy real-ish names without verified URLs (fall through to derive-from-email).
+    ("Goodwin PLC", "investment casting", "medium", None, "g.holdings@goodwin-plc.co.uk", "G. Holdings"),
+    ("Doncasters Group", "investment casting / aerospace alloys", "large", "expanding Lincoln site Q3 2026", "supplier@doncasters.com", "Supplier Rep"),
     ("Tata Steel UK", "steel", "large", "asked about hot-strip mill QC retrofit", "s.henderson@tatasteel.com", "Sarah Henderson"),
-    ("Sheffield Forgemasters", "open-die forging", "large", "currently evaluating in-line metrology vendors", "d.brennan@sheffieldforge.co.uk", "David Brennan"),
-    ("Goodwin PLC", "investment casting", "medium", None, "claire.foster@goodwin-plc.co.uk", "Claire Foster"),
-    ("Doncasters Group", "investment casting / aerospace alloys", "large", "expanding Lincoln site Q3 2026", "rpatel@doncasters.com", "Rajesh Patel"),
-    ("Brush Group Loughborough", "turbine generator forgings", "large", None, "michael.walker@brush.co.uk", "Michael Walker"),
-    ("Caparo Forging", "automotive forging tier 2", "medium", "Tata supplier; interested in calibration drift detection", "amrit.singh@caparoforge.com", "Amrit Singh"),
-    ("Liberty Steel Rotherham", "specialty steel bar", "large", None, "emma.thompson@libertysteel.com", "Emma Thompson"),
-    ("Brunel Bearings", "precision bearings", "medium", "asked about bearing-race finish inspection", "p.murphy@brunelbearings.co.uk", "Paul Murphy"),
-    ("Severn Glocon", "valve castings", "medium", None, "r.foster@severnglocon.com", "Rachel Foster"),
-    ("Weir Minerals Todmorden", "pump impeller castings", "large", "decision maker not at booth — follow up", "a.macdonald@weirgroup.com", "Andrew Macdonald"),
-    ("Cosworth Manufacturing", "high-performance engine castings", "medium", "F1 supply chain; cycle time pressure", "l.bennett@cosworth.com", "Lisa Bennett"),
+    ("Brush Group Loughborough", "turbine generator forgings", "large", None, "m.walker@brush.co.uk", "M. Walker"),
+    ("Caparo Forging", "automotive forging tier 2", "medium", None, "a.singh@caparoforge.com", "A. Singh"),
+    ("Liberty Steel Rotherham", "specialty steel bar", "large", None, "e.thompson@libertysteel.com", "E. Thompson"),
+    ("Brunel Bearings", "precision bearings", "medium", None, "p.murphy@brunelbearings.co.uk", "P. Murphy"),
+    ("Severn Glocon", "valve castings", "medium", None, "r.foster@severnglocon.com", "R. Foster"),
+    ("Weir Minerals Todmorden", "pump impeller castings", "large", None, "a.macdonald@weirgroup.com", "A. Macdonald"),
+    ("Cosworth Manufacturing", "high-performance engine castings", "medium", None, "l.bennett@cosworth.com", "L. Bennett"),
     ("Renishaw Castings Division", "metrology-grade castings", "medium", None, "j.harrison@renishaw.com", "Joanna Harrison"),
     ("Hayward Tyler", "submersible motor components", "medium", "asked specifically about porosity Pareto", "s.kowalski@haywardtyler.com", "Stefan Kowalski"),
     ("Edwards Vacuum Burgess Hill", "vacuum pump castings", "large", None, "j.taylor@edwardsvacuum.com", "Joanne Taylor"),
@@ -669,26 +682,31 @@ AIS_PAD_TEMPLATES = [
 # ╔═══ FORGING INDUSTRY CONVENTION 2025 ══════════════════════════════════════╗
 
 FIC_TRACER = (
-    "Yorkshire Casting Co",
-    "ductile iron casting + forging",
+    "Mettis Aerospace",
+    "precision forged & machined aerospace components",
     "large",
-    "expanding closed-die forging cell; specifically asking about porosity correlation between cast feedstock and final forged part",
-    "h.kaur@yorkshirecasting.co.uk",
-    "Harpreet Kaur",
+    "expanding closed-die forging cell; asking about porosity correlation between forged feedstock and final machined part",
+    "d.brennan@mettis-aerospace.com",
+    "David Brennan",
+    "https://www.mettis-aerospace.com",  # verified canonical URL
 )
 
 FIC_COHORT = [
-    ("Sheffield Forgemasters", "open-die heavy forging", "large", "evaluating in-line metrology vendors — finalist Q3", "d.brennan@sheffieldforge.co.uk", "David Brennan"),
-    ("Independent Forgings Sheffield", "open-die heavy forging", "medium", "saw fitness scoring methodology demo", "r.singh@indepforgings.com", "Ranjit Singh"),
-    ("Doncasters Forge Burton-on-Trent", "investment + closed-die forging", "large", "aerospace alloys focus", "p.shaw@doncasters.com", "Peter Shaw"),
-    ("Brookhouse Forgings Oldham", "automotive crankshaft forging", "medium", "decision maker requested follow-up Q2", "m.tahir@brookhouseforgings.co.uk", "Muhammad Tahir"),
-    ("Hawkins Forge & Stamping Walsall", "automotive stampings", "medium", None, "k.oneill@hawkinsforge.co.uk", "Kerry O'Neill"),
-    ("Caparo Forging Oldbury", "automotive forging tier-2", "medium", "Tata Steel supplier", "a.singh@caparoforge.com", "Amrit Singh"),
-    ("Bromford Iron & Steel Wolverhampton", "specialty steel forging", "medium", None, "j.patel@bromford.com", "James Patel"),
-    ("Triplex Forge Cradley Heath", "automotive forging", "medium", "die wear monitoring priority", "s.davies@triplexforge.co.uk", "Susan Davies"),
-    ("Independent Forgings Mexborough", "open-die forging", "medium", None, "t.brown@indepforge-mex.co.uk", "Tom Brown"),
-    ("Bonas & Co Newcastle", "specialty forgings", "small", None, "h.murphy@bonas.co.uk", "Hannah Murphy"),
-    ("Goodwin International Stoke", "investment casting + forging", "large", "high-alloy aerospace components", "c.foster@goodwin-plc.co.uk", "Claire Foster"),
+    # Ranks 2-12 — verified real UK forging companies with canonical URLs (Nia web search).
+    ("Somers Forge", "open-die forging up to 80 tonnes / aerospace & energy", "large", "evaluating in-line metrology vendors — finalist Q3", "d.brennan@somersforge.com", "David Brennan", "https://www.somersforge.com"),
+    ("Independent Forgings & Alloys", "open-die & closed-die forging / aerospace SME", "medium", "saw fitness scoring methodology demo", "r.singh@independentforgings.com", "Ranjit Singh", "https://independentforgings.com"),
+    ("Bifrangi UK", "closed-die forging / agricultural & off-highway", "large", "agricultural OEM Tier-1", "p.shaw@bifrangi.co.uk", "Peter Shaw", "http://www.bifrangi.co.uk"),
+    ("Brooks Forgings", "drop & upset forging / machining & fabrication", "medium", "decision maker requested follow-up Q2", "m.tahir@brooksforgings.co.uk", "Muhammad Tahir", "https://brooksforgings.co.uk"),
+    ("Brockhouse Forgings", "drop-hammer forging 0.5-400kg", "medium", None, "k.oneill@brockhouse.co.uk", "Kerry O'Neill", "https://brockhouse.co.uk"),
+    ("W.H. Tildesley", "drop forging / closed-die specialist", "medium", "die-wear monitoring discussion", "a.singh@whtildesley.com", "Amrit Singh", "https://www.whtildesley.com"),
+    ("Abbey Forged Products", "modern forging facility / oil, gas, defence & aerospace", "medium", None, "j.patel@abbeyforgedproducts.co.uk", "James Patel", "https://www.abbeyforgedproducts.co.uk"),
+    ("Kimber Mills (Kimber Drop Forgings)", "drop forging / hand tool & industrial", "small", None, "s.davies@kimbermills.co.uk", "Susan Davies", "https://www.kimbermills.co.uk"),
+    ("KT Forge", "drop & open-die forging / Rotherham", "small", None, "t.brown@ktforge.co.uk", "Tom Brown", "https://ktforge.co.uk"),
+    ("Cogent Steel", "open-die forgings 50kg to 50,000kg / West Yorkshire", "medium", None, "h.murphy@cogentsteel.co.uk", "Hannah Murphy", "https://www.cogentsteel.co.uk"),
+    ("Intercast UK", "ISO-approved forgings & castings manufacturer", "small", "small-batch ISO 9001 supplier", "c.foster@intercastuk.com", "Claire Foster", "https://www.intercastuk.com"),
+    # Ranks 13+ — legacy entries (no verified URLs).
+    ("Special Steels Manchester", "tool steel forging", "small", "die-steel surface inspection", "j.dobson@specialsteelsmcr.co.uk", "John Dobson"),
+    ("Cosworth Manufacturing Worcester", "high-performance forging", "medium", "F1 supply chain", "l.bennett@cosworth.com", "Lisa Bennett"),
     ("Special Steels Manchester", "tool steel forging", "small", "die-steel surface inspection", "j.dobson@specialsteelsmcr.co.uk", "John Dobson"),
     ("Cosworth Manufacturing Worcester", "high-performance forging", "medium", "F1 supply chain", "l.bennett@cosworth.com", "Lisa Bennett"),
     ("Bethlehem Steel Forgings Coatesville", "heavy forgings (US)", "large", "naval propulsion shaft forging", "w.smith@bethlehemforgings.com", "William Smith"),
@@ -864,8 +882,10 @@ def generate_csv(csv_id: str) -> None:
 
     rows = []
 
-    # Row 1 — tracer (fixed)
+    # Row 1 — tracer (fixed). Tracers may be 6-tuple (legacy, no website_url)
+    # or 7-tuple (post-Phase-1.7-Stage-C-prelim, with verified website URL).
     tracer = cfg["tracer"]
+    tracer_website = tracer[6] if len(tracer) >= 7 else ""
     rows.append({
         "external_lead_id": f"{cfg['id_prefix']}001",
         "company_name": tracer[0],
@@ -874,16 +894,25 @@ def generate_csv(csv_id: str) -> None:
         "sector_hint": tracer[1] or "",
         "factory_size_band": tracer[2],
         "raw_notes": tracer[3] or "",
+        "website_url": tracer_website or "",
     })
 
     lead_id = 2
     target = cfg["target"]
 
-    # Curated cohort
+    # Curated cohort. Entries may be 6-tuple or 7-tuple (last element =
+    # verified website URL). Ranks 2-12 of each CSV carry verified URLs
+    # from Nia web search (Phase 1.7 Stage C-prelim); remaining entries
+    # are legacy 6-tuples that fall through to WebScraperAdapter's
+    # derive-from-email cascade.
     for entry in cfg["cohort"]:
         if lead_id > target:
             break
-        company, sector, size, raw_note, email, contact = entry
+        if len(entry) == 7:
+            company, sector, size, raw_note, email, contact, website = entry
+        else:
+            company, sector, size, raw_note, email, contact = entry
+            website = ""
         rows.append({
             "external_lead_id": f"{cfg['id_prefix']}{lead_id:03d}",
             "company_name": company,
@@ -892,6 +921,7 @@ def generate_csv(csv_id: str) -> None:
             "sector_hint": sector or "",
             "factory_size_band": size,
             "raw_notes": raw_note or "",
+            "website_url": website or "",
         })
         lead_id += 1
 
@@ -926,6 +956,7 @@ def generate_csv(csv_id: str) -> None:
             "sector_hint": sector,
             "factory_size_band": size,
             "raw_notes": raw_note,
+            "website_url": "",  # Regional pad = synthetic, no verified URL
         })
         lead_id += 1
         pad_i += 1
@@ -935,7 +966,7 @@ def generate_csv(csv_id: str) -> None:
 
     fieldnames = [
         "external_lead_id", "company_name", "contact_name", "contact_email",
-        "sector_hint", "factory_size_band", "raw_notes",
+        "sector_hint", "factory_size_band", "raw_notes", "website_url",
     ]
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")

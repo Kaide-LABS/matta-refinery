@@ -66,7 +66,7 @@ export const SEED_CSVS: SeedCsv[] = [
     tradeShowDisplay: 'Forging Industry Convention 2025',
     dougMessage: 'Forging Industry Convention batch — can someone triage?',
     approxLeadCount: 90,
-    tracerCompany: 'Yorkshire Casting Co',
+    tracerCompany: 'Mettis Aerospace',
   },
 ];
 
