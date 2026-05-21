@@ -116,6 +116,13 @@ export default function CsvPreviewModal({ open, csvPath, csvLabel, onClose }: Pr
           </button>
         </div>
         <div className="csv-modal__body">
+          <div className="csv-preview__synthetic-banner" role="note">
+            Ranks 1-12 are real companies with curated contact details
+            (verified via web search). Ranks 13+ are synthetic placeholders
+            with <code>@demo.invalid</code> addresses (RFC 6761 reserved TLD,
+            guaranteed unresolvable). This is a demo seed file — no actual
+            outreach is sent.
+          </div>
           {loadError && (
             <div className="csv-modal__error">Could not load CSV: {loadError}</div>
           )}

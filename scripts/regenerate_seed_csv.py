@@ -952,7 +952,12 @@ def generate_csv(csv_id: str) -> None:
         email = ""
         if contact and random.random() < 0.88:
             first, last = contact.split(" ", 1)
-            email = email_from_name(first, last, company, cfg["email_suffixes"])
+            # Phase 1.7 Stage D: synthetic pad rows (rank >= 13) use
+            # @demo.invalid (RFC 6761 reserved TLD, guaranteed
+            # unresolvable). Closes the audit probe "fake employees on
+            # real company domains" without disturbing the curated real
+            # ranks 1-12 above this loop.
+            email = f"{first.lower()[:1]}.{last.lower()}@demo.invalid"
         # ~5% deliberate email malformation
         if email and random.random() < 0.05:
             email = email.split("@")[0] + "@"
