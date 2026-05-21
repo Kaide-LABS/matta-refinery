@@ -12,6 +12,10 @@ interface Props {
   tracerProspect: TopProspect | null;
   tracerStatus: TracerStatus;
   onClickProspect: (prospectId: string, companyName: string) => void;
+  // Phase 1.7 Stage D: when true, the queue is rendering from the
+  // pre-baked Stage 1 batch. UI surfaces a "Pre-baked queue ready"
+  // banner and pulses the rank-1 tracer card.
+  quickdemoMode?: boolean;
 }
 
 function fmtElapsed(sec: number): string {
@@ -80,7 +84,7 @@ function FitBreakdownTooltip({ vertical, factorySizeBand, total }: FitBreakdownT
   );
 }
 
-export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect }: Props) {
+export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect, quickdemoMode }: Props) {
   const [hoverTip, setHoverTip] = useState<string | null>(null);
   const [fitTooltipTarget, setFitTooltipTarget] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
@@ -205,6 +209,14 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
         </div>
       )}
 
+      {/* Phase 1.7 Stage D: quickdemo URL banner — shows once Stage 1 is
+          ready (which is immediately when entering via /sandbox?mode=quickdemo). */}
+      {quickdemoMode && stage1Done && (
+        <div className="slack-pane__quickdemo-banner" role="status">
+          Pre-baked Stage 1 queue ready · click rank #1 to generate the briefing
+        </div>
+      )}
+
       {/* Refinery bot ranked shortlist message */}
       {stage1Done && (
         <div className="slack-msg slack-msg--bot" data-tutorial-anchor="slack-shortlist">
@@ -262,6 +274,7 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                   return (
                     <li
                       key={p.prospectId}
+                      data-quickdemo-tracer={isTracer && quickdemoMode ? 'true' : undefined}
                       className={`prospect-card ${
                         !isTracer ? 'prospect-card--placeholder' : ''
                       } ${

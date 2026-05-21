@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import SlackLeftPane from '../components/SlackLeftPane';
 import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
@@ -30,8 +31,49 @@ const IndexPage: NextPage = () => {
   const demo = useDemoState();
   useTabTitle(demo.phase);
 
+  // Phase 1.7 Stage D: /sandbox?mode=quickdemo skips Stage 1 UI and loads
+  // the pre-baked batch directly. Polls /api/batch/prebaked once on mount;
+  // shows "warming up" message if the startup pre-bake hasn't completed.
+  const router = useRouter();
+  const isQuickdemoMode = router.query.mode === 'quickdemo';
+  const [quickdemoStatus, setQuickdemoStatus] = useState<
+    'idle' | 'loading' | 'complete' | 'warming' | 'not_started' | 'error'
+  >('idle');
+
+  useEffect(() => {
+    if (!isQuickdemoMode || demo.phase !== 'idle') return;
+    let cancelled = false;
+    (async () => {
+      setQuickdemoStatus('loading');
+      const result = await demo.loadPrebaked();
+      if (!cancelled) setQuickdemoStatus(result);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isQuickdemoMode, demo.phase, demo.loadPrebaked]);
+
+  if (isQuickdemoMode && (quickdemoStatus === 'warming' || quickdemoStatus === 'not_started')) {
+    return (
+      <div className="theater-shell">
+        <div className="quickdemo-warming">
+          <div className="quickdemo-warming__title">
+            Demo is warming up — refresh in 30 seconds
+          </div>
+          <div className="quickdemo-warming__body">
+            The Stage 1 ranking pipeline is pre-baking against the Industrial
+            AI Summit cohort. This takes ~3 minutes on first container boot
+            and is cached thereafter. Refresh the page once the worker has
+            finished ranking all 65 prospects.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="theater-shell">
+    <div className="theater-shell" data-quickdemo={isQuickdemoMode ? 'true' : 'false'}>
+
       <header className="app-header">
         <div className="app-header__brand">
           <MattaWordmark />
@@ -65,6 +107,7 @@ const IndexPage: NextPage = () => {
           tracerProspect={demo.tracerProspect}
           tracerStatus={demo.tracerStatus}
           onClickProspect={demo.clickProspect}
+          quickdemoMode={isQuickdemoMode}
         />
         <TheaterCenterPane
           phase={demo.phase}

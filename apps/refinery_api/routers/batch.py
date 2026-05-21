@@ -66,3 +66,62 @@ async def get_top_prospect(batch_id: str, session: SessionDep) -> TopProspectRes
         company_name=row.company_name,
         fitness_score=float(row.fitness_score),
     )
+
+
+class PrebakedBatchResponse(BaseModel):
+    """Status of the startup pre-bake on the default demo CSV.
+
+    Phase 1.7 Stage D: the /sandbox?mode=quickdemo URL handler polls
+    this to decide whether to render the ranked queue immediately or
+    show a "warming up, refresh in 30s" message.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    status: Annotated[str, Field(min_length=1, max_length=32)]
+    batch_id: Annotated[str | None, Field(max_length=64)] = None
+    scored_count: int = 0
+
+
+PREBAKE_USER_ID = "demo-prebake"
+PREBAKE_COMPLETION_THRESHOLD = 60
+
+
+@router.get(
+    "/api/batch/prebaked",
+    response_model=PrebakedBatchResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_prebaked_batch_status(session: SessionDep) -> PrebakedBatchResponse:
+    """Return the most recent pre-baked Stage 1 batch's status.
+
+    status values:
+      - "not_started": no batch ever queued by the startup pre-bake hook
+      - "warming":     batch exists but Stage 1 ranking hasn't reached
+                       the completion threshold yet
+      - "complete":    >=60 prospects have a fitness_score; queue is
+                       ready for quickdemo render
+    """
+    result = await session.execute(
+        text(
+            """
+            SELECT b.id, COUNT(p.fitness_score) AS scored_count
+            FROM ingest_batches b
+            LEFT JOIN lead_prospects p ON p.batch_id = b.id
+            WHERE b.user_id = :user_id
+            GROUP BY b.id, b.created_at
+            ORDER BY b.created_at DESC
+            LIMIT 1
+            """
+        ),
+        {"user_id": PREBAKE_USER_ID},
+    )
+    row = result.first()
+    if row is None:
+        return PrebakedBatchResponse(status="not_started")
+    scored = int(row[1] or 0)
+    if scored < PREBAKE_COMPLETION_THRESHOLD:
+        return PrebakedBatchResponse(
+            status="warming", batch_id=row[0], scored_count=scored
+        )
+    return PrebakedBatchResponse(status="complete", batch_id=row[0], scored_count=scored)

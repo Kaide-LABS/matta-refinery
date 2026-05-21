@@ -96,6 +96,10 @@ export interface UseDemoStateResult {
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
   reset: () => void;
+  // Phase 1.7 Stage D: quickdemo URL mode loads the pre-baked Stage 1
+  // batch instead of running ingest. Sets phase=stage1_complete + the
+  // batchId so the rest of the demo state machine proceeds normally.
+  loadPrebaked: () => Promise<'complete' | 'warming' | 'not_started' | 'error'>;
 }
 
 const initialStage2: Stage2Progress = {
@@ -473,6 +477,37 @@ export function useDemoState(): UseDemoStateResult {
     [phase, tracerProspect]
   );
 
+  // Phase 1.7 Stage D: quickdemo URL mode. Reads the pre-baked Stage 1
+  // batch from /api/batch/prebaked and pumps the demo state machine
+  // directly into 'stage1_complete' so the rest of the flow (tracer
+  // resolution, click-to-Stage-2) proceeds unchanged.
+  const loadPrebaked = useCallback(async (): Promise<
+    'complete' | 'warming' | 'not_started' | 'error'
+  > => {
+    try {
+      const res = await fetch(`${API_BASE}/api/batch/prebaked`);
+      if (!res.ok) return 'error';
+      const body = (await res.json()) as {
+        status: 'complete' | 'warming' | 'not_started';
+        batch_id?: string;
+        scored_count?: number;
+      };
+      if (body.status === 'complete' && body.batch_id) {
+        // Default CSV is the headline (index 0 = industrial_ai_summit).
+        setActiveCsv(DEFAULT_SEED_CSV);
+        setSelectedCsv(DEFAULT_SEED_CSV.id);
+        setBatchId(body.batch_id);
+        startedAtRef.current = Date.now();
+        setElapsedSec(0);
+        // Skip 'ingesting' and 'stage1' phases — the bake is already done.
+        setPhase('stage1_complete');
+      }
+      return body.status;
+    } catch {
+      return 'error';
+    }
+  }, []);
+
   const reset = useCallback(() => {
     setPhase('idle');
     setBatchId(null);
@@ -511,6 +546,7 @@ export function useDemoState(): UseDemoStateResult {
     runDemo,
     clickProspect,
     reset,
+    loadPrebaked,
   };
 }
 

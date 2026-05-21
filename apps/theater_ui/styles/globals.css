@@ -2301,6 +2301,57 @@ code, .mono {
   border-bottom: 1px solid var(--matta-warm-border-soft);
 }
 
+/* ─── Quickdemo URL — warming-up page (pre-bake not yet complete) ─────── */
+.quickdemo-warming {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  text-align: center;
+  gap: 14px;
+  color: var(--matta-charcoal);
+}
+
+.quickdemo-warming__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--matta-navy);
+}
+
+.quickdemo-warming__body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--matta-grey);
+  font-style: italic;
+}
+
+/* ─── Quickdemo banner inside Slack pane (queue is ready) ─────────────── */
+.slack-pane__quickdemo-banner {
+  padding: 10px 14px;
+  background: rgba(92, 122, 107, 0.14);
+  color: var(--matta-forest);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  margin: 0 14px 12px;
+}
+
+/* Rank-1 tracer card gets a subtle breathing-pulse in quickdemo mode so the
+   recipient's eye lands on "click here next" without aggressive animation. */
+@keyframes quickdemo-tracer-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--matta-warm-border); }
+  50%      { box-shadow: 0 0 0 3px rgba(92, 122, 107, 0.30); }
+}
+
+[data-quickdemo="true"] .slack-prospect-card[data-quickdemo-tracer="true"],
+[data-quickdemo="true"] .prospect-card[data-quickdemo-tracer="true"] {
+  animation: quickdemo-tracer-pulse 2s ease-in-out infinite;
+}
+
 /* ─── §3 Comparable Deployment — evidence-strength band ───────────────── */
 .dossier-doc__evidence-band {
   margin: 8px 0 12px 0;
