@@ -26,8 +26,14 @@ def select_comparable(
         "additive_manufacturing": "matta_deployment_caracol_am",
         "fnb_bottling": "matta_deployment_global_drinks_brand",
         "polymer_extrusion": "matta_deployment_polymer_unnamed",
-        "metal_casting": "matta_deployment_metal_casting_unnamed",
-        # aerospace, out_of_vertical, vertical_uncertain → no_comparable_available
+        # Phase 1.7 Stage C: metal_casting mapping REMOVED. The prior
+        # matta_deployment_metal_casting_unnamed anchor was dropped from
+        # graph.json because its citation excerpt could not be substantiated
+        # against Matta's verified public sources. Metal-casting prospects
+        # (William Cook etc.) now route to no_comparable_available —
+        # honest framing, not padded comparability prose.
+        # aerospace, metal_casting, out_of_vertical, vertical_uncertain →
+        #   no_comparable_available
     }
     anchor_id = vertical_to_anchor.get(vertical)
     if anchor_id is None:

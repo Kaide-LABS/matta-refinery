@@ -1,6 +1,6 @@
 {
-  "version": "phase1-v1",
-  "built_at": "2026-05-11T00:00:00Z",
+  "version": "phase1-v2",
+  "built_at": "2026-05-21T00:00:00Z",
   "anchors": [
     {
       "anchor_id": "matta_deployment_bowers_and_wilkins",
@@ -12,7 +12,8 @@
         "surface_finish_qc",
         "precision_machining_inspection",
         "small_form_factor_metrology"
-      ]
+      ],
+      "evidence_strength": "named_customer_specific_deployment"
     },
     {
       "anchor_id": "matta_deployment_caracol_am",
@@ -24,7 +25,8 @@
         "additive_manufacturing_inspection",
         "oem_closed_loop_partnership",
         "large_format_robot_am_cell"
-      ]
+      ],
+      "evidence_strength": "named_customer_oem_partnership"
     },
     {
       "anchor_id": "matta_deployment_global_drinks_brand",
@@ -36,7 +38,8 @@
         "high_speed_line_qc",
         "fnb_packaging_inspection",
         "bottling_throughput_anomaly_detection"
-      ]
+      ],
+      "evidence_strength": "unnamed_customer_vertical_mention"
     },
     {
       "anchor_id": "matta_deployment_polymer_unnamed",
@@ -48,19 +51,8 @@
         "polymer_extrusion_defect_detection",
         "continuous_line_inspection",
         "few_shot_calibration_minutes_not_hours"
-      ]
-    },
-    {
-      "anchor_id": "matta_deployment_metal_casting_unnamed",
-      "vertical": "metal_casting",
-      "deployment_type": "casting_line_qc",
-      "citation_substrate_lines": [271, 421],
-      "citation_verbatim_excerpt": "polymer manufacturing and metal casting to bottling and consumer electronics",
-      "permitted_dimensions_of_comparability": [
-        "casting_surface_finish_qc",
-        "metallurgical_inspection",
-        "ductile_iron_inspection_baseline"
-      ]
+      ],
+      "evidence_strength": "unnamed_customer_quantitative_claim"
     }
   ]
 }

@@ -38,12 +38,25 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
 
     anchor_id, line, dims = select_comparable(vertical, None)
 
+    # Phase 1.7 Stage C: look up evidence_strength from the loaded KG anchor
+    # so §3 can render anchors asymmetrically (named-customer vs vertical
+    # mention). None when no_comparable_available.
+    anchor_evidence_strength = None
+    if anchor_id != "no_comparable_available":
+        from packages.knowledge_graph.loader import load_graph
+        _graph = load_graph()
+        for _a in _graph.anchors:
+            if _a.anchor_id == anchor_id:
+                anchor_evidence_strength = _a.evidence_strength
+                break
+
     if anchor_id == "no_comparable_available":
         res = ComparableDeployment(
             matta_customer_anchor="no_comparable_available",
             citation_substrate_line=1,
             dimension_of_comparability="No verified Matta deployment in this vertical sub-path.",
-            selection_method="no_comparable_available"
+            selection_method="no_comparable_available",
+            evidence_strength=None,
         )
         with engine.begin() as conn:
             conn.execute(
@@ -86,7 +99,8 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
         matta_customer_anchor=schema_anchor,
         citation_substrate_line=line,
         dimension_of_comparability=prose_obj.prose,
-        selection_method="deterministic_rules"
+        selection_method="deterministic_rules",
+        evidence_strength=anchor_evidence_strength,
     )
 
     with engine.begin() as conn:

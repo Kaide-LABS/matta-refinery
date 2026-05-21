@@ -348,6 +348,44 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                 <div className="dossier-doc__anchor-tag">
                   Deterministic KG selection — LLM did not pick this anchor
                 </div>
+                {(() => {
+                  const cmp = dossier.comparable_deployment as Record<string, unknown>;
+                  const strength = cmp?.evidence_strength as string | null | undefined;
+                  if (!strength) return null;
+                  const FRAMING: Record<string, { label: string; note: string; tone: string }> = {
+                    named_customer_specific_deployment: {
+                      label: 'Named customer · specific application',
+                      note: 'Verified deployment with a named customer and a named defect-detection application.',
+                      tone: 'strong',
+                    },
+                    named_customer_oem_partnership: {
+                      label: 'Named OEM partnership',
+                      note: 'Verified OEM partnership; specific deployment scope still evolving.',
+                      tone: 'medium',
+                    },
+                    unnamed_customer_quantitative_claim: {
+                      label: 'Unnamed customer · quantitative claim',
+                      note: 'Customer not publicly named; a quantitative performance figure is publicly stated.',
+                      tone: 'medium',
+                    },
+                    unnamed_customer_vertical_mention: {
+                      label: 'Vertical mention only',
+                      note: 'Industry mention without customer identification — weakest grounding.',
+                      tone: 'weak',
+                    },
+                  };
+                  const f = FRAMING[strength];
+                  if (!f) return null;
+                  return (
+                    <div
+                      className={`dossier-doc__evidence-band dossier-doc__evidence-band--${f.tone}`}
+                      data-evidence-strength={strength}
+                    >
+                      <div className="dossier-doc__evidence-label">{f.label}</div>
+                      <div className="dossier-doc__evidence-note">{f.note}</div>
+                    </div>
+                  );
+                })()}
                 {renderJsonValue(dossier.comparable_deployment)}
               </details>
             ) : null}

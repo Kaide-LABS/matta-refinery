@@ -2301,6 +2301,54 @@ code, .mono {
   border-bottom: 1px solid var(--matta-warm-border-soft);
 }
 
+/* ─── §3 Comparable Deployment — evidence-strength band ───────────────── */
+.dossier-doc__evidence-band {
+  margin: 8px 0 12px 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--matta-warm-border);
+  background: var(--matta-pane-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dossier-doc__evidence-band--strong {
+  border-left-color: var(--matta-forest);
+  background: rgba(92, 122, 107, 0.06);
+}
+
+.dossier-doc__evidence-band--medium {
+  border-left-color: var(--matta-peach-dark);
+  background: rgba(242, 194, 165, 0.10);
+}
+
+.dossier-doc__evidence-band--weak {
+  border-left-color: var(--matta-warm-border);
+  background: var(--matta-code-bg);
+}
+
+.dossier-doc__evidence-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-grey);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dossier-doc__evidence-band--strong .dossier-doc__evidence-label {
+  color: var(--matta-forest);
+}
+
+.dossier-doc__evidence-band--medium .dossier-doc__evidence-label {
+  color: var(--matta-peach-dark);
+}
+
+.dossier-doc__evidence-note {
+  color: var(--matta-charcoal);
+  font-style: italic;
+}
+
 /* ─── §2 Defect Hypothesis — model-deferral banner ────────────────────── */
 .dossier-doc__deferral-banner {
   margin: 8px 0 12px 0;

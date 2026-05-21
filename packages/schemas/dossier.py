@@ -40,6 +40,16 @@ class ComparableDeployment(BaseModel):
     citation_substrate_line: Annotated[int, Field(ge=1, le=100000)]
     dimension_of_comparability: Annotated[str, Field(max_length=250)]  # Pro prose, ≤250 chars (v4 hardening)
     selection_method: Literal["deterministic_rules", "no_comparable_available"]
+    # Phase 1.7 Stage C: evidence_strength surfaces the anchor's grounding
+    # gradient so §3 can render strong anchors (named-customer specific
+    # deployments) visually distinct from weak ones (vertical mentions).
+    # None when selection_method == "no_comparable_available".
+    evidence_strength: Literal[
+        "named_customer_specific_deployment",
+        "named_customer_oem_partnership",
+        "unnamed_customer_quantitative_claim",
+        "unnamed_customer_vertical_mention",
+    ] | None = None
 
 
 class RiskFinding(BaseModel):

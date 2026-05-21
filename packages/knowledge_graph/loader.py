@@ -1,9 +1,21 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from packages.schemas.lead_prospect import VERTICAL_ENUM
+
+# Phase 1.7 Stage C: evidence_strength captures the gradient of grounding
+# for each KG anchor. Damjan's "every KG citation looks the same; I can't
+# tell strong from weak" probe is closed by surfacing this asymmetry
+# explicitly in §3 Comparable Deployment.
+EvidenceStrength = Literal[
+    "named_customer_specific_deployment",  # B&W: named customer + named application
+    "named_customer_oem_partnership",      # Caracol: named OEM but partnership not deployment
+    "unnamed_customer_quantitative_claim", # polymer: no name, but >99% perf claim is specific
+    "unnamed_customer_vertical_mention",   # global drinks: no name, no quantitative figure
+]
+
 
 class KnowledgeGraphAnchor(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -13,6 +25,7 @@ class KnowledgeGraphAnchor(BaseModel):
     citation_substrate_lines: list[Annotated[int, Field(ge=1, le=100000)]]
     citation_verbatim_excerpt: Annotated[str, Field(min_length=10, max_length=500)]
     permitted_dimensions_of_comparability: list[Annotated[str, Field(max_length=80)]]
+    evidence_strength: EvidenceStrength
 
 class KnowledgeGraph(BaseModel):
     model_config = ConfigDict(extra="forbid")
