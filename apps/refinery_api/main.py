@@ -20,6 +20,21 @@ async def lifespan(app: FastAPI):
     app.state.engine = create_async_engine(settings.postgres_url)
     app.state.session_maker = async_sessionmaker(app.state.engine, expire_on_commit=False)
     app.state.vertex_client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
+
+    # Phase 1.7 Stage D: pre-bake Stage 1 on the default demo CSV so the
+    # quickdemo URL has a ready-to-serve queue. Idempotent on file_hash —
+    # subsequent boots reuse the existing baked batch.
+    try:
+        from .startup_prebake import maybe_prebake_default_csv
+        await maybe_prebake_default_csv(engine=app.state.engine, celery=app.state.celery)
+    except Exception as e:
+        # Never block API startup on pre-bake failure — the existing
+        # CSV-upload flow still works without it.
+        import logging
+        logging.getLogger(__name__).exception(
+            "Default-CSV pre-bake failed at startup",
+            extra={"exception_type": type(e).__name__},
+        )
     yield
     await app.state.redis.aclose()
     await app.state.engine.dispose()
