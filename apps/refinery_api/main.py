@@ -21,6 +21,28 @@ async def lifespan(app: FastAPI):
     app.state.session_maker = async_sessionmaker(app.state.engine, expire_on_commit=False)
     app.state.vertex_client = genai.Client(vertexai=True, project=settings.gcp_project, location=settings.vertex_location)
 
+    # Phase 1.7 Stage D: idempotent table create-if-missing so the
+    # startup pre-bake hook below can insert without 500'ing on fresh
+    # volumes. SQLAlchemy create_all only CREATEs missing tables — it
+    # does NOT drop existing ones. The full init_db.py script (with
+    # drop_all + seed_demo_enrichment) remains the canonical setup for
+    # smoke runs that need a known-clean state.
+    try:
+        from packages.models.prospects import Base as ProspectsBase
+        # Register EnrichmentArtifact on ProspectsBase.metadata via import
+        from packages.models.enrichment import EnrichmentArtifact  # noqa: F401
+        from packages.outbox.models import Base as OutboxBase
+        from sqlalchemy import text as _sa_text
+        async with app.state.engine.begin() as _conn:
+            await _conn.execute(_sa_text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
+            await _conn.run_sync(ProspectsBase.metadata.create_all)
+            await _conn.run_sync(OutboxBase.metadata.create_all)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).exception(
+            "Lifespan create_all failed", extra={"exception_type": type(e).__name__},
+        )
+
     # Phase 1.7 Stage D: pre-bake Stage 1 on the default demo CSV so the
     # quickdemo URL has a ready-to-serve queue. Idempotent on file_hash —
     # subsequent boots reuse the existing baked batch.
