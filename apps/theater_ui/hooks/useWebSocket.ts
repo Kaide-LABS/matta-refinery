@@ -441,10 +441,11 @@ export function useDemoState(): UseDemoStateResult {
       setError(null);
       setPhase('stage2_requesting');
 
+      // Phase 1.7 Stage C: signal_hash dropped — server computes it from
+      // lead_prospects state to prevent client-side forgery + drift.
       const payload = {
         action_id: 'generate_full_dossier',
         prospect_id: prospectId,
-        signal_hash: 'demo-ui-click',
         slack_response_url: 'https://hooks.slack.com/mock',
       };
       const form = new URLSearchParams();

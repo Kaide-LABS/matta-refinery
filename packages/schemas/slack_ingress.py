@@ -26,11 +26,15 @@ class SlackLeadBatchIngress(BaseModel):
 
 
 class SlackDossierAction(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    # Phase 1.7 Stage C: signal_hash REMOVED from the inbound schema —
+    # the server computes it from the prospect's current state in
+    # lead_prospects to prevent forgery / stale-hash drift. extra="ignore"
+    # so old clients still sending signal_hash don't 422; the field is
+    # silently dropped.
+    model_config = ConfigDict(extra="ignore")
 
     action_id: Literal["generate_full_dossier"]
     prospect_id: str
-    signal_hash: str
     slack_response_url: str  # ephemeral response URL Slack provides
 
 
