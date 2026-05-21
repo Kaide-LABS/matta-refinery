@@ -68,11 +68,16 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     with open("packages/uncertainty/calibration_table.json") as f:
         calib = CalibrationTable.model_validate_json(f.read())
         
-    conformal_set, coverage = compute_conformal_set(samples, calib)
-    
+    result = compute_conformal_set(samples, calib)
+
     final_res = LikelyDefectClassHypothesis(
-        conformal_set=conformal_set, coverage=coverage, calibration_version=calib.calibration_version,
-        requires_human_review=False, rationale="Computed via conformal ensemble"
+        conformal_set=result.conformal_set,
+        coverage=result.coverage,
+        calibration_version=calib.calibration_version,
+        requires_human_review=result.requires_human_review,
+        rationale="Computed via conformal ensemble",
+        deferral_reason=result.deferral_reason,
+        inter_model_agreement_score=result.inter_model_agreement_score,
     )
     
     with engine.begin() as conn:

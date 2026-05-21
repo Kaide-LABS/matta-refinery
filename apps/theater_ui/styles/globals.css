@@ -2301,6 +2301,34 @@ code, .mono {
   border-bottom: 1px solid var(--matta-warm-border-soft);
 }
 
+/* ─── §2 Defect Hypothesis — model-deferral banner ────────────────────── */
+.dossier-doc__deferral-banner {
+  margin: 8px 0 12px 0;
+  padding: 10px 12px;
+  background: rgba(242, 194, 165, 0.15);
+  border-left: 3px solid var(--matta-peach-dark);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--matta-charcoal);
+}
+
+.dossier-doc__deferral-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-peach-dark);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dossier-doc__deferral-body code {
+  font-family: var(--font-mono);
+  background: var(--matta-code-bg);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
 /* ─── §0 Company Facts — structured provenance buckets ────────────────── */
 .dossier-doc__company-facts {
   display: flex;

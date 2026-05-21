@@ -302,6 +302,35 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
             {dossier?.defect_hypothesis ? (
               <section className="dossier-doc__section" data-doc-section="defect_hypothesis">
                 <h3>§2 Defect Hypothesis (N=3 conformal)</h3>
+                {(() => {
+                  const d = dossier.defect_hypothesis as Record<string, unknown>;
+                  const requiresReview = d?.requires_human_review === true;
+                  const deferralReason = d?.deferral_reason as string | null | undefined;
+                  const agreementScore = d?.inter_model_agreement_score as number | null | undefined;
+                  if (requiresReview && deferralReason) {
+                    return (
+                      <aside
+                        className="dossier-doc__deferral-banner"
+                        data-doc-section="defect_deferral"
+                      >
+                        <div className="dossier-doc__deferral-label">
+                          Model deferred — recommend human review
+                        </div>
+                        <div className="dossier-doc__deferral-body">
+                          <strong>Reason:</strong> {String(deferralReason).replace(/_/g, ' ')}
+                          {typeof agreementScore === 'number' && (
+                            <>
+                              {' · '}
+                              <strong>Inter-model agreement:</strong>{' '}
+                              <code>{agreementScore.toFixed(2)}</code>
+                            </>
+                          )}
+                        </div>
+                      </aside>
+                    );
+                  }
+                  return null;
+                })()}
                 {renderJsonValue(dossier.defect_hypothesis)}
               </section>
             ) : null}
