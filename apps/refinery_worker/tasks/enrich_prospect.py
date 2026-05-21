@@ -65,7 +65,7 @@ def enrich_prospect(self, prospect_id: str):
     with engine.connect() as conn:
         row = conn.execute(
             text("""
-                SELECT company_name, contact_email, raw_notes
+                SELECT company_name, contact_email, raw_notes, website_url
                 FROM lead_prospects WHERE id = :pid
             """),
             {"pid": prospect_id},
@@ -75,6 +75,7 @@ def enrich_prospect(self, prospect_id: str):
     company_name = row[0] or ""
     contact_email = row[1] or ""
     raw_notes = row[2] or ""
+    website_url = row[3] or ""
 
     # Fan-out — synchronous, sequential. Phase 2 could parallelize via a
     # celery chord, but sequential keeps the demo flow simple and the
@@ -86,7 +87,7 @@ def enrich_prospect(self, prospect_id: str):
         ("companies_house", CompaniesHouseAdapter(),
          (prospect_id, company_name, contact_email, raw_notes)),
         ("web_scrape", WebScraperAdapter(),
-         (prospect_id, company_name, contact_email)),
+         (prospect_id, company_name, contact_email, website_url or None)),
         ("tavily_news", TavilyNewsAdapter(),
          (prospect_id, company_name)),
     ]:
