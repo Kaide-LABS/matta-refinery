@@ -1,96 +1,96 @@
-external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
-I001,Lockheed Martin Aeronautics Fort Worth,John Washington,j.washington@lockheedmartin.com,aerospace structural machining,large,F-35 forward fuselage machining; specific interest in titanium-machining surface defect detection at 2.5x scale
-I002,Boeing Manufacturing Renton,Marcus Jefferson,m.jefferson@boeing.com,aerospace structural assembly,large,737 MAX wing assembly inspection
-I003,Northrop Grumman El Segundo,Priya Singh,p.singh@ngc.com,aerospace structures,large,B-21 composite skin QC
-I004,Raytheon Tucson,Raj Patel,r.patel@raytheon.com,missile-system electronics machining,large,ITAR-controlled; surface contact only
-I005,Pratt & Whitney East Hartford,Linda Miller,l.miller@prattwhitney.com,turbine engine machining,large,F135 engine; cycle-time improvement priority
-I006,General Dynamics Land Systems Sterling Heights,DeShawn Carter,d.carter@gdls.com,armoured vehicle machining,large,tank turret weld QC
-I007,Caterpillar Mossville,John Smith,j.smith@cat.com,off-highway equipment castings,large,engine block + transmission housing QC
-I008,John Deere Moline,Anjali Davis,a.davis@deere.com,agricultural equipment machining,large,transmission housing inspection
-I009,Cummins Columbus,Mary Jackson,m.jackson@cummins.com,diesel engine machining,large,engine block scrap-rate Pareto
-I010,Honeywell Aerospace Phoenix,Thomas Brown,t.brown@honeywell.com,aircraft systems machining,large,APU casing inspection
-I011,Spirit AeroSystems Wichita,Sarah Wilson,s.wilson@spiritaero.com,aerospace structural assembly,large,Boeing 787 fuselage section
-I012,Triumph Group Fort Worth,Robert Anderson,r.anderson@triumphgroup.com,aerospace machining tier-1,large,Boeing supplier — wanting OEM-bundled QC
-I013,Magellan Aerospace Middletown,Karen Martinez,k.martinez@magellan.aero,aerospace component machining,medium,
-I014,Trinity Industries Houston,Jose Rodriguez,j.rodriguez@trin.net,rail-car forging & assembly,large,rail-grade forging QC
-I015,Bell Helicopter Fort Worth,Michael Taylor,m.taylor@bellflight.com,rotorcraft machining,large,rotor hub inspection
-I016,Sikorsky Stratford,Susan Thomas,s.thomas@sikorsky.com,rotorcraft machining,large,S-92 helicopter program
-I017,Midwest Precision Forge,Carlos Garcia,c.garcia@midwestforge.com,automotive forging tier-2,medium,closed-die forging surface QC priority
-I018,Great Lakes Casting Co,Maria Lopez,m.lopez@greatlakescasting.com,ferrous castings,medium,automotive jobbing foundry
-I019,Texas Steel Fabricators Houston,Luis Hernandez,l.hernandez@txsteel.com,structural steel fabrication,medium,oil & gas structural
-I020,California Machining Inc Long Beach,Sofia Gonzalez,s.gonzalez@calmachining.com,precision contract machining,medium,SpaceX supplier
-I021,Detroit Tool & Die,Richard Thomas,r.thomas@detroit-tool.com,automotive tooling,medium,
-I022,Bethlehem Steel Forgings,William Smith,w.smith@bethlehemforgings.com,heavy forgings,large,
-I023,Cleveland-Cliffs Steel Burns Harbor,Patricia Miller,p.miller@clevelandcliffs.com,integrated steel mill,large,hot strip mill surface defects priority
-I024,Allegheny Technologies Pittsburgh,Michael Davis,m.davis@atimetals.com,specialty alloy forging,large,titanium & nickel alloys for aerospace
-I025,Carpenter Technology Reading PA,Linda Garcia,l.garcia@cartech.com,specialty alloy steel,large,medical-implant grade steel
-I026,Howmet Aerospace Whitehall,DeShawn Washington,d.washington@howmet.com,investment casting aero alloys,large,Trent engine vane casting
-I027,Precision Castparts Portland,Sarah Singh,s.singh@pccaero.com,aerospace investment casting,large,high-volume jet engine blade casting
-I028,Doosan Bobcat Statesville,John Patel,j.patel@doosanbobcat.com,small machinery castings,medium,
-I029,Komatsu America Peoria,Michael Rodriguez,m.rodriguez@komatsuamerica.com,construction equipment machining,medium,
-I030,CNH Industrial Racine,Patricia Jefferson,p.jefferson@cnhind.com,agricultural machinery,large,combine harvester body QC
-I031,Mack Trucks Macungie,Robert Thomas,r.thomas@macktrucks.com,heavy truck assembly,large,frame rail weld inspection
-I032,Volvo Trucks Dublin,Jessica Brown,j.brown@volvotrucks.com,commercial vehicle machining,large,
-I033,Hyundai Power Transformers Montgomery,Karen Miller,k.miller@hyundai-pt.com,transformer core stamping,large,transformer lamination QC
-I034,Siemens Energy Charlotte,Linda Davis,l.davis@siemens-energy.com,gas turbine machining,large,F-class turbine blade QC
-I035,GE Power Greenville SC,Thomas Smith,t.smith@ge.com,gas turbine assembly,large,9HA turbine block QC
-I036,Mitsubishi Power Lake Mary,Susan Miller,s.miller@mhipsa.com,industrial turbine machining,large,M501 turbine blade investment casting
-I037,Ford Powertrain Cleveland,Ford production QC,,engine block machining,large,EcoBoost engine production
-I038,GM Powertrain Tonawanda,John Washington,j.washington@gm.com,engine machining,large,
-I039,Stellantis Trenton Engine,Mary Taylor,m.taylor@stellantis.com,engine machining,large,Hemi V8 cylinder head QC
-I040,Tesla Gigafactory Texas,Raj Davis,r.davis@tesla.com,EV battery + body assembly,large,huge facility; piloting digital QC across one line
-I041,SpaceX Hawthorne Production,SpaceX production team,,rocket structural machining,large,Raptor engine block; ITAR-controlled
-I042,Rocket Lab Long Beach,Priya Gonzalez,p.gonzalez@rocketlab.com,small launch vehicle structures,medium,Electron rocket body manufacturing
-I043,Joby Aviation Marina,Sofia Patel,s.patel@jobyaviation.com,eVTOL composite layup,medium,composite skin inspection priority
-I044,Archer Aviation San Jose,John Smith,j.smith@archeraviation.com,eVTOL composite manufacturing,medium,
-I045,Lilium Munich (US booth),Linda Brown,l.brown@lilium.com,eVTOL ducted fan assembly,medium,interest in ducted fan inspection
-I046,BAE Systems Land & Armaments York PA,BAE production engineering,,armoured vehicle production,large,Bradley fighting vehicle hull QC
-I047,Oshkosh Defense,Karen Washington,k.washington@oshkoshcorp.com,military vehicle assembly,large,JLTV chassis weld QC
-I048,L3Harris Technologies,L3Harris business dev,,defense electronics machining,large,ITAR — limited surface
-I049,Textron Aviation Wichita,Michael Jackson,m.jackson@txtav.com,general aviation manufacturing,medium,Cessna Citation X assembly
-I050,Cessna Beechcraft Wichita,Patricia Miller,p.miller@txtav.com,small aircraft machining,medium,wing component machining
-I051,Gulfstream Savannah,Gulfstream production,,business jet machining,large,G650 fuselage assembly
-I052,Bombardier Mid-Sized Wichita,Jessica Davis,j.davis@bombardier.com,business jet machining,medium,
-I053,Embraer Phenom Florida,Carlos Rodriguez,c.rodriguez@embraer.com,small jet structural assembly,medium,Phenom 300 production
-I054,Pilatus Aircraft (US ops),Pilatus US production,,small aircraft assembly,medium,
-I055,United Launch Alliance Decatur,ULA production engineering,,rocket structural assembly,large,Vulcan Centaur production; ITAR
-I056,Blue Origin Kent,Robert Miller,r.miller@blueorigin.com,rocket engine machining,large,BE-4 engine block QC; ITAR-adjacent
-I057,Relativity Space Long Beach,Sarah Singh,s.singh@relativityspace.com,additive-manufactured rockets,medium,Terran-R AM print structural QC
-I058,Lockheed Skunk Works Palmdale,Skunk Works rep,,advanced aerospace prototyping,large,classified; introductory conversation only
-I059,Lawrence Livermore National Lab,Karen Davis,k.davis@llnl.gov,additive manufacturing R&D,medium,
-I060,Oak Ridge National Lab MDF,Patricia Washington,p.washington@ornl.gov,manufacturing demonstration facility,medium,large-format AM research
-I061,Sandia National Laboratory,,,national security R&D,medium,ITAR — surface conversation only
-I062,Boeing Defense St Louis,Michael Davis,m.davis@boeing.com,F-18 production,large,F-18 wing assembly
-I063,Northrop Grumman Melbourne FL,John Smith,j.smith@ngc.com,MQ-25 production,large,
-I064,Raytheon Andover,Linda Jefferson,l.jefferson@raytheon.com,missile production,large,
-I065,BAE Mojave,,,advanced aerospace prototyping,medium,
-I066,Honeywell FM&T Kansas City,Honeywell FM&T,,national security manufacturing,large,Y-12 supply chain
-I067,L3 Mission Integration Greenville TX,Thomas Brown,t.brown@l3harris.com,aerospace systems integration,medium,C-130 modification
-I068,Lockheed Aero Marietta,Lockheed Marietta,,C-130J production,large,C-130J wing center section
-I069,Boeing St Louis Defense,Patricia Taylor,p.taylor@boeing.com,F-15 production line,large,
-I070,Sierra Nevada Corp Madison WI,Susan Thomas,s.thomas@sncorp.com,aerospace systems,medium,
-I071,CrowdHaven Aerospace Austin,John Patel,j.patel@crowdhaven.aero,AM aerospace startup,small,"small contract AM, aerospace customers"
-I072,Hadrian Automation Torrance,Raj Brown,r.brown@hadrian.co,AI-augmented machining,small,machine shop automation startup
-I073,Atomic Industries Detroit,Marcus Singh,m.singh@atomicindustries.com,AI-driven die machining,small,tooling startup; AI-augmented inspection
-I074,Path Robotics Columbus,Karen Davis,k.davis@path-robotics.com,autonomous welding,small,robot welding company
-I075,Machina Labs Westlake Village,Patricia Jefferson,p.jefferson@machinalabs.ai,robotic sheet metal forming,small,robotic forming + AI inspection
-I076,Vulcan Forms Burlington,Jessica Miller,j.miller@vulcanforms.com,AM precision parts at scale,medium,AM startup ramping production
-I077,Velo3D Campbell,Linda Smith,l.smith@velo3d.com,AM machine OEM,medium,selling AM machines; partnership opportunity
-I078,Markforged Watertown,Thomas Davis,t.davis@markforged.com,AM machine OEM,medium,
-I079,Desktop Metal Burlington,Susan Brown,s.brown@desktopmetal.com,AM machine OEM,medium,high-throughput binder jet
-I080,Mazak North America Florence KY,Robert Miller,r.miller@mazak.com,machine tool OEM,large,OEM-bundling opportunity
-I081,Okuma America Charlotte,John Singh,j.singh@okuma.com,machine tool OEM,large,
-I082,Haas Automation Oxnard,Patricia Washington,p.washington@haascnc.com,machine tool OEM,large,wants integrated QC for VMC line
-I083,Hurco Indianapolis,Michael Thomas,m.thomas@hurco.com,machine tool OEM,medium,
-I084,Methods Machine Tools Sudbury,Methods sales team,,machine tool integrator,medium,
-I085,Kennametal Latrobe,Sarah Davis,s.davis@kennametal.com,industrial cutting tools,large,tool wear monitoring partnership
-I086,Sandvik Coromant US,Linda Jefferson,l.jefferson@sandvik.com,cutting tools,large,tool-wear ML partnership
-I087,Iscar Metals Arlington TX,Jessica Taylor,j.taylor@iscar.com,cutting tools,medium,
-I088,Heidenhain Schaumburg,Raj Brown,r.brown@heidenhain.com,machine controls,medium,CNC controls partnership
-I089,Fanuc America Hoffman Estates,Patricia Jackson,p.jackson@fanucamerica.com,industrial robotics,large,factory automation OEM
-I090,Yaskawa America Waukegan,Karen Smith,k.smith@yaskawa-america.com,industrial robotics,large,
-I091,Universal Robots Ann Arbor,Sarah Davis,s.davis@universal-robots.com,collaborative robots,medium,small-shop cobots
-I092,Pepsi Bottling Plano TX,,,beverage bottling,large,out of scope — FMCG
-I093,Procter & Gamble Cincinnati,,,consumer products,large,out of scope — FMCG
-I094,Cleveland Machine Works,Arjun Le,a.le@clevelandmachineworks.com,unknown,small,calibration drift between morning and afternoon shifts
-I095,Pittsburgh Forge Co,Robert Johnson,r.johnson@pittsburghforgeco.com,small forging,small,
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes,website_url
+I001,Lockheed Martin Aeronautics Fort Worth,John Washington,j.washington@lockheedmartin.com,aerospace structural machining,large,F-35 forward fuselage machining; specific interest in titanium-machining surface defect detection at 2.5x scale,https://www.lockheedmartin.com
+I002,Precision Castparts Corp.,Marcus Jefferson,m.jefferson@precast.com,complex metal castings & forgings for aerospace,large,engine component castings,https://www.precast.com
+I003,Howmet Aerospace,Priya Singh,p.singh@howmet.com,"engine components, fastening systems & structural castings",large,turbine airfoil casting QC,https://www.howmet.com
+I004,Moog Inc.,Raj Patel,r.patel@moog.com,precision motion-control actuators for aerospace/defense,large,actuator gear-train inspection,https://www.moog.com
+I005,Spirit AeroSystems,Linda Miller,l.miller@spiritaero.com,"aerostructures Tier-1 (fuselages, wings, nacelles)",large,Boeing 787 fuselage section,https://www.spiritaero.com
+I006,Kratos Defense & Security Solutions,DeShawn Carter,d.carter@kratosdefense.com,unmanned systems & defense technology manufacturing,medium,UAV airframe surface QC,https://www.kratosdefense.com
+I007,Woodward Inc.,John Smith,j.smith@woodward.com,aircraft engine fuel & motion control systems,large,fuel-system precision machining,https://www.woodward.com
+I008,HEICO Corporation,Anjali Davis,a.davis@heico.com,FAA-approved aerospace replacement parts & component repair,medium,PMA part inspection,https://heico.com
+I009,TransDigm Group,Mary Jackson,m.jackson@transdigm.com,"proprietary aerospace components (pumps, valves, actuators)",large,pump body casting QC,https://www.transdigm.com
+I010,Curtiss-Wright Corporation,Thomas Brown,t.brown@curtisswright.com,rugged embedded computing & defense components,large,actuator housing QC,https://curtisswright.com
+I011,Dynomax Inc.,Sarah Wilson,s.wilson@dynomaxinc.com,precision CNC machining for aerospace & defense,small,,https://www.dynomaxinc.com
+I012,Achilles Aerospace,Robert Anderson,r.anderson@achillesaerospace.com,AS9100-certified flight-critical precision machining,small,AS9100 supplier — wanting OEM-bundled QC,https://www.achillesaerospace.com
+I013,Magellan Aerospace Middletown,Karen Martinez,k.martinez@magellan.aero,aerospace component machining,medium,,
+I014,Trinity Industries Houston,Jose Rodriguez,j.rodriguez@trin.net,rail-car forging & assembly,large,rail-grade forging QC,
+I015,Bell Helicopter Fort Worth,Michael Taylor,m.taylor@bellflight.com,rotorcraft machining,large,rotor hub inspection,
+I016,Sikorsky Stratford,Susan Thomas,s.thomas@sikorsky.com,rotorcraft machining,large,S-92 helicopter program,
+I017,Midwest Precision Forge,Carlos Garcia,c.garcia@midwestforge.com,automotive forging tier-2,medium,closed-die forging surface QC priority,
+I018,Great Lakes Casting Co,Maria Lopez,m.lopez@greatlakescasting.com,ferrous castings,medium,automotive jobbing foundry,
+I019,Texas Steel Fabricators Houston,Luis Hernandez,l.hernandez@txsteel.com,structural steel fabrication,medium,oil & gas structural,
+I020,California Machining Inc Long Beach,Sofia Gonzalez,s.gonzalez@calmachining.com,precision contract machining,medium,SpaceX supplier,
+I021,Detroit Tool & Die,Richard Thomas,r.thomas@detroit-tool.com,automotive tooling,medium,,
+I022,Bethlehem Steel Forgings,William Smith,w.smith@bethlehemforgings.com,heavy forgings,large,,
+I023,Cleveland-Cliffs Steel Burns Harbor,Patricia Miller,p.miller@clevelandcliffs.com,integrated steel mill,large,hot strip mill surface defects priority,
+I024,Allegheny Technologies Pittsburgh,Michael Davis,m.davis@atimetals.com,specialty alloy forging,large,titanium & nickel alloys for aerospace,
+I025,Carpenter Technology Reading PA,Linda Garcia,l.garcia@cartech.com,specialty alloy steel,large,medical-implant grade steel,
+I026,Howmet Aerospace Whitehall,DeShawn Washington,d.washington@howmet.com,investment casting aero alloys,large,Trent engine vane casting,
+I027,Precision Castparts Portland,Sarah Singh,s.singh@pccaero.com,aerospace investment casting,large,high-volume jet engine blade casting,
+I028,Doosan Bobcat Statesville,John Patel,j.patel@doosanbobcat.com,small machinery castings,medium,,
+I029,Komatsu America Peoria,Michael Rodriguez,m.rodriguez@komatsuamerica.com,construction equipment machining,medium,,
+I030,CNH Industrial Racine,Patricia Jefferson,p.jefferson@cnhind.com,agricultural machinery,large,combine harvester body QC,
+I031,Mack Trucks Macungie,Robert Thomas,r.thomas@macktrucks.com,heavy truck assembly,large,frame rail weld inspection,
+I032,Volvo Trucks Dublin,Jessica Brown,j.brown@volvotrucks.com,commercial vehicle machining,large,,
+I033,Hyundai Power Transformers Montgomery,Karen Miller,k.miller@hyundai-pt.com,transformer core stamping,large,transformer lamination QC,
+I034,Siemens Energy Charlotte,Linda Davis,l.davis@siemens-energy.com,gas turbine machining,large,F-class turbine blade QC,
+I035,GE Power Greenville SC,Thomas Smith,t.smith@ge.com,gas turbine assembly,large,9HA turbine block QC,
+I036,Mitsubishi Power Lake Mary,Susan Miller,s.miller@mhipsa.com,industrial turbine machining,large,M501 turbine blade investment casting,
+I037,Ford Powertrain Cleveland,Ford production QC,,engine block machining,large,EcoBoost engine production,
+I038,GM Powertrain Tonawanda,John Washington,j.washington@gm.com,engine machining,large,,
+I039,Stellantis Trenton Engine,Mary Taylor,m.taylor@stellantis.com,engine machining,large,Hemi V8 cylinder head QC,
+I040,Tesla Gigafactory Texas,Raj Davis,r.davis@tesla.com,EV battery + body assembly,large,huge facility; piloting digital QC across one line,
+I041,SpaceX Hawthorne Production,SpaceX production team,,rocket structural machining,large,Raptor engine block; ITAR-controlled,
+I042,Rocket Lab Long Beach,Priya Gonzalez,p.gonzalez@rocketlab.com,small launch vehicle structures,medium,Electron rocket body manufacturing,
+I043,Joby Aviation Marina,Sofia Patel,s.patel@jobyaviation.com,eVTOL composite layup,medium,composite skin inspection priority,
+I044,Archer Aviation San Jose,John Smith,j.smith@archeraviation.com,eVTOL composite manufacturing,medium,,
+I045,Lilium Munich (US booth),Linda Brown,l.brown@lilium.com,eVTOL ducted fan assembly,medium,interest in ducted fan inspection,
+I046,BAE Systems Land & Armaments York PA,BAE production engineering,,armoured vehicle production,large,Bradley fighting vehicle hull QC,
+I047,Oshkosh Defense,Karen Washington,k.washington@oshkoshcorp.com,military vehicle assembly,large,JLTV chassis weld QC,
+I048,L3Harris Technologies,L3Harris business dev,,defense electronics machining,large,ITAR — limited surface,
+I049,Textron Aviation Wichita,Michael Jackson,m.jackson@txtav.com,general aviation manufacturing,medium,Cessna Citation X assembly,
+I050,Cessna Beechcraft Wichita,Patricia Miller,p.miller@txtav.com,small aircraft machining,medium,wing component machining,
+I051,Gulfstream Savannah,Gulfstream production,,business jet machining,large,G650 fuselage assembly,
+I052,Bombardier Mid-Sized Wichita,Jessica Davis,j.davis@bombardier.com,business jet machining,medium,,
+I053,Embraer Phenom Florida,Carlos Rodriguez,c.rodriguez@embraer.com,small jet structural assembly,medium,Phenom 300 production,
+I054,Pilatus Aircraft (US ops),Pilatus US production,,small aircraft assembly,medium,,
+I055,United Launch Alliance Decatur,ULA production engineering,,rocket structural assembly,large,Vulcan Centaur production; ITAR,
+I056,Blue Origin Kent,Robert Miller,r.miller@blueorigin.com,rocket engine machining,large,BE-4 engine block QC; ITAR-adjacent,
+I057,Relativity Space Long Beach,Sarah Singh,s.singh@relativityspace.com,additive-manufactured rockets,medium,Terran-R AM print structural QC,
+I058,Lockheed Skunk Works Palmdale,Skunk Works rep,,advanced aerospace prototyping,large,classified; introductory conversation only,
+I059,Lawrence Livermore National Lab,Karen Davis,k.davis@llnl.gov,additive manufacturing R&D,medium,,
+I060,Oak Ridge National Lab MDF,Patricia Washington,p.washington@ornl.gov,manufacturing demonstration facility,medium,large-format AM research,
+I061,Sandia National Laboratory,,,national security R&D,medium,ITAR — surface conversation only,
+I062,Boeing Defense St Louis,Michael Davis,m.davis@boeing.com,F-18 production,large,F-18 wing assembly,
+I063,Northrop Grumman Melbourne FL,John Smith,j.smith@ngc.com,MQ-25 production,large,,
+I064,Raytheon Andover,Linda Jefferson,l.jefferson@raytheon.com,missile production,large,,
+I065,BAE Mojave,,,advanced aerospace prototyping,medium,,
+I066,Honeywell FM&T Kansas City,Honeywell FM&T,,national security manufacturing,large,Y-12 supply chain,
+I067,L3 Mission Integration Greenville TX,Thomas Brown,t.brown@l3harris.com,aerospace systems integration,medium,C-130 modification,
+I068,Lockheed Aero Marietta,Lockheed Marietta,,C-130J production,large,C-130J wing center section,
+I069,Boeing St Louis Defense,Patricia Taylor,p.taylor@boeing.com,F-15 production line,large,,
+I070,Sierra Nevada Corp Madison WI,Susan Thomas,s.thomas@sncorp.com,aerospace systems,medium,,
+I071,CrowdHaven Aerospace Austin,John Patel,j.patel@crowdhaven.aero,AM aerospace startup,small,"small contract AM, aerospace customers",
+I072,Hadrian Automation Torrance,Raj Brown,r.brown@hadrian.co,AI-augmented machining,small,machine shop automation startup,
+I073,Atomic Industries Detroit,Marcus Singh,m.singh@atomicindustries.com,AI-driven die machining,small,tooling startup; AI-augmented inspection,
+I074,Path Robotics Columbus,Karen Davis,k.davis@path-robotics.com,autonomous welding,small,robot welding company,
+I075,Machina Labs Westlake Village,Patricia Jefferson,p.jefferson@machinalabs.ai,robotic sheet metal forming,small,robotic forming + AI inspection,
+I076,Vulcan Forms Burlington,Jessica Miller,j.miller@vulcanforms.com,AM precision parts at scale,medium,AM startup ramping production,
+I077,Velo3D Campbell,Linda Smith,l.smith@velo3d.com,AM machine OEM,medium,selling AM machines; partnership opportunity,
+I078,Markforged Watertown,Thomas Davis,t.davis@markforged.com,AM machine OEM,medium,,
+I079,Desktop Metal Burlington,Susan Brown,s.brown@desktopmetal.com,AM machine OEM,medium,high-throughput binder jet,
+I080,Mazak North America Florence KY,Robert Miller,r.miller@mazak.com,machine tool OEM,large,OEM-bundling opportunity,
+I081,Okuma America Charlotte,John Singh,j.singh@okuma.com,machine tool OEM,large,,
+I082,Haas Automation Oxnard,Patricia Washington,p.washington@haascnc.com,machine tool OEM,large,wants integrated QC for VMC line,
+I083,Hurco Indianapolis,Michael Thomas,m.thomas@hurco.com,machine tool OEM,medium,,
+I084,Methods Machine Tools Sudbury,Methods sales team,,machine tool integrator,medium,,
+I085,Kennametal Latrobe,Sarah Davis,s.davis@kennametal.com,industrial cutting tools,large,tool wear monitoring partnership,
+I086,Sandvik Coromant US,Linda Jefferson,l.jefferson@sandvik.com,cutting tools,large,tool-wear ML partnership,
+I087,Iscar Metals Arlington TX,Jessica Taylor,j.taylor@iscar.com,cutting tools,medium,,
+I088,Heidenhain Schaumburg,Raj Brown,r.brown@heidenhain.com,machine controls,medium,CNC controls partnership,
+I089,Fanuc America Hoffman Estates,Patricia Jackson,p.jackson@fanucamerica.com,industrial robotics,large,factory automation OEM,
+I090,Yaskawa America Waukegan,Karen Smith,k.smith@yaskawa-america.com,industrial robotics,large,,
+I091,Universal Robots Ann Arbor,Sarah Davis,s.davis@universal-robots.com,collaborative robots,medium,small-shop cobots,
+I092,Pepsi Bottling Plano TX,,,beverage bottling,large,out of scope — FMCG,
+I093,Procter & Gamble Cincinnati,,,consumer products,large,out of scope — FMCG,
+I094,Cleveland Machine Works,Arjun Le,a.le@clevelandmachineworks.com,unknown,small,calibration drift between morning and afternoon shifts,
+I095,Pittsburgh Forge Co,Robert Johnson,r.johnson@pittsburghforgeco.com,small forging,small,,

@@ -345,20 +345,23 @@ HM_TRACER = (
     "wants in-line surface-defect detection for cold-rolled coil; specific interest in stamping-press inspection retrofit",
     "a.koehler@brueggen-metall.de",
     "Andreas Köhler",
+    "https://www.brueggen-metall.de",  # canonical URL inferred from email TLD; not verified via Nia
 )
 
 HM_COHORT = [
-    ("Klüber Lubrication Munich", "seal-grade polymer extrusion", "medium", "automotive supplier — interested in line monitoring", "n.hofmann@klueber.com", "Nadia Hofmann"),
-    ("Heller Maschinenfabrik Nürtingen", "5-axis machining centres", "large", "wants to qualify our system for Heller production line", "j.brandt@heller-machines.de", "Jens Brandt"),
-    ("Voith Hydro Heidenheim", "hydroelectric runner casting", "large", "asked about ductile cast surface QC", "u.weber@voith.com", "Ursula Weber"),
-    ("Erbslöh Aluminium GmbH Velbert", "automotive aluminium extrusion", "medium", None, "j.schmidt@erbsloeh.de", "Jürgen Schmidt"),
-    ("Trumpf Ditzingen", "laser cutting & sheet processing", "large", "interested in laser-marker defect detection", "s.becker@trumpf.de", "Stefan Becker"),
-    ("Schaeffler Herzogenaurach", "precision bearings", "large", "Tier 1 automotive supplier; race-component inspection", "h.fischer@schaeffler.de", "Helena Fischer"),
-    ("ZF Friedrichshafen", "automotive driveline components", "large", "EV transmission housings", "m.lange@zf.com", "Marta Lange"),
-    ("Mercedes-Benz Cells Sindelfingen", "EV battery cell assembly", "large", "specific interest in cell-housing weld inspection", "k.mueller@daimler.com", "Klaus Müller"),
-    ("BMW Group Manufacturing Steyr", "engine assembly", "large", "Steyr engine plant — block casting QC", "w.hartmann@bmwgroup.com", "Wolfgang Hartmann"),
-    ("Festo Esslingen", "pneumatic component machining", "medium", None, "i.stein@festo.com", "Ingrid Stein"),
-    ("Bosch Rexroth Lohr", "hydraulic component castings", "large", "actively replacing legacy vision vendor", "k.bauer@boschrexroth.de", "Karoline Bauer"),
+    # Ranks 2-12 — verified German/EU manufacturers with canonical URLs (Nia web search, Phase 1.7 Stage C-prelim).
+    ("Schaeffler Group", "precision bearings & motion technology for automotive/industrial", "large", "Tier 1 automotive supplier; race-component inspection", "h.fischer@schaeffler.com", "Helena Fischer", "https://www.schaeffler.com"),
+    ("ZF Friedrichshafen AG", "driveline & chassis Tier-1 for passenger/commercial vehicles", "large", "EV transmission housings", "m.lange@zf.com", "Marta Lange", "https://www.zf.com"),
+    ("TRUMPF SE + Co. KG", "sheet-metal laser cutting & machine tool manufacturer", "large", "interested in laser-marker defect detection", "s.becker@trumpf.com", "Stefan Becker", "https://www.trumpf.com"),
+    ("MAHLE GmbH", "powertrain & thermal management Tier-1 supplier", "large", "piston ring + valve seat QC", "s.hofer@mahle.com", "Sabine Hofer", "https://www.mahle.com"),
+    ("KIRCHHOFF Automotive", "complex sheet-metal forming & body-in-white assemblies", "large", "BIW assembly QC", "j.brandt@kirchhoff-automotive.com", "Jens Brandt", "https://kirchhoff-automotive.com"),
+    ("DMG MORI", "CNC machine tools & turning/milling centers", "large", "wants OEM-bundled inspection in next-gen machines", "b.krueger@dmgmori.com", "Bernd Krüger", "https://en.dmgmori.com"),
+    ("BENTELER International AG", "tube & metal-forming Tier-1 for automotive chassis", "large", "automotive chassis tube forming", "k.bauer@benteler.com", "Karoline Bauer", "https://www.benteler.com"),
+    ("Mubea (Muhr und Bender KG)", "lightweight springs & precision stamped components", "medium", "stamping-press wear monitoring", "n.hofmann@mubea.com", "Nadia Hofmann", "https://www.mubea.com"),
+    ("Wagon Automotive Nagold GmbH", "press shop & body assemblies Tier-2 supplier", "medium", None, "j.schmidt@wagon-automotive.de", "Jürgen Schmidt", "https://wagon-automotive.de"),
+    ("voestalpine Metal Forming", "hot-formed automotive components & tubes/sections", "large", "hot-formed safety-critical parts", "u.weber@voestalpine.com", "Ursula Weber", "https://www.voestalpine.com/metalforming/"),
+    ("GKN Automotive", "driveline systems & precision forged components", "large", "driveline forging QC", "w.hartmann@gknautomotive.com", "Wolfgang Hartmann", "https://www.gknautomotive.com"),
+    # Ranks 13+ — legacy entries (no verified URLs).
     ("Audi Production Ingolstadt", "automotive body-in-white", "large", "asked about scrap-rate Pareto correlation", None, "Audi quality group"),
     ("MTU Aero Engines Munich", "turbine blade investment casting", "large", "Tier-1 aero engines; ITAR-adjacent", "h.brigitte@mtu.de", "Brigitte Hoffmann"),
     ("Salzgitter Flachstahl", "hot-rolled steel coil", "large", None, "e.klein@salzgitter-flachstahl.de", "Erik Klein"),
@@ -479,20 +482,23 @@ IMTS_TRACER = (
     "F-35 forward fuselage machining; specific interest in titanium-machining surface defect detection at 2.5x scale",
     "j.washington@lockheedmartin.com",
     "John Washington",
+    "https://www.lockheedmartin.com",  # verified canonical URL
 )
 
 IMTS_COHORT = [
-    ("Boeing Manufacturing Renton", "aerospace structural assembly", "large", "737 MAX wing assembly inspection", "m.jefferson@boeing.com", "Marcus Jefferson"),
-    ("Northrop Grumman El Segundo", "aerospace structures", "large", "B-21 composite skin QC", "p.singh@ngc.com", "Priya Singh"),
-    ("Raytheon Tucson", "missile-system electronics machining", "large", "ITAR-controlled; surface contact only", "r.patel@raytheon.com", "Raj Patel"),
-    ("Pratt & Whitney East Hartford", "turbine engine machining", "large", "F135 engine; cycle-time improvement priority", "l.miller@prattwhitney.com", "Linda Miller"),
-    ("General Dynamics Land Systems Sterling Heights", "armoured vehicle machining", "large", "tank turret weld QC", "d.carter@gdls.com", "DeShawn Carter"),
-    ("Caterpillar Mossville", "off-highway equipment castings", "large", "engine block + transmission housing QC", "j.smith@cat.com", "John Smith"),
-    ("John Deere Moline", "agricultural equipment machining", "large", "transmission housing inspection", "a.davis@deere.com", "Anjali Davis"),
-    ("Cummins Columbus", "diesel engine machining", "large", "engine block scrap-rate Pareto", "m.jackson@cummins.com", "Mary Jackson"),
-    ("Honeywell Aerospace Phoenix", "aircraft systems machining", "large", "APU casing inspection", "t.brown@honeywell.com", "Thomas Brown"),
-    ("Spirit AeroSystems Wichita", "aerospace structural assembly", "large", "Boeing 787 fuselage section", "s.wilson@spiritaero.com", "Sarah Wilson"),
-    ("Triumph Group Fort Worth", "aerospace machining tier-1", "large", "Boeing supplier — wanting OEM-bundled QC", "r.anderson@triumphgroup.com", "Robert Anderson"),
+    # Ranks 2-12 — verified US aerospace/defense/precision-machining suppliers (Nia web search, Phase 1.7 Stage C-prelim).
+    ("Precision Castparts Corp.", "complex metal castings & forgings for aerospace", "large", "engine component castings", "m.jefferson@precast.com", "Marcus Jefferson", "https://www.precast.com"),
+    ("Howmet Aerospace", "engine components, fastening systems & structural castings", "large", "turbine airfoil casting QC", "p.singh@howmet.com", "Priya Singh", "https://www.howmet.com"),
+    ("Moog Inc.", "precision motion-control actuators for aerospace/defense", "large", "actuator gear-train inspection", "r.patel@moog.com", "Raj Patel", "https://www.moog.com"),
+    ("Spirit AeroSystems", "aerostructures Tier-1 (fuselages, wings, nacelles)", "large", "Boeing 787 fuselage section", "l.miller@spiritaero.com", "Linda Miller", "https://www.spiritaero.com"),
+    ("Kratos Defense & Security Solutions", "unmanned systems & defense technology manufacturing", "medium", "UAV airframe surface QC", "d.carter@kratosdefense.com", "DeShawn Carter", "https://www.kratosdefense.com"),
+    ("Woodward Inc.", "aircraft engine fuel & motion control systems", "large", "fuel-system precision machining", "j.smith@woodward.com", "John Smith", "https://www.woodward.com"),
+    ("HEICO Corporation", "FAA-approved aerospace replacement parts & component repair", "medium", "PMA part inspection", "a.davis@heico.com", "Anjali Davis", "https://heico.com"),
+    ("TransDigm Group", "proprietary aerospace components (pumps, valves, actuators)", "large", "pump body casting QC", "m.jackson@transdigm.com", "Mary Jackson", "https://www.transdigm.com"),
+    ("Curtiss-Wright Corporation", "rugged embedded computing & defense components", "large", "actuator housing QC", "t.brown@curtisswright.com", "Thomas Brown", "https://curtisswright.com"),
+    ("Dynomax Inc.", "precision CNC machining for aerospace & defense", "small", None, "s.wilson@dynomaxinc.com", "Sarah Wilson", "https://www.dynomaxinc.com"),
+    ("Achilles Aerospace", "AS9100-certified flight-critical precision machining", "small", "AS9100 supplier — wanting OEM-bundled QC", "r.anderson@achillesaerospace.com", "Robert Anderson", "https://www.achillesaerospace.com"),
+    # Ranks 13+ — legacy entries (no verified URLs).
     ("Magellan Aerospace Middletown", "aerospace component machining", "medium", None, "k.martinez@magellan.aero", "Karen Martinez"),
     ("Trinity Industries Houston", "rail-car forging & assembly", "large", "rail-grade forging QC", "j.rodriguez@trin.net", "Jose Rodriguez"),
     ("Bell Helicopter Fort Worth", "rotorcraft machining", "large", "rotor hub inspection", "m.taylor@bellflight.com", "Michael Taylor"),
