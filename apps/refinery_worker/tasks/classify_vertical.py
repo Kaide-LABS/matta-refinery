@@ -54,18 +54,45 @@ def classify_vertical(self, prospect_id: str):
     for t in [0.1, 0.5, 0.9]:
         samples.append(call_gemini(prospect_data, t))
     
-    votes = Counter([s.vertical for s in samples])
+    classifications = [s.vertical for s in samples]
+    votes = Counter(classifications)
     most_common = votes.most_common(1)[0]
-    
+
     requires_human_review = False
     if most_common[1] == 1:
+        # All three models disagreed — no majority. Phase 1.7 Stage C:
+        # surface the uncertainty explicitly rather than silently picking
+        # a default vertical (was: metal_casting via downstream code).
         vertical = "vertical_uncertain"
         requires_human_review = True
+        vertical_ensemble_outputs = {
+            "ensemble_outputs": classifications,
+            "fallback_strategy": "explicit_uncertain_signal_no_default",
+        }
     else:
         vertical = most_common[0]
-        
+        # Even on consensus, persist the per-model classifications for audit.
+        vertical_ensemble_outputs = {
+            "ensemble_outputs": classifications,
+            "fallback_strategy": "majority_consensus",
+        }
+
+    import json
     with engine.begin() as conn:
-        conn.execute(text("UPDATE lead_prospects SET vertical = :v, requires_human_review = :r WHERE id = :pid"), 
-            {"v": vertical, "r": requires_human_review, "pid": prospect_id})
-            
+        conn.execute(
+            text(
+                "UPDATE lead_prospects "
+                "SET vertical = :v, "
+                "    requires_human_review = :r, "
+                "    vertical_ensemble_outputs = CAST(:veo AS JSONB) "
+                "WHERE id = :pid"
+            ),
+            {
+                "v": vertical,
+                "r": requires_human_review,
+                "veo": json.dumps(vertical_ensemble_outputs),
+                "pid": prospect_id,
+            },
+        )
+
     return prospect_id

@@ -128,6 +128,7 @@ def compose_dossier(self, dossier_id: str):
                 "lp.raw_notes, lp.fitness_score, lp.batch_id, lp.last_scored_at, "
                 "lp.enrichment_status, lp.requires_human_review, "
                 "ib.file_sha256, ib.user_id, ib.day, ib.created_at, ib.source_surface, "
+                "lp.vertical_ensemble_outputs, "
                 "ch.payload AS ch_payload, ch.status AS ch_status, ch.fallback_reason AS ch_reason, "
                 "ws.payload AS ws_payload, ws.status AS ws_status, ws.fallback_reason AS ws_reason, "
                 "tn.payload AS tn_payload, tn.status AS tn_status, tn.fallback_reason AS tn_reason "
@@ -152,6 +153,7 @@ def compose_dossier(self, dossier_id: str):
         lp_external_lead_id, lp_raw_notes, lp_fitness_score, lp_batch_id,
         lp_last_scored_at, lp_enrichment_status, lp_requires_human_review,
         ib_file_sha256, ib_user_id, ib_day, ib_created_at, ib_source_surface,
+        lp_vertical_ensemble_outputs,
         ch_payload, ch_status, ch_reason,
         ws_payload, ws_status, ws_reason,
         tn_payload, tn_status, tn_reason,
@@ -340,22 +342,48 @@ def compose_dossier(self, dossier_id: str):
     # baseline with verified capabilities / customers / certifications pulled
     # from the Playwright scrape. The LLM taxonomy is a vertical-template
     # fallback; the enrichment block is company-specific ground truth.
+    #
+    # Phase 1.7 Stage C: when vertical is "vertical_uncertain" (the N=3
+    # classifier ensemble didn't reach consensus), the section switches to an
+    # explicit deferral block rather than silently rendering a default
+    # vertical baseline.
     ws_data = ws_payload if (ws_status == "fetched" and isinstance(ws_payload, dict)) else {}
-    process_taxonomy_with_enrichment_payload = {
-        "llm_generated_taxonomy": taxonomy.model_dump(),
-        "verified_capabilities_from_website": ws_data.get("extracted_capabilities", []),
-        "verified_customers_from_website": ws_data.get("extracted_customers", []),
-        "verified_certifications": ws_data.get("extracted_certifications", []),
-        "vertical": lp_vertical or "vertical_uncertain",
-        "phase_1_scope_note": (
-            "§1 maps the prospect to a verified vertical baseline. Where the "
-            "Playwright scrape returned capabilities, customers, or "
-            "certifications, those are listed above as ground-truth from the "
-            "company's own website. The LLM-generated taxonomy below is the "
-            "vertical-template fallback — sub-processes and line-level steps "
-            "characteristic of the vertical, not specific to this prospect."
-        ),
-    }
+    if lp_vertical == "vertical_uncertain":
+        ensemble_outputs_list = []
+        if isinstance(lp_vertical_ensemble_outputs, dict):
+            ensemble_outputs_list = lp_vertical_ensemble_outputs.get("ensemble_outputs", []) or []
+        process_taxonomy_with_enrichment_payload = {
+            "status": "vertical_classification_deferred",
+            "ensemble_outputs": ensemble_outputs_list,
+            "verified_capabilities_from_website": ws_data.get("extracted_capabilities", []),
+            "verified_customers_from_website": ws_data.get("extracted_customers", []),
+            "verified_certifications": ws_data.get("extracted_certifications", []),
+            "vertical": "vertical_uncertain",
+            "scope_note": (
+                "The 3-model vertical classification ensemble did not reach "
+                "consensus for this prospect. §1 Process Taxonomy is omitted "
+                "to avoid silently substituting a default vertical baseline. "
+                "Recommend reviewing the contact's raw_notes and sector_hint "
+                "on the trade-show CSV. Per-model classifications above."
+            ),
+        }
+    else:
+        process_taxonomy_with_enrichment_payload = {
+            "status": "ok",
+            "llm_generated_taxonomy": taxonomy.model_dump(),
+            "verified_capabilities_from_website": ws_data.get("extracted_capabilities", []),
+            "verified_customers_from_website": ws_data.get("extracted_customers", []),
+            "verified_certifications": ws_data.get("extracted_certifications", []),
+            "vertical": lp_vertical or "vertical_uncertain",
+            "phase_1_scope_note": (
+                "§1 maps the prospect to a verified vertical baseline. Where the "
+                "Playwright scrape returned capabilities, customers, or "
+                "certifications, those are listed above as ground-truth from the "
+                "company's own website. The LLM-generated taxonomy below is the "
+                "vertical-template fallback — sub-processes and line-level steps "
+                "characteristic of the vertical, not specific to this prospect."
+            ),
+        }
 
     rendered_sections = {
         # Deterministic-content section renders (counted toward bytes(deterministic_content)).

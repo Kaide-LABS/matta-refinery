@@ -37,4 +37,9 @@ class LeadProspect(Base):
     # rows; WebScraperAdapter consumes when present, falls back to derive-
     # from-email otherwise.
     website_url = Column(String(2048), nullable=True)
+    # Phase 1.7 Stage C: when classify_vertical's N=3 ensemble doesn't reach
+    # 2-of-3 consensus, the three vertical classifications are persisted here
+    # so compose_dossier can surface them in the §1 deferral block instead
+    # of silently substituting a default vertical baseline.
+    vertical_ensemble_outputs = Column(JSON, nullable=True)
     defect_hypothesis = Column(JSON, nullable=True) # Added for Stage 2
