@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from packages.schemas.lead_prospect import VERTICAL_ENUM
@@ -26,6 +26,15 @@ class KnowledgeGraphAnchor(BaseModel):
     citation_verbatim_excerpt: Annotated[str, Field(min_length=10, max_length=500)]
     permitted_dimensions_of_comparability: list[Annotated[str, Field(max_length=80)]]
     evidence_strength: EvidenceStrength
+    # Phase 1.7 Stage D: source provenance fields. Populate from the
+    # private kg_anchor_sources.md substrate-mapping file. The Drive UI's
+    # KGValidatorIndicator popover renders these as "Verify (live)" and
+    # "Verify (Wayback)" links so a Damjan-audit reader clicks straight
+    # through to the authoritative source page containing the verbatim
+    # excerpt.
+    source_url: Optional[Annotated[str, Field(max_length=2048)]] = None
+    source_archive_url: Optional[Annotated[str, Field(max_length=2048)]] = None
+    source_label: Optional[Annotated[str, Field(max_length=128)]] = None
 
 class KnowledgeGraph(BaseModel):
     model_config = ConfigDict(extra="forbid")

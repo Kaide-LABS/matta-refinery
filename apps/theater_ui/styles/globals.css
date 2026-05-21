@@ -326,6 +326,36 @@ code, .mono {
   line-height: 1.45;
 }
 
+/* Phase 1.7 Stage D: source provenance row inside each KG anchor card. */
+.kg-indicator__anchor-source {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--matta-warm-border-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+}
+
+.kg-indicator__anchor-source-label {
+  color: var(--matta-grey);
+  font-weight: 500;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.kg-indicator__anchor-source-link {
+  color: var(--matta-forest);
+  text-decoration: underline;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.kg-indicator__anchor-source-link:hover {
+  color: var(--matta-navy);
+}
+
 .kg-indicator__popover-footer {
   padding: 8px 16px;
   background: var(--matta-code-bg);

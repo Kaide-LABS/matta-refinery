@@ -26,14 +26,16 @@ def select_comparable(
         "additive_manufacturing": "matta_deployment_caracol_am",
         "fnb_bottling": "matta_deployment_global_drinks_brand",
         "polymer_extrusion": "matta_deployment_polymer_unnamed",
-        # Phase 1.7 Stage C: metal_casting maps to the WEAKEST-evidence
-        # anchor (unnamed_customer_vertical_mention). The dossier UI §3
-        # renders this anchor with the "Vertical mention only" framing —
-        # the FDE sees the strength gradient explicitly rather than the
-        # anchor being silently presented as equivalent to a named-customer
-        # specific deployment.
-        "metal_casting": "matta_deployment_metal_casting_unnamed",
-        # aerospace, out_of_vertical, vertical_uncertain →
+        # Phase 1.7 Stage D: metal_casting mapping REMOVED for the second
+        # time. The Stage C hotfix had restored matta_deployment_metal_
+        # casting_unnamed because dropping it broke compute_allowed_
+        # evidence's vertical-match check, which made dossier_section_defect
+        # silently die on empty allowed_evidence. Stage D fixes that
+        # silent-die bug (defect now emits an UNVERIFIED_INSUFFICIENT_DATA
+        # placeholder and still dispatches the next section task), so
+        # dropping the anchor is safe — metal_casting prospects route to
+        # no_comparable_available in §3 with honest framing.
+        # aerospace, metal_casting, out_of_vertical, vertical_uncertain →
         #   no_comparable_available
     }
     anchor_id = vertical_to_anchor.get(vertical)

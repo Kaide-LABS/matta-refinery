@@ -1,5 +1,5 @@
 {
-  "version": "phase1-v2",
+  "version": "phase1-v3",
   "built_at": "2026-05-21T00:00:00Z",
   "anchors": [
     {
@@ -13,7 +13,10 @@
         "precision_machining_inspection",
         "small_form_factor_metrology"
       ],
-      "evidence_strength": "named_customer_specific_deployment"
+      "evidence_strength": "named_customer_specific_deployment",
+      "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_label": "Cambridge IfM news, 10 Dec 2025"
     },
     {
       "anchor_id": "matta_deployment_caracol_am",
@@ -26,7 +29,10 @@
         "oem_closed_loop_partnership",
         "large_format_robot_am_cell"
       ],
-      "evidence_strength": "named_customer_oem_partnership"
+      "evidence_strength": "named_customer_oem_partnership",
+      "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_label": "Cambridge IfM news, 10 Dec 2025"
     },
     {
       "anchor_id": "matta_deployment_global_drinks_brand",
@@ -39,7 +45,10 @@
         "fnb_packaging_inspection",
         "bottling_throughput_anomaly_detection"
       ],
-      "evidence_strength": "unnamed_customer_vertical_mention"
+      "evidence_strength": "unnamed_customer_vertical_mention",
+      "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_label": "Cambridge IfM news, 10 Dec 2025"
     },
     {
       "anchor_id": "matta_deployment_polymer_unnamed",
@@ -52,20 +61,10 @@
         "continuous_line_inspection",
         "few_shot_calibration_minutes_not_hours"
       ],
-      "evidence_strength": "unnamed_customer_quantitative_claim"
-    },
-    {
-      "anchor_id": "matta_deployment_metal_casting_unnamed",
-      "vertical": "metal_casting",
-      "deployment_type": "casting_line_qc",
-      "citation_substrate_lines": [271, 421],
-      "citation_verbatim_excerpt": "polymer manufacturing and metal casting to bottling and consumer electronics",
-      "permitted_dimensions_of_comparability": [
-        "casting_surface_finish_qc",
-        "metallurgical_inspection",
-        "ductile_iron_inspection_baseline"
-      ],
-      "evidence_strength": "unnamed_customer_vertical_mention"
+      "evidence_strength": "unnamed_customer_quantitative_claim",
+      "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
+      "source_label": "Cambridge IfM news, 10 Dec 2025"
     }
   ]
 }

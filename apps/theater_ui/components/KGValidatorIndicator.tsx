@@ -24,7 +24,21 @@ interface KGAnchor {
   vertical: string;
   substrate_lines: number[];
   citation_excerpt: string;
+  source_url?: string;
+  source_archive_url?: string;
+  source_label?: string;
 }
+
+// Phase 1.7 Stage D: metal_casting_unnamed REMOVED (no verifiable substrate
+// per kg_anchor_sources.md). All 4 surviving anchors point to the Cambridge
+// IfM funding announcement as the canonical source. Wayback snapshot
+// captured 2026-05-21 ensures audit-readers can verify the verbatim excerpts
+// even if the live URL reorganizes.
+const CAMBRIDGE_IFM_LIVE =
+  'https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/';
+const CAMBRIDGE_IFM_WAYBACK =
+  'https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/';
+const CAMBRIDGE_IFM_LABEL = 'Cambridge IfM news, 10 Dec 2025';
 
 const KG_ANCHORS: KGAnchor[] = [
   {
@@ -33,6 +47,9 @@ const KG_ANCHORS: KGAnchor[] = [
     vertical: 'electronics_assembly',
     substrate_lines: [540, 600],
     citation_excerpt: 'working with Bowers & Wilkins, where Matta',
+    source_url: CAMBRIDGE_IFM_LIVE,
+    source_archive_url: CAMBRIDGE_IFM_WAYBACK,
+    source_label: CAMBRIDGE_IFM_LABEL,
   },
   {
     id: 'matta_deployment_caracol_am',
@@ -40,6 +57,9 @@ const KG_ANCHORS: KGAnchor[] = [
     vertical: 'additive_manufacturing',
     substrate_lines: [542, 602],
     citation_excerpt: 'OEMs, Caracol',
+    source_url: CAMBRIDGE_IFM_LIVE,
+    source_archive_url: CAMBRIDGE_IFM_WAYBACK,
+    source_label: CAMBRIDGE_IFM_LABEL,
   },
   {
     id: 'matta_deployment_global_drinks_brand',
@@ -47,6 +67,9 @@ const KG_ANCHORS: KGAnchor[] = [
     vertical: 'fnb_bottling',
     substrate_lines: [540, 600],
     citation_excerpt: 'high-speed bottling for defects with a global drinks brand',
+    source_url: CAMBRIDGE_IFM_LIVE,
+    source_archive_url: CAMBRIDGE_IFM_WAYBACK,
+    source_label: CAMBRIDGE_IFM_LABEL,
   },
   {
     id: 'matta_deployment_polymer_unnamed',
@@ -54,13 +77,9 @@ const KG_ANCHORS: KGAnchor[] = [
     vertical: 'polymer_extrusion',
     substrate_lines: [540, 600],
     citation_excerpt: 'polymer manufacturing deployment, Matta achieved over 99% defect-detection',
-  },
-  {
-    id: 'matta_deployment_metal_casting_unnamed',
-    display: 'Metal casting (unnamed)',
-    vertical: 'metal_casting',
-    substrate_lines: [271, 421],
-    citation_excerpt: 'polymer manufacturing and metal casting to bottling and consumer electronics',
+    source_url: CAMBRIDGE_IFM_LIVE,
+    source_archive_url: CAMBRIDGE_IFM_WAYBACK,
+    source_label: CAMBRIDGE_IFM_LABEL,
   },
 ];
 
@@ -103,7 +122,7 @@ export default function KGValidatorIndicator() {
           <span className="kg-indicator__banner-check">✓</span>
           <span>
             Knowledge graph validated · {KG_ANCHORS.length} anchors verified against
-            intel substrate · 0 mismatches
+            Cambridge IfM substrate · 0 mismatches
           </span>
         </div>
       )}
@@ -141,11 +160,36 @@ export default function KGValidatorIndicator() {
                 <div className="kg-indicator__anchor-excerpt">
                   "{a.citation_excerpt}"
                 </div>
+                {a.source_url && (
+                  <div className="kg-indicator__anchor-source">
+                    <span className="kg-indicator__anchor-source-label">
+                      Source: {a.source_label}
+                    </span>
+                    <a
+                      href={a.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="kg-indicator__anchor-source-link"
+                    >
+                      Verify (live)
+                    </a>
+                    {a.source_archive_url && (
+                      <a
+                        href={a.source_archive_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="kg-indicator__anchor-source-link"
+                      >
+                        Verify (Wayback)
+                      </a>
+                    )}
+                  </div>
+                )}
               </li>
             ))}
           </ul>
           <div className="kg-indicator__popover-footer">
-            phase1-v1 · validated at container boot
+            phase1-v3 · validated at container boot · 4 anchors
           </div>
         </div>
       )}

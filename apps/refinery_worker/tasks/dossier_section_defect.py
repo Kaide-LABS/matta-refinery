@@ -35,9 +35,35 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     signals = {} # Future: pull from lead_prospects.signals if added
     
     allowed_evidence = compute_allowed_evidence(vertical, "defect_hypothesis", signals)
-    
+
     if not allowed_evidence:
-        # Log or handle appropriately
+        # Phase 1.7 Stage D: previously this silently returned, killing
+        # the dossier composition chain for any prospect whose vertical
+        # had no matching KG anchor (e.g. metal_casting after Stage C's
+        # drop). The correct DS-CP behavior is to mark §2 as
+        # UNVERIFIED_INSUFFICIENT_DATA via explicit deferral, persist a
+        # minimal placeholder, and STILL dispatch the next section task.
+        final_res = LikelyDefectClassHypothesis(
+            conformal_set=[],
+            coverage=0.0,
+            calibration_version="phase1-demo-v1",
+            requires_human_review=True,
+            rationale=(
+                "No matching KG anchor for this prospect's vertical; "
+                "DS-CP (Tightening 4) gates the section to unverified."
+            ),
+            deferral_reason="insufficient_calibration_data",
+            inter_model_agreement_score=0.0,
+        )
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    "UPDATE dossier_artifacts "
+                    "SET defect_hypothesis = :res WHERE dossier_id = :did"
+                ),
+                {"res": final_res.model_dump_json(), "did": dossier_id},
+            )
+        app.send_task("refinery.dossier_section_comparable", args=[prospect_id, dossier_id])
         return
         
     prompt = DEFECT_PROMPT.format(
