@@ -1,66 +1,66 @@
-external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes
-A001,Caracol Aerospace Division,Marco Rossi,m.rossi@caracol-am.com,large-format additive manufacturing,large,AM robot cell for aerospace structural prints; specifically asking about in-process layer-by-layer disposition feedback
-A002,EOS GmbH Krailling,Helena Fischer,h.fischer@eos.info,laser powder bed fusion OEM,large,AM machine OEM partnership prospect
-A003,SLM Solutions Lübeck,Nadia Hofmann,n.hofmann@slm-solutions.com,laser powder bed fusion,medium,
-A004,Concept Laser Lichtenfels,Jens Brandt,j.brandt@conceptlaser.com,GE Additive subsidiary,medium,selling laser AM machines
-A005,Renishaw AM Stone,Gareth Wilkins,g.wilkins@renishaw.com,industrial metal AM,large,Renishaw AM division; LPBF monitoring
-A006,LPW Technology Runcorn,Helena Fischer,h.fischer@lpwtechnology.com,AM metal powder,medium,powder QC; AM supply chain
-A007,GE Additive Cincinnati,Mary Miller,m.miller@ge.com,large-format metal AM,large,M2 series 5 production AM
-A008,3D Systems Rock Hill,John Smith,j.smith@3dsystems.com,industrial AM,large,DMP Factory 500 production
-A009,Stratasys Eden Prairie,Raj Patel,r.patel@stratasys.com,polymer + metal AM,large,FDM + Origin polymer AM
-A010,Markforged Watertown,Patricia Brown,p.brown@markforged.com,composite + metal AM,medium,fibre-reinforced composite AM
-A011,Carbon Inc Redwood City,Sarah Singh,s.singh@carbon3d.com,DLS polymer AM,medium,L1 production printer
-A012,Desktop Metal Burlington,Thomas Davis,t.davis@desktopmetal.com,binder jet metal AM,medium,Production System P-50
-A013,Velo3D Campbell,Linda Smith,l.smith@velo3d.com,support-free LPBF,medium,Sapphire XC production printer
-A014,ExOne North Huntingdon,Karen Davis,k.davis@exone.com,binder jet AM,medium,Desktop Metal subsidiary
-A015,Optomec Albuquerque,Patricia Miller,p.miller@optomec.com,directed energy deposition AM,medium,LENS DED systems
-A016,Croft Additive Manufacturing,Daniel Evans,d.evans@croftam.co.uk,small-batch AM contract manufacturing,small,small AM service bureau
-A017,Bowman Additive Manchester,Joanna Harrison,j.harrison@bowmanam.com,AM contract manufacturing,small,
-A018,AddUp UK Sheffield,Karen Adamson,k.adamson@addupsolutions.com,industrial AM systems,medium,Michelin-Fives JV; production AM
-A019,Wayland Additive Huddersfield,Gareth Wilkins,g.wilkins@waylandam.com,electron-beam AM,small,NeuBeam EBM technology
-A020,Filamentive Bradford,Meera Singh,m.singh@filamentive.com,AM polymer feedstock,small,sustainable AM filaments
-A021,Caracol AM Lombardia,Giulia Rossi,g.rossi@caracol-am.com,large-format AM (Italian),medium,robot AM cell — sister booth
-A022,Materialise NV Leuven,Francesco Colombo,f.colombo@materialise.com,AM software + service bureau,large,Magics software + AM bureau
-A023,EnvisionTEC Dearborn,Susan Thomas,s.thomas@envisiontec.com,DLP polymer AM,small,Desktop Metal subsidiary
-A024,Sintratec Brugg,Lisa Becker,l.becker@sintratec.com,polymer AM,small,Swiss AM startup
-A025,Nikon SLM Solutions (joint),Jens Brandt,j.brandt@nikon-slm.com,LPBF machine manufacturing,medium,Nikon-SLM partnership
-A026,HP 3D Printing Barcelona,Maria Lopez,m.lopez@hp.com,MJF polymer AM,large,Multi Jet Fusion production
-A027,Trumpf TruPrint Ditzingen,Ursula Weber,u.weber@trumpf.com,industrial laser AM,large,machine OEM partnership
-A028,Hadrian Automation Torrance,Raj Singh,r.singh@hadrian.co,AI-augmented contract machining,small,machine shop automation
-A029,Atomic Industries Detroit,Marcus Davis,m.davis@atomicindustries.com,AI-driven die machining,small,AI tooling startup
-A030,Vulcan Forms Burlington,Patricia Miller,p.miller@vulcanforms.com,high-throughput AM production,medium,AM production ramp; Q3 2026 expansion
-A031,Machina Labs Westlake Village,Machina Labs founder team,,robotic incremental forming,small,robotic forming startup
-A032,Path Robotics Columbus,Karen Brown,k.brown@path-robotics.com,AI welding robots,small,robot welding startup; QC partnership
-A033,Bright Machines San Francisco,Jessica Taylor,j.taylor@brightmachines.com,AI software-defined manufacturing,medium,factory automation software
-A034,Sight Machine San Francisco,Sofia Singh,s.singh@sightmachine.com,manufacturing analytics platform,medium,data platform — partnership lens
-A035,Augury New York,Linda Washington,l.washington@augury.com,machine health AI,medium,predictive maintenance AI
-A036,Cogniac Berkeley,,,computer vision for manufacturing,small,competitor — limited engagement
-A037,Drishti Mountain View,Priya Patel,p.patel@drishti.com,AI assembly line analytics,small,assembly line AI
-A038,Instrumental Palo Alto,Michael Smith,m.smith@instrumental.com,AI electronics inspection,small,electronics QC AI
-A039,ELM Mountain View,John Davis,j.davis@elm.ai,AI factory automation,small,
-A040,Falkonry Sunnyvale,Susan Jefferson,s.jefferson@falkonry.com,industrial AI time-series analytics,small,predictive maintenance AI
-A041,C3 AI Redwood City,,,enterprise AI platform,large,out of scope — enterprise platform
-A042,PTC Boston,Robert Miller,r.miller@ptc.com,PLM + AR for manufacturing,large,ThingWorx + Vuforia; partnership lens
-A043,Hexagon Manufacturing Intelligence,Karen Brown,k.brown@hexagon.com,metrology + CAD,large,metrology partnership opportunity
-A044,Faro Technologies Orlando,Patricia Smith,p.smith@faro.com,3D measurement and imaging,medium,metrology partnership
-A045,Zeiss Industrial Metrology,Helena Kowalski,h.kowalski@zeiss.com,metrology equipment OEM,large,metrology OEM partnership
-A046,Mitutoyo America Aurora IL,Mitutoyo sales,,metrology + measurement,medium,machine tool integrator
-A047,Bruker Nano Tucson,John Patel,j.patel@bruker.com,atomic force microscopy,medium,advanced metrology
-A048,Optomec Albuquerque (booth #2),Linda Davis,l.davis@optomec.com,directed-energy deposition,medium,production AM
-A049,Sciaky Chicago,Marcus Washington,m.washington@sciaky.com,electron beam AM,medium,EB AM for aerospace structures
-A050,Norsk Titanium Plattsburgh,Sarah Patel,s.patel@norsktitanium.com,DED titanium AM,medium,rapid plasma deposition AM
-A051,AddiTec Houston,Raj Brown,r.brown@additec.com,DED AM services,small,small DED service bureau
-A052,Lincoln Electric Additive,Jessica Miller,j.miller@lincolnelectric.com,wire arc AM,medium,WAAM technology
-A053,Glasstech Industrial,Patricia Davis,p.davis@glasstech.com,industrial automation systems,medium,
-A054,MachineMetrics Boston,Karen Singh,k.singh@machinemetrics.com,machine connectivity platform,small,OEE + analytics partnership
-A055,FogHorn Sunnyvale,,,industrial IoT edge,small,Edge ML — competitor lens
-A056,Bright Wolf Cary NC,Marcus Jefferson,m.jefferson@brightwolf.com,industrial IoT platform,small,
-A057,Litmus Automation San Jose,Litmus sales team,,industrial IoT,small,
-A058,Bay Area Composites Hayward,John Brown,j.brown@baycomposites.com,AM-adjacent composite manufacturing,small,
-A059,OpenAI Robotics (research booth),OpenAI Robotics team,,robotics R&D,small,research-only conversation
-A060,Tesla Bot Engineering (research booth),,,humanoid robotics R&D,small,research-only; not buyer
-A061,Anduril Industries Costa Mesa,Anduril business dev,,defense autonomy,medium,ITAR — surface conversation only
-A062,Shield AI San Diego,,,defense AI,small,defense AI — limited engagement
-A063,Built Robotics San Francisco,Patricia Brown,p.brown@builtrobotics.com,autonomous construction equipment,small,construction AI
-A064,Saildrone Alameda,,,autonomous maritime vehicles,small,out of scope — maritime
-A065,Apex.AI San Jose,Apex.AI engineering,,automotive AI middleware,small,automotive AI
+external_lead_id,company_name,contact_name,contact_email,sector_hint,factory_size_band,raw_notes,website_url
+A001,Caracol Aerospace Division,Marco Rossi,m.rossi@caracol-am.com,large-format additive manufacturing,large,AM robot cell for aerospace structural prints; specifically asking about in-process layer-by-layer disposition feedback,https://www.caracol-am.com
+A002,CEAD Group,Helena Fischer,h.fischer@ceadgroup.com,large-format additive manufacturing systems for aerospace/marine,large,AM machine OEM partnership prospect,https://ceadgroup.com
+A003,Velo3D,Nadia Hofmann,n.hofmann@velo3d.com,support-free metal 3D printing for aerospace propulsion,large,support-free SLM for rocket engines,https://velo3d.com
+A004,Relativity Space,Jens Brandt,j.brandt@relativityspace.com,fully 3D-printed reusable rockets (Terran R),large,large-format rocket-body printing,https://relativityspace.com
+A005,LEAP 71,Gareth Wilkins,g.wilkins@leap71.com,computational engineering models for AM rocket engines,small,computational AM engineering models,https://leap71.com
+A006,Landing AI,Helena Fischer,h.fischer@landing.ai,LandingLens deep-learning visual inspection for factories,medium,LandingLens for AM-process QC,https://landing.ai
+A007,Instrumental,Mary Miller,m.miller@instrumental.com,AI manufacturing engineering control platform / defect detection,medium,AM defect-detection platform,https://instrumental.com
+A008,Jidoka,Karen Smith,k.smith@jidoka-tech.ai,turnkey vision-AI inspection for manufacturing and logistics,small,vision-AI inspection plug-and-play,https://www.jidoka-tech.ai
+A009,Indus Vision,Priya Singh,p.singh@indusvision.ai,AI visual inspection for zero-defect manufacturing,small,zero-defect production line vision,https://indusvision.ai
+A010,Allus AI,Raj Patel,r.patel@allus.ai,vision foundation model for manufacturing QA,small,vision foundation model partnership,https://allus.ai
+A011,Ethon AI,Stefan Becker,s.becker@ethon.ai,industrial AI platform for real-time process deviation analysis,small,process-deviation analytics platform,https://www.ethon.ai
+A012,MontBlancAI,Linda Miller,l.miller@montblanc.ai,AI production monitoring for process manufacturers,small,process-manufacturer AI monitoring,https://www.montblanc.ai
+A013,3D Systems Rock Hill,John Smith,j.smith@3dsystems.com,industrial AM,large,DMP Factory 500 production,
+A014,Stratasys Eden Prairie,Raj Patel,r.patel@stratasys.com,polymer + metal AM,large,FDM + Origin polymer AM,
+A015,Markforged Watertown,Patricia Brown,p.brown@markforged.com,composite + metal AM,medium,fibre-reinforced composite AM,
+A016,Carbon Inc Redwood City,Sarah Singh,s.singh@carbon3d.com,DLS polymer AM,medium,L1 production printer,
+A017,Desktop Metal Burlington,Thomas Davis,t.davis@desktopmetal.com,binder jet metal AM,medium,Production System P-50,
+A018,Velo3D Campbell,Linda Smith,l.smith@velo3d.com,support-free LPBF,medium,Sapphire XC production printer,
+A019,ExOne North Huntingdon,Karen Davis,k.davis@exone.com,binder jet AM,medium,Desktop Metal subsidiary,
+A020,Optomec Albuquerque,Patricia Miller,p.miller@optomec.com,directed energy deposition AM,medium,LENS DED systems,
+A021,Croft Additive Manufacturing,Daniel Evans,d.evans@croftam.co.uk,small-batch AM contract manufacturing,small,small AM service bureau,
+A022,Bowman Additive Manchester,Joanna Harrison,j.harrison@bowmanam.com,AM contract manufacturing,small,,
+A023,AddUp UK Sheffield,Karen Adamson,k.adamson@addupsolutions.com,industrial AM systems,medium,Michelin-Fives JV; production AM,
+A024,Wayland Additive Huddersfield,Gareth Wilkins,g.wilkins@waylandam.com,electron-beam AM,small,NeuBeam EBM technology,
+A025,Filamentive Bradford,Meera Singh,m.singh@filamentive.com,AM polymer feedstock,small,sustainable AM filaments,
+A026,Caracol AM Lombardia,Giulia Rossi,g.rossi@caracol-am.com,large-format AM (Italian),medium,robot AM cell — sister booth,
+A027,Materialise NV Leuven,Francesco Colombo,f.colombo@materialise.com,AM software + service bureau,large,Magics software + AM bureau,
+A028,EnvisionTEC Dearborn,Susan Thomas,s.thomas@envisiontec.com,DLP polymer AM,small,Desktop Metal subsidiary,
+A029,Sintratec Brugg,Lisa Becker,l.becker@sintratec.com,polymer AM,small,Swiss AM startup,
+A030,Nikon SLM Solutions (joint),Jens Brandt,j.brandt@nikon-slm.com,LPBF machine manufacturing,medium,Nikon-SLM partnership,
+A031,HP 3D Printing Barcelona,Maria Lopez,m.lopez@hp.com,MJF polymer AM,large,Multi Jet Fusion production,
+A032,Trumpf TruPrint Ditzingen,Ursula Weber,u.weber@trumpf.com,industrial laser AM,large,machine OEM partnership,
+A033,Hadrian Automation Torrance,Raj Singh,r.singh@hadrian.co,AI-augmented contract machining,small,machine shop automation,
+A034,Atomic Industries Detroit,Marcus Davis,m.davis@atomicindustries.com,AI-driven die machining,small,AI tooling startup,
+A035,Vulcan Forms Burlington,Patricia Miller,p.miller@vulcanforms.com,high-throughput AM production,medium,AM production ramp; Q3 2026 expansion,
+A036,Machina Labs Westlake Village,Machina Labs founder team,,robotic incremental forming,small,robotic forming startup,
+A037,Path Robotics Columbus,Karen Brown,k.brown@path-robotics.com,AI welding robots,small,robot welding startup; QC partnership,
+A038,Bright Machines San Francisco,Jessica Taylor,j.taylor@brightmachines.com,AI software-defined manufacturing,medium,factory automation software,
+A039,Sight Machine San Francisco,Sofia Singh,s.singh@sightmachine.com,manufacturing analytics platform,medium,data platform — partnership lens,
+A040,Augury New York,Linda Washington,l.washington@augury.com,machine health AI,medium,predictive maintenance AI,
+A041,Cogniac Berkeley,,,computer vision for manufacturing,small,competitor — limited engagement,
+A042,Drishti Mountain View,Priya Patel,p.patel@drishti.com,AI assembly line analytics,small,assembly line AI,
+A043,Instrumental Palo Alto,Michael Smith,m.smith@instrumental.com,AI electronics inspection,small,electronics QC AI,
+A044,ELM Mountain View,John Davis,j.davis@elm.ai,AI factory automation,small,,
+A045,Falkonry Sunnyvale,Susan Jefferson,s.jefferson@falkonry.com,industrial AI time-series analytics,small,predictive maintenance AI,
+A046,C3 AI Redwood City,,,enterprise AI platform,large,out of scope — enterprise platform,
+A047,PTC Boston,Robert Miller,r.miller@ptc.com,PLM + AR for manufacturing,large,ThingWorx + Vuforia; partnership lens,
+A048,Hexagon Manufacturing Intelligence,Karen Brown,k.brown@hexagon.com,metrology + CAD,large,metrology partnership opportunity,
+A049,Faro Technologies Orlando,Patricia Smith,p.smith@faro.com,3D measurement and imaging,medium,metrology partnership,
+A050,Zeiss Industrial Metrology,Helena Kowalski,h.kowalski@zeiss.com,metrology equipment OEM,large,metrology OEM partnership,
+A051,Mitutoyo America Aurora IL,Mitutoyo sales,,metrology + measurement,medium,machine tool integrator,
+A052,Bruker Nano Tucson,John Patel,j.patel@bruker.com,atomic force microscopy,medium,advanced metrology,
+A053,Optomec Albuquerque (booth #2),Linda Davis,l.davis@optomec.com,directed-energy deposition,medium,production AM,
+A054,Sciaky Chicago,Marcus Washington,m.washington@sciaky.com,electron beam AM,medium,EB AM for aerospace structures,
+A055,Norsk Titanium Plattsburgh,Sarah Patel,s.patel@norsktitanium.com,DED titanium AM,medium,rapid plasma deposition AM,
+A056,AddiTec Houston,Raj Brown,r.brown@additec.com,DED AM services,small,small DED service bureau,
+A057,Lincoln Electric Additive,Jessica Miller,j.miller@lincolnelectric.com,wire arc AM,medium,WAAM technology,
+A058,Glasstech Industrial,Patricia Davis,p.davis@glasstech.com,industrial automation systems,medium,,
+A059,MachineMetrics Boston,Karen Singh,k.singh@machinemetrics.com,machine connectivity platform,small,OEE + analytics partnership,
+A060,FogHorn Sunnyvale,,,industrial IoT edge,small,Edge ML — competitor lens,
+A061,Bright Wolf Cary NC,Marcus Jefferson,m.jefferson@brightwolf.com,industrial IoT platform,small,,
+A062,Litmus Automation San Jose,Litmus sales team,,industrial IoT,small,,
+A063,Bay Area Composites Hayward,John Brown,j.brown@baycomposites.com,AM-adjacent composite manufacturing,small,,
+A064,OpenAI Robotics (research booth),OpenAI Robotics team,,robotics R&D,small,research-only conversation,
+A065,Tesla Bot Engineering (research booth),,,humanoid robotics R&D,small,research-only; not buyer,

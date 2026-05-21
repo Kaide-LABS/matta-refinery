@@ -604,15 +604,23 @@ AIS_TRACER = (
     "AM robot cell for aerospace structural prints; specifically asking about in-process layer-by-layer disposition feedback",
     "m.rossi@caracol-am.com",
     "Marco Rossi",
+    "https://www.caracol-am.com",  # verified canonical URL
 )
 
 AIS_COHORT = [
-    ("EOS GmbH Krailling", "laser powder bed fusion OEM", "large", "AM machine OEM partnership prospect", "h.fischer@eos.info", "Helena Fischer"),
-    ("SLM Solutions Lübeck", "laser powder bed fusion", "medium", None, "n.hofmann@slm-solutions.com", "Nadia Hofmann"),
-    ("Concept Laser Lichtenfels", "GE Additive subsidiary", "medium", "selling laser AM machines", "j.brandt@conceptlaser.com", "Jens Brandt"),
-    ("Renishaw AM Stone", "industrial metal AM", "large", "Renishaw AM division; LPBF monitoring", "g.wilkins@renishaw.com", "Gareth Wilkins"),
-    ("LPW Technology Runcorn", "AM metal powder", "medium", "powder QC; AM supply chain", "h.fischer@lpwtechnology.com", "Helena Fischer"),
-    ("GE Additive Cincinnati", "large-format metal AM", "large", "M2 series 5 production AM", "m.miller@ge.com", "Mary Miller"),
+    # Ranks 2-12 — verified AM / industrial AI companies with canonical URLs (Nia web search, Phase 1.7 Stage C-prelim).
+    ("CEAD Group", "large-format additive manufacturing systems for aerospace/marine", "large", "AM machine OEM partnership prospect", "h.fischer@ceadgroup.com", "Helena Fischer", "https://ceadgroup.com"),
+    ("Velo3D", "support-free metal 3D printing for aerospace propulsion", "large", "support-free SLM for rocket engines", "n.hofmann@velo3d.com", "Nadia Hofmann", "https://velo3d.com"),
+    ("Relativity Space", "fully 3D-printed reusable rockets (Terran R)", "large", "large-format rocket-body printing", "j.brandt@relativityspace.com", "Jens Brandt", "https://relativityspace.com"),
+    ("LEAP 71", "computational engineering models for AM rocket engines", "small", "computational AM engineering models", "g.wilkins@leap71.com", "Gareth Wilkins", "https://leap71.com"),
+    ("Landing AI", "LandingLens deep-learning visual inspection for factories", "medium", "LandingLens for AM-process QC", "h.fischer@landing.ai", "Helena Fischer", "https://landing.ai"),
+    ("Instrumental", "AI manufacturing engineering control platform / defect detection", "medium", "AM defect-detection platform", "m.miller@instrumental.com", "Mary Miller", "https://instrumental.com"),
+    ("Jidoka", "turnkey vision-AI inspection for manufacturing and logistics", "small", "vision-AI inspection plug-and-play", "k.smith@jidoka-tech.ai", "Karen Smith", "https://www.jidoka-tech.ai"),
+    ("Indus Vision", "AI visual inspection for zero-defect manufacturing", "small", "zero-defect production line vision", "p.singh@indusvision.ai", "Priya Singh", "https://indusvision.ai"),
+    ("Allus AI", "vision foundation model for manufacturing QA", "small", "vision foundation model partnership", "r.patel@allus.ai", "Raj Patel", "https://allus.ai"),
+    ("Ethon AI", "industrial AI platform for real-time process deviation analysis", "small", "process-deviation analytics platform", "s.becker@ethon.ai", "Stefan Becker", "https://www.ethon.ai"),
+    ("MontBlancAI", "AI production monitoring for process manufacturers", "small", "process-manufacturer AI monitoring", "l.miller@montblanc.ai", "Linda Miller", "https://www.montblanc.ai"),
+    # Ranks 13+ — legacy entries (no verified URLs).
     ("3D Systems Rock Hill", "industrial AM", "large", "DMP Factory 500 production", "j.smith@3dsystems.com", "John Smith"),
     ("Stratasys Eden Prairie", "polymer + metal AM", "large", "FDM + Origin polymer AM", "r.patel@stratasys.com", "Raj Patel"),
     ("Markforged Watertown", "composite + metal AM", "medium", "fibre-reinforced composite AM", "p.brown@markforged.com", "Patricia Brown"),
