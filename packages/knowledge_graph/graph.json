@@ -53,6 +53,19 @@
         "few_shot_calibration_minutes_not_hours"
       ],
       "evidence_strength": "unnamed_customer_quantitative_claim"
+    },
+    {
+      "anchor_id": "matta_deployment_metal_casting_unnamed",
+      "vertical": "metal_casting",
+      "deployment_type": "casting_line_qc",
+      "citation_substrate_lines": [271, 421],
+      "citation_verbatim_excerpt": "polymer manufacturing and metal casting to bottling and consumer electronics",
+      "permitted_dimensions_of_comparability": [
+        "casting_surface_finish_qc",
+        "metallurgical_inspection",
+        "ductile_iron_inspection_baseline"
+      ],
+      "evidence_strength": "unnamed_customer_vertical_mention"
     }
   ]
 }
