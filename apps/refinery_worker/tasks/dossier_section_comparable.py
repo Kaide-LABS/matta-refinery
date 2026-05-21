@@ -30,9 +30,11 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.connect() as conn:
         row = conn.execute(
-            text("SELECT vertical FROM lead_prospects WHERE id = :pid"), {"pid": prospect_id}
+            text("SELECT vertical, company_name FROM lead_prospects WHERE id = :pid"),
+            {"pid": prospect_id},
         ).first()
     vertical = (row[0] if row else None) or "metal_casting"
+    company_name = (row[1] if row else None) or "the prospect"
 
     anchor_id, line, dims = select_comparable(vertical, None)
 
@@ -56,7 +58,7 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
         matta_customer_anchor=anchor_id,
         citation_substrate_line=line,
         permitted_dimensions_of_comparability=str(dims),
-        company_name="Mock",
+        company_name=company_name,
         vertical=vertical,
         process_taxonomy_json="{}"
     )
