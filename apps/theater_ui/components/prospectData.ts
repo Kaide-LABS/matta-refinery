@@ -14,13 +14,17 @@ export interface ProspectCard {
 }
 
 export const TOP_12_PROSPECTS: ProspectCard[] = [
+  // Phase 1.7 Stage D: Industrial AI Summit is the demo default — rank-1
+  // placeholder switched to Caracol Aerospace Division (additive_manufacturing).
+  // /api/batch/{batch_id}/top_prospect overrides with the live rank-1 once
+  // Stage 1 ranking completes; this placeholder shows correctly pre-Stage-1.
   {
     rank: 1,
-    prospectId: 'pros_9cb419495484',
-    companyName: 'William Cook Sheffield',
-    vertical: 'metal_casting',
+    prospectId: 'pros_686f7fda5a0b',
+    companyName: 'Caracol Aerospace Division',
+    vertical: 'additive_manufacturing',
     fitnessScore: 0.84,
-    rawNote: 'porosity spike on pour A',
+    rawNote: 'AM robot cell for aerospace structural prints',
   },
   {
     rank: 2,

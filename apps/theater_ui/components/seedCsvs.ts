@@ -23,6 +23,20 @@ export interface SeedCsv {
 }
 
 export const SEED_CSVS: SeedCsv[] = [
+  // Phase 1.7 Stage D: Industrial AI Summit is now the demo default
+  // (index 0). Caracol Aerospace Division (rank-1 tracer) maps to
+  // additive_manufacturing → named_customer_oem_partnership KG anchor —
+  // the strongest Magic Moment case because §3 renders Matta's own
+  // real partnership with Caracol as the verified anchor.
+  {
+    id: 'industrial_ai_summit',
+    filename: 'Industrial_AI_Summit_2025_leads.csv',
+    publicPath: '/seed_csvs/Industrial_AI_Summit_2025_leads.csv',
+    tradeShowDisplay: 'Industrial AI Summit 2025',
+    dougMessage: 'Industrial AI Summit batch — can someone triage?',
+    approxLeadCount: 65,
+    tracerCompany: 'Caracol Aerospace Division',
+  },
   {
     id: 'uk_metals_expo',
     filename: 'UK_Metals_Expo_2025_leads.csv',
@@ -51,15 +65,6 @@ export const SEED_CSVS: SeedCsv[] = [
     tracerCompany: 'Lockheed Martin Aeronautics Fort Worth',
   },
   {
-    id: 'industrial_ai_summit',
-    filename: 'Industrial_AI_Summit_2025_leads.csv',
-    publicPath: '/seed_csvs/Industrial_AI_Summit_2025_leads.csv',
-    tradeShowDisplay: 'Industrial AI Summit 2025',
-    dougMessage: 'Industrial AI Summit batch — can someone triage?',
-    approxLeadCount: 65,
-    tracerCompany: 'Caracol Aerospace Division',
-  },
-  {
     id: 'forging_convention',
     filename: 'Forging_Industry_Convention_2025_leads.csv',
     publicPath: '/seed_csvs/Forging_Industry_Convention_2025_leads.csv',
@@ -75,6 +80,6 @@ export function pickRandomSeedCsv(): SeedCsv {
   return SEED_CSVS[idx];
 }
 
-// Default for first render before Run Demo has fired — UK Metals Expo is the
-// canonical / headline demo and reads as the "right" starting state.
+// Default for first render before Run Demo has fired — Industrial AI
+// Summit is the headline demo (Caracol named-customer KG anchor).
 export const DEFAULT_SEED_CSV: SeedCsv = SEED_CSVS[0];
