@@ -50,7 +50,12 @@ async def get_top_prospect(batch_id: str, session: SessionDep) -> TopProspectRes
         SELECT id, company_name, fitness_score
         FROM lead_prospects
         WHERE batch_id = :batch_id AND fitness_score IS NOT NULL
-        ORDER BY fitness_score DESC
+        -- Phase 1.7 Stage D hotfix: external_lead_id ASC is the
+        -- deterministic tiebreaker. Without it, ties at fitness_score
+        -- (5-way at 0.8 in the AI Summit cohort) resolve to whatever
+        -- postgres returns first — non-portable across replicas /
+        -- reorganizations. external_lead_id is stable per source CSV row.
+        ORDER BY fitness_score DESC, external_lead_id ASC
         LIMIT 1
         """
     )

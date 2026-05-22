@@ -28,9 +28,14 @@ def assemble_queue_and_stubs(self, *args, **kwargs):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.begin() as conn:
         result = conn.execute(text("""
-            SELECT id FROM lead_prospects 
+            SELECT id FROM lead_prospects
             WHERE batch_id = :batch_id AND fitness_score IS NOT NULL
-            ORDER BY fitness_score DESC
+            -- Phase 1.7 Stage D hotfix: external_lead_id ASC is the
+            -- deterministic tiebreaker. With it, the top-12 shortlist
+            -- has the same ordering across postgres reorganizations
+            -- and replicas — necessary for the demo's rank-1 = tracer
+            -- invariant to hold under fitness-score ties.
+            ORDER BY fitness_score DESC, external_lead_id ASC
             LIMIT 12
         """), {"batch_id": batch_id})
         top_prospects = [row[0] for row in result]

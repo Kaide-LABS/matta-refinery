@@ -148,7 +148,7 @@ WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
 if [ -z "${WC_PID}" ]; then
   # Fallback: use the top-fitness prospect (anchor)
   WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
-    -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' ORDER BY fitness_score DESC NULLS LAST LIMIT 1" 2>/dev/null | tr -d ' ')
+    -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' ORDER BY fitness_score DESC NULLS LAST, external_lead_id ASC LIMIT 1" 2>/dev/null | tr -d ' ')
 fi
 echo "M4 prospect_id=${WC_PID}"
 [ -z "${WC_PID}" ] && { echo "M4 FAIL: no prospect found in batch"; exit 1; }
