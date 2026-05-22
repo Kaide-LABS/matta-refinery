@@ -234,7 +234,7 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
             <div className="dossier-doc__crm-strip" data-tutorial-anchor="crm-strip">
               CRM record · {tracerProspect?.company_name ?? activeCsv.tracerCompany}
               {' · '}fit {(tracerProspect?.fitness_score ?? 0.84).toFixed(2)}
-              {' · '}vertical: metal_casting
+              {' · '}vertical: {tracerProspect?.vertical ?? 'unknown'}
               {' · '}slot_readiness: ready_for_dossier
               {' · '}dossier attached
             </div>
@@ -246,7 +246,7 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                 className="dossier-doc__title"
                 data-tutorial-anchor="dossier-title"
               >
-                Matta Pre-Visit Dossier — William Cook Sheffield
+                Matta Pre-Visit Dossier — {tracerProspect?.company_name ?? activeCsv.tracerCompany}
               </h1>
               <div className="dossier-doc__meta">
                 <span>Last modified: {lastModified ?? '—'}</span>
@@ -287,7 +287,9 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                   <div className="dossier-doc__caveat-label">Phase 1 scope</div>
                   <div className="dossier-doc__caveat-body">
                     §1 represents the verified{' '}
-                    <code className="dossier-doc__inline-code">metal_casting</code>{' '}
+                    <code className="dossier-doc__inline-code">
+                      {tracerProspect?.vertical ?? 'vertical'}
+                    </code>{' '}
                     baseline; company-specific enrichment (website scrape,
                     employee count, news mentions) is Phase 2 work. The
                     load-bearing sections — §3 Comparable Deployment,

@@ -30,6 +30,11 @@ class TopProspectResponse(BaseModel):
     prospect_id: Annotated[str, Field(min_length=1, max_length=64)]
     company_name: Annotated[str, Field(min_length=1, max_length=256)]
     fitness_score: Annotated[float, Field(ge=0.0, le=1.0)]
+    # Phase 1.7 Stage D hotfix: vertical surfaced here so the dossier UI's
+    # CRM strip and §1 caveat box can render the prospect's actual vertical
+    # instead of the hardcoded "metal_casting" placeholder that leaked
+    # through from Stage A scaffolding.
+    vertical: Annotated[str, Field(max_length=64)] = "unknown"
 
 
 @router.get(
@@ -47,7 +52,7 @@ async def get_top_prospect(batch_id: str, session: SessionDep) -> TopProspectRes
     """
     query = text(
         """
-        SELECT id, company_name, fitness_score
+        SELECT id, company_name, fitness_score, vertical
         FROM lead_prospects
         WHERE batch_id = :batch_id AND fitness_score IS NOT NULL
         -- Phase 1.7 Stage D hotfix: external_lead_id ASC is the
@@ -69,6 +74,7 @@ async def get_top_prospect(batch_id: str, session: SessionDep) -> TopProspectRes
     return TopProspectResponse(
         prospect_id=row.id,
         company_name=row.company_name,
+        vertical=row.vertical or "unknown",
         fitness_score=float(row.fitness_score),
     )
 

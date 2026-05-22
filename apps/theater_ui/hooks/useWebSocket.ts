@@ -72,6 +72,9 @@ export interface TopProspect {
   prospect_id: string;
   company_name: string;
   fitness_score: number;
+  // Phase 1.7 Stage D hotfix: vertical surfaced so dossier UI binds
+  // to the prospect's actual vertical, not the hardcoded metal_casting.
+  vertical: string;
 }
 
 export type TracerStatus = 'idle' | 'resolving' | 'resolved' | 'unavailable';
