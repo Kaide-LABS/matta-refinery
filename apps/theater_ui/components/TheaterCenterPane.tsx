@@ -548,7 +548,7 @@ export default function TheaterCenterPane({
               </span>
             </div>
             <span className="theater-footer__annotation">
-              deterministic routing · 0 LLM calls · packages/adc/rules.py
+              Routing: 0 LLM calls (deterministic) · <code>packages/adc/rules.py</code>
             </span>
           </div>
           {batchId ? (
@@ -563,7 +563,7 @@ export default function TheaterCenterPane({
             </div>
           )}
           <div className="theater-footer__cell theater-footer__cell--cost" data-tutorial-anchor="cost-ticker">
-            <span className="theater-footer__label">Vertex AI cost</span>
+            <span className="theater-footer__label">Stage 2 LLM cost</span>
             <span className="cost-ticker">
               <span className="cost-ticker__value" data-cost-value>
                 ${costNow.toFixed(3)}
@@ -571,6 +571,9 @@ export default function TheaterCenterPane({
               <span className="cost-ticker__budget">
                 {done ? `· ${costBudgetPct}% of $${COST_BUDGET.toFixed(2)} budget` : `· budget $${COST_BUDGET.toFixed(2)}`}
               </span>
+            </span>
+            <span className="theater-footer__annotation">
+              Gemini 2.5 Pro (§1, §3, §4, §5) + Flash 2.5 N=3 (§2)
             </span>
           </div>
         </div>
