@@ -375,6 +375,15 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                 deployment · Integration risks · Suggested approach. Validated against
                 the deterministic-byte gate.
               </div>
+              <div className="slack-blockkit__outbox" data-tutorial-anchor="outbox-status">
+                <span className="slack-blockkit__outbox-label">OUTBOX</span>
+                <span><code>slack_canvas</code> ✓</span>
+                <span><code>crm_note</code> ✓</span>
+                <span><code>drive_doc</code> ✓</span>
+                <span className="slack-blockkit__outbox-note">
+                  transactional · <code>packages/outbox/dispatcher.py</code>
+                </span>
+              </div>
               <div className="slack-blockkit__actions">
                 <button className="slack-blockkit__btn" type="button" onClick={scrollToDossier}>
                   📄 View briefing in Drive

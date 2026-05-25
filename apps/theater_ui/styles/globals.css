@@ -2403,6 +2403,40 @@ code, .mono {
   animation: quickdemo-tracer-pulse 2s ease-in-out infinite;
 }
 
+/* ─── Stage E: Outbox status badges inside the briefing-ready Slack block */
+.slack-blockkit__outbox {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: var(--matta-code-bg);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--matta-charcoal);
+}
+.slack-blockkit__outbox-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--matta-grey);
+  font-weight: 600;
+}
+.slack-blockkit__outbox code {
+  font-family: var(--font-mono);
+  background: var(--matta-pane-bg);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 10px;
+}
+.slack-blockkit__outbox-note {
+  flex-basis: 100%;
+  color: var(--matta-grey);
+  font-style: italic;
+  font-size: 10px;
+}
+
 /* ─── Stage E: "View briefing in Drive" scroll highlight pulse ────────── */
 .drive-doc-paper--highlight-pulse {
   animation: dossier-highlight 2s ease-in-out;
