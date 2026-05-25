@@ -108,6 +108,8 @@ const IndexPage: NextPage = () => {
           tracerStatus={demo.tracerStatus}
           onClickProspect={demo.clickProspect}
           quickdemoMode={isQuickdemoMode}
+          dossier={demo.dossier}
+          dossierId={demo.dossierId}
         />
         <TheaterCenterPane
           phase={demo.phase}

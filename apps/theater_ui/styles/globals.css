@@ -2403,6 +2403,67 @@ code, .mono {
   animation: quickdemo-tracer-pulse 2s ease-in-out infinite;
 }
 
+/* ─── Stage E: "View briefing in Drive" scroll highlight pulse ────────── */
+.drive-doc-paper--highlight-pulse {
+  animation: dossier-highlight 2s ease-in-out;
+}
+@keyframes dossier-highlight {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  30%, 70% { box-shadow: 0 0 0 3px rgba(92, 122, 107, 0.30); }
+}
+
+/* ─── Stage E: "Open CRM record" modal ────────────────────────────────── */
+.crm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.crm-modal {
+  background: var(--matta-pane-bg);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+}
+.crm-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--matta-warm-border-soft);
+}
+.crm-modal__header h3 { margin: 0; font-size: 16px; color: var(--matta-navy); }
+.crm-modal__close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--matta-grey);
+  padding: 0 6px;
+}
+.crm-modal__provider { font-size: 13px; color: var(--matta-grey); margin-bottom: 16px; }
+.crm-modal__fields { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.crm-modal__fields td { padding: 8px 12px; border-bottom: 1px solid var(--matta-warm-border-soft); font-size: 13px; }
+.crm-modal__fields td:first-child { color: var(--matta-grey); font-weight: 500; width: 40%; }
+.crm-modal__field-update {
+  font-family: var(--font-mono);
+  background: rgba(92, 122, 107, 0.14);
+  color: var(--matta-forest);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.crm-modal__footer { font-size: 12px; color: var(--matta-grey); font-style: italic; }
+.crm-modal__footer code { font-family: var(--font-mono); background: var(--matta-code-bg); padding: 1px 4px; border-radius: 2px; }
+
 /* ─── §3-§5 inline header badges (Stage E: replaces "click to expand" peek) */
 .dossier-doc__anchor-badge {
   display: inline-block;

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import type { DemoPhase, TopProspect, TracerStatus } from '../hooks/useWebSocket';
+import type { DemoPhase, TopProspect, TracerStatus, DossierPayload } from '../hooks/useWebSocket';
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
 import CsvPreviewModal from './CsvPreviewModal';
+import CrmRecordModal from './CrmRecordModal';
 import type { SeedCsv } from './seedCsvs';
 import { computeFitnessBreakdown } from './scoringWeights';
 
@@ -16,6 +17,10 @@ interface Props {
   // pre-baked Stage 1 batch. UI surfaces a "Pre-baked queue ready"
   // banner and pulses the rank-1 tracer card.
   quickdemoMode?: boolean;
+  // Phase 1.7 Stage E: dossier payload + id surfaced so the "Open CRM
+  // record" button can render the field-update modal.
+  dossier?: DossierPayload | null;
+  dossierId?: string | null;
 }
 
 function fmtElapsed(sec: number): string {
@@ -84,7 +89,16 @@ function FitBreakdownTooltip({ vertical, factorySizeBand, total }: FitBreakdownT
   );
 }
 
-export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect, quickdemoMode }: Props) {
+export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect, quickdemoMode, dossier, dossierId }: Props) {
+  const [crmModalOpen, setCrmModalOpen] = useState(false);
+  const scrollToDossier = () => {
+    const el = document.querySelector<HTMLElement>('.drive-doc-paper');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.add('drive-doc-paper--highlight-pulse');
+      window.setTimeout(() => el.classList.remove('drive-doc-paper--highlight-pulse'), 2000);
+    }
+  };
   const [hoverTip, setHoverTip] = useState<string | null>(null);
   const [fitTooltipTarget, setFitTooltipTarget] = useState<string | null>(null);
   const [csvModalOpen, setCsvModalOpen] = useState(false);
@@ -362,10 +376,14 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                 the deterministic-byte gate.
               </div>
               <div className="slack-blockkit__actions">
-                <button className="slack-blockkit__btn" type="button">
+                <button className="slack-blockkit__btn" type="button" onClick={scrollToDossier}>
                   📄 View briefing in Drive
                 </button>
-                <button className="slack-blockkit__btn slack-blockkit__btn--secondary" type="button">
+                <button
+                  className="slack-blockkit__btn slack-blockkit__btn--secondary"
+                  type="button"
+                  onClick={() => setCrmModalOpen(true)}
+                >
                   📋 Open CRM record
                 </button>
               </div>
@@ -373,6 +391,13 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
           </div>
         </div>
       )}
+      <CrmRecordModal
+        open={crmModalOpen}
+        onClose={() => setCrmModalOpen(false)}
+        prospect={tracerProspect}
+        dossier={dossier ?? null}
+        dossierId={dossierId ?? null}
+      />
     </div>
   );
 }
