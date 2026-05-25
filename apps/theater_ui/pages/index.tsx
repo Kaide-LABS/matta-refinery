@@ -6,6 +6,7 @@ import TheaterCenterPane from '../components/TheaterCenterPane';
 import DriveDossierRightPane from '../components/DriveDossierRightPane';
 import TutorialCallout from '../components/TutorialCallout';
 import KGValidatorIndicator from '../components/KGValidatorIndicator';
+import ResizablePaneGrid from '../components/ResizablePaneGrid';
 import { useDemoState } from '../hooks/useWebSocket';
 import { useTabTitle } from '../hooks/useTabTitle';
 import { installAudioUnlock } from '../lib/audioChime';
@@ -87,6 +88,14 @@ const IndexPage: NextPage = () => {
           <div className="app-header__title">Lead Refinery · Theater Console</div>
         </div>
         <div className="app-header__right">
+          <button
+            type="button"
+            className="header-action"
+            title="Reset pane layout"
+            onClick={() => window.dispatchEvent(new CustomEvent('matta-reset-layout'))}
+          >
+            ↺ Reset layout
+          </button>
           <KGValidatorIndicator phase={demo.phase} />
           {demo.batchId && (
             <div
@@ -105,42 +114,48 @@ const IndexPage: NextPage = () => {
           )}
         </div>
       </header>
-      <div className="theater-grid">
-        <SlackLeftPane
-          phase={demo.phase}
-          elapsedSec={demo.elapsedSec}
-          activeCsv={demo.activeCsv}
-          tracerProspect={demo.tracerProspect}
-          tracerStatus={demo.tracerStatus}
-          onClickProspect={demo.clickProspect}
-          quickdemoMode={isQuickdemoMode}
-          dossier={demo.dossier}
-          dossierId={demo.dossierId}
-        />
-        <TheaterCenterPane
-          phase={demo.phase}
-          elapsedSec={demo.elapsedSec}
-          batchId={demo.batchId}
-          dossierId={demo.dossierId}
-          stage2Progress={demo.stage2Progress}
-          stage2Timings={demo.stage2Timings}
-          byteDensityRatio={demo.byteDensityRatio}
-          dossier={demo.dossier}
-          error={demo.error}
-          activeCsv={demo.activeCsv}
-          selectedCsv={demo.selectedCsv}
-          onSelectCsv={demo.selectCsv}
-          onRunDemo={demo.runDemo}
-          onReset={demo.reset}
-          tracerProspect={demo.tracerProspect}
-        />
-        <DriveDossierRightPane
-          phase={demo.phase}
-          dossier={demo.dossier}
-          activeCsv={demo.activeCsv}
-          tracerProspect={demo.tracerProspect}
-        />
-      </div>
+      <ResizablePaneGrid
+        slack={
+          <SlackLeftPane
+            phase={demo.phase}
+            elapsedSec={demo.elapsedSec}
+            activeCsv={demo.activeCsv}
+            tracerProspect={demo.tracerProspect}
+            tracerStatus={demo.tracerStatus}
+            onClickProspect={demo.clickProspect}
+            quickdemoMode={isQuickdemoMode}
+            dossier={demo.dossier}
+            dossierId={demo.dossierId}
+          />
+        }
+        theater={
+          <TheaterCenterPane
+            phase={demo.phase}
+            elapsedSec={demo.elapsedSec}
+            batchId={demo.batchId}
+            dossierId={demo.dossierId}
+            stage2Progress={demo.stage2Progress}
+            stage2Timings={demo.stage2Timings}
+            byteDensityRatio={demo.byteDensityRatio}
+            dossier={demo.dossier}
+            error={demo.error}
+            activeCsv={demo.activeCsv}
+            selectedCsv={demo.selectedCsv}
+            onSelectCsv={demo.selectCsv}
+            onRunDemo={demo.runDemo}
+            onReset={demo.reset}
+            tracerProspect={demo.tracerProspect}
+          />
+        }
+        drive={
+          <DriveDossierRightPane
+            phase={demo.phase}
+            dossier={demo.dossier}
+            activeCsv={demo.activeCsv}
+            tracerProspect={demo.tracerProspect}
+          />
+        }
+      />
       <TutorialCallout
         phase={demo.phase}
         elapsedSec={demo.elapsedSec}

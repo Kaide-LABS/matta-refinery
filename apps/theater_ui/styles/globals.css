@@ -383,22 +383,69 @@ code, .mono {
    (panes only filled ~70-80% of the viewport because the grid row hugged
    its content). `grid-template-rows: 1fr` forces the single row to consume
    all available vertical space inside the flex parent. */
-.theater-grid {
+/* Phase 1.7 Stage E C8: replaced fixed .theater-grid with drag-to-resize
+   .resizable-pane-grid. Fractions persist to localStorage; reset button in
+   header restores defaults. */
+.resizable-pane-grid {
   flex: 1;
   display: grid;
   max-width: 100vw;
   box-sizing: border-box;
-  /* Phase 1.7 Stage E: Drive pane expanded to 50% so the dossier has room
-     to breathe — prior 1fr 1fr 1fr wrapped dossier text at ~25 chars.
-     Theater Console compresses to 25% (status-only, doesn't need width).
-     Slack pane stays at 25%. */
-  grid-template-columns: 25% 25% 1fr;
   grid-template-rows: 1fr;
-  gap: 16px;
+  gap: 0;
   padding: 16px;
   background: var(--matta-cream);
   overflow: hidden;
   min-height: 0;
+}
+
+.resizable-pane-grid__pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.resizable-pane-grid__handle {
+  position: relative;
+  cursor: col-resize;
+  background: transparent;
+  margin: 0 7px;
+  width: 6px;
+}
+
+.resizable-pane-grid__handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 2px;
+  background: var(--matta-warm-border);
+  transition: background 0.15s ease;
+}
+
+.resizable-pane-grid__handle:hover::before,
+.resizable-pane-grid__handle:active::before {
+  background: var(--matta-accent, #c97a3a);
+}
+
+.header-action {
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--matta-ink, #2a2a2a);
+  background: transparent;
+  border: 1px solid var(--matta-warm-border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  margin-right: 12px;
+  transition: background 0.15s ease;
+}
+
+.header-action:hover {
+  background: var(--matta-warm-border);
 }
 
 /* ─── Pane shared frame ───────────────────────────────────────────────── */
