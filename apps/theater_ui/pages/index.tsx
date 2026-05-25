@@ -124,6 +124,7 @@ const IndexPage: NextPage = () => {
           onSelectCsv={demo.selectCsv}
           onRunDemo={demo.runDemo}
           onReset={demo.reset}
+          tracerProspect={demo.tracerProspect}
         />
         <DriveDossierRightPane
           phase={demo.phase}

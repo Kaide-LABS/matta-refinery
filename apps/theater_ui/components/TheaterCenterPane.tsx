@@ -5,6 +5,7 @@ import type {
   Stage2SectionTimings,
   DossierPayload,
   CsvSelection,
+  TopProspect,
 } from '../hooks/useWebSocket';
 import type { SeedCsv } from './seedCsvs';
 import CsvSelector from './CsvSelector';
@@ -24,6 +25,10 @@ interface Props {
   onSelectCsv: (selection: CsvSelection) => void;
   onRunDemo: () => void;
   onReset: () => void;
+  // Phase 1.7 Stage D hotfix: pass tracerProspect so the §H/Stage 2
+  // heading and any other prospect-name surfaces can bind dynamically
+  // instead of hardcoding "William Cook Briefing".
+  tracerProspect: TopProspect | null;
 }
 
 function fmtMin(sec: number): string {
@@ -108,6 +113,7 @@ export default function TheaterCenterPane({
   onSelectCsv,
   onRunDemo,
   onReset,
+  tracerProspect,
 }: Props) {
   // Pull the conformal coverage value off the defect-hypothesis payload when
   // it lands in the polled dossier. Only the defect section currently runs
@@ -386,7 +392,7 @@ export default function TheaterCenterPane({
         <div className="theater-section">
           <div className="theater-section__heading-row">
             <div className="theater-section__heading">
-              Stage 2 — William Cook Briefing
+              Stage 2 — {tracerProspect?.company_name ?? activeCsv.tracerCompany} Briefing
             </div>
             <code className="theater-mono theater-mono--inline">
               dossier:{dossierId.slice(0, 8)}…
