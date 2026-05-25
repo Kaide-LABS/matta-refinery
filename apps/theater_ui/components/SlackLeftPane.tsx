@@ -147,7 +147,10 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
 
   const RefineryAvatar = () => {
     if (refineryIconFailed) {
-      return <span className="slack-avatar slack-avatar--bot">M</span>;
+      // Phase 1.7 Stage E leak #7: fallback letter was "M" — the bot is
+      // the Kaide Labs Refinery pipeline, not Matta itself, so the
+      // initial should be "R".
+      return <span className="slack-avatar slack-avatar--bot">R</span>;
     }
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
@@ -169,6 +172,17 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
         </div>
         <div className="slack-channel-header__sub">
           Lead Refinery automated pipeline · Refinery bot posts ranked shortlist + briefings
+        </div>
+        <div className="slack-channel-header__attribution">
+          built by{' '}
+          <a
+            href="https://kaide-labs.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="slack-channel-header__attribution-link"
+          >
+            Kaide Labs
+          </a>
         </div>
       </div>
 
@@ -209,7 +223,7 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
       {stage1Running && (
         <div className="slack-typing">
           <div className="slack-avatar slack-avatar--bot slack-avatar--small">
-            {refineryIconFailed ? 'M' : (
+            {refineryIconFailed ? 'R' : (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={REFINERY_ICON_PATH} alt="Refinery" onError={() => setRefineryIconFailed(true)} />
             )}

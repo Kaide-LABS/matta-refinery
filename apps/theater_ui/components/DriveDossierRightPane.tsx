@@ -242,6 +242,11 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
               <div className="dossier-doc__role-label">
                 FDE pre-flight briefing · read before factory visit
               </div>
+              <div className="dossier-doc__role-clarification">
+                Per-prospect deliverable — not a sales dashboard or KPI view.
+                Each briefing generated fresh from the prospect's signal state
+                at the time of dispatch.
+              </div>
               <h1
                 className="dossier-doc__title"
                 data-tutorial-anchor="dossier-title"
