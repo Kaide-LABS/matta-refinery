@@ -339,13 +339,16 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
 
             {dossier?.comparable_deployment ? (
               <details
+                open
                 className="dossier-doc__section dossier-doc__section--anchor dossier-doc__section--collapsible"
                 data-tutorial-anchor="comparable-anchor"
                 data-doc-section="comparable_deployment"
               >
                 <summary className="dossier-doc__summary">
-                  <h3>§3 Comparable Matta Deployment</h3>
-                  <span className="dossier-doc__peek">verified KG anchor · click to expand</span>
+                  <h3>
+                    §3 Comparable Matta Deployment
+                    <span className="dossier-doc__anchor-badge">verified KG anchor</span>
+                  </h3>
                 </summary>
                 <div className="dossier-doc__anchor-tag">
                   Deterministic KG selection — LLM did not pick this anchor
@@ -394,12 +397,15 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
 
             {dossier?.risk_register ? (
               <details
+                open
                 className="dossier-doc__section dossier-doc__section--collapsible"
                 data-doc-section="risk_register"
               >
                 <summary className="dossier-doc__summary">
-                  <h3>§4 Integration Risk Register</h3>
-                  <span className="dossier-doc__peek">risk pillars · click to expand</span>
+                  <h3>
+                    §4 Integration Risk Register
+                    <span className="dossier-doc__anchor-badge">risk pillars</span>
+                  </h3>
                 </summary>
                 {renderJsonValue(dossier.risk_register)}
               </details>
@@ -407,12 +413,15 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
 
             {dossier?.suggested_approach ? (
               <details
+                open
                 className="dossier-doc__section dossier-doc__section--collapsible"
                 data-doc-section="suggested_approach"
               >
                 <summary className="dossier-doc__summary">
-                  <h3>§5 Suggested Approach</h3>
-                  <span className="dossier-doc__peek">phased plan · click to expand</span>
+                  <h3>
+                    §5 Suggested Approach
+                    <span className="dossier-doc__anchor-badge">phased plan</span>
+                  </h3>
                 </summary>
                 {renderJsonValue(dossier.suggested_approach)}
               </details>

@@ -84,17 +84,36 @@ const KG_ANCHORS: KGAnchor[] = [
 ];
 
 const BANNER_DURATION_MS = 3500;
+const AUTO_OPEN_DURATION_MS = 8000;
 
-export default function KGValidatorIndicator() {
+interface KGIndicatorProps {
+  // Phase 1.7 Stage E: when phase transitions to 'complete', auto-open
+  // the popover so Doug sees the Verify (Wayback) links without having
+  // to discover the small dot in the header. Single highest-impact
+  // demo UX change.
+  phase?: string;
+}
+
+export default function KGValidatorIndicator({ phase }: KGIndicatorProps = {}) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const autoOpenFired = useRef(false);
 
   // Auto-dismiss the banner after the duration
   useEffect(() => {
     const t = window.setTimeout(() => setBannerVisible(false), BANNER_DURATION_MS);
     return () => window.clearTimeout(t);
   }, []);
+
+  // Auto-open popover when dossier reaches complete state (once per session)
+  useEffect(() => {
+    if (phase !== 'complete' || autoOpenFired.current) return;
+    autoOpenFired.current = true;
+    setPopoverOpen(true);
+    const t = window.setTimeout(() => setPopoverOpen(false), AUTO_OPEN_DURATION_MS);
+    return () => window.clearTimeout(t);
+  }, [phase]);
 
   // Click-outside dismiss for the popover
   useEffect(() => {

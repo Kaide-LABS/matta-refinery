@@ -81,7 +81,7 @@ const IndexPage: NextPage = () => {
           <div className="app-header__title">Lead Refinery · Theater Console</div>
         </div>
         <div className="app-header__right">
-          <KGValidatorIndicator />
+          <KGValidatorIndicator phase={demo.phase} />
           {demo.batchId && (
             <div
               className="app-header__connection"
