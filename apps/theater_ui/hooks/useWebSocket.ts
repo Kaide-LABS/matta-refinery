@@ -223,9 +223,19 @@ export function useDemoState(): UseDemoStateResult {
   // Fires once when the phase first enters 'stage1_complete'. Retries once
   // after 3s if Stage 1 hasn't fully written fitness scores. On both calls
   // 404 → tracerStatus='unavailable' and click-handler falls back gracefully.
+  //
+  // Phase 1.7 Stage D bugfix: tracerStatus was previously in the dep array,
+  // and the effect called setTracerStatus('resolving') inside its own body.
+  // That created a self-canceling race in React 18: the setter triggered a
+  // re-render, the cleanup fired (cancelled=true), and the still-pending
+  // /top_prospect fetch bailed before it could call setTracerProspect.
+  // Result: tracerProspect stayed null and every UI binding to
+  // tracerProspect.* fell back. Fix: drop tracerStatus from the dep array
+  // and remove the now-pointless self-guard. The effect now fires ONCE per
+  // (phase, batchId) transition, lets its own async chain complete, and
+  // writes the prospect into state.
   useEffect(() => {
     if (phase !== 'stage1_complete' || !batchId) return;
-    if (tracerStatus === 'resolved' || tracerStatus === 'resolving') return;
 
     let cancelled = false;
     setTracerStatus('resolving');
@@ -262,7 +272,7 @@ export function useDemoState(): UseDemoStateResult {
     return () => {
       cancelled = true;
     };
-  }, [phase, batchId, tracerStatus]);
+  }, [phase, batchId]);
 
   // ─── Stage 2 dossier polling ──────────────────────────────────────────────
   useEffect(() => {
