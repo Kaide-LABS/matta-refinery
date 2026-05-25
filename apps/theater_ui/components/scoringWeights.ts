@@ -27,6 +27,10 @@ export interface FitnessBreakdownComponent {
   label: string;
   contribution: number;
   contributes: boolean;
+  // Phase 1.7 Stage E: per-component weight so the tooltip can render
+  // value × weight = contribution explicitly. Damjan auditing the
+  // scoring sees the decision-tree shape without reading the source.
+  weight: number;
 }
 
 /**
@@ -47,21 +51,25 @@ export function computeFitnessBreakdown(
       label: `vertical_match (${input.vertical})`,
       contribution: verticalMatches ? VERTICAL_MATCH_WEIGHT : 0,
       contributes: verticalMatches,
+      weight: VERTICAL_MATCH_WEIGHT,
     },
     {
       label: `size_band (${input.factory_size_band})`,
       contribution: sizeBandMatches ? SIZE_BAND_WEIGHT : 0,
       contributes: sizeBandMatches,
+      weight: SIZE_BAND_WEIGHT,
     },
     {
       label: 'trade_show_provenance',
       contribution: input.trade_show_provenance ? TRADE_SHOW_PROVENANCE_WEIGHT : 0,
       contributes: input.trade_show_provenance,
+      weight: TRADE_SHOW_PROVENANCE_WEIGHT,
     },
     {
       label: `capacity_decay × (1 - ${input.capacity_decay.toFixed(1)})`,
       contribution: CAPACITY_DECAY_WEIGHT * capacityFactor,
       contributes: capacityFactor > 0,
+      weight: CAPACITY_DECAY_WEIGHT,
     },
   ];
 }

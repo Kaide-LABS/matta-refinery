@@ -2520,6 +2520,29 @@ code, .mono {
   line-height: 1.5;
 }
 
+/* ─── Stage E: §2 calibration footer + fitness tooltip weight column ──── */
+.fit-breakdown__weight {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--matta-grey);
+  margin-right: 8px;
+}
+.dossier-doc__section-footer {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--matta-warm-border-soft);
+  font-size: 11px;
+  color: var(--matta-grey);
+  font-style: italic;
+}
+.dossier-doc__section-footer code {
+  font-family: var(--font-mono);
+  font-style: normal;
+  background: var(--matta-code-bg);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
 /* ─── §3-§5 inline header badges (Stage E: replaces "click to expand" peek) */
 .dossier-doc__anchor-badge {
   display: inline-block;

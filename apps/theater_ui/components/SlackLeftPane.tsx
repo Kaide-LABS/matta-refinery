@@ -70,6 +70,7 @@ function FitBreakdownTooltip({ vertical, factorySizeBand, total }: FitBreakdownT
         {breakdown.map((row) => (
           <li key={row.label} className="fit-breakdown__row">
             <span className="fit-breakdown__label">{row.label}</span>
+            <span className="fit-breakdown__weight">w={row.weight.toFixed(2)}</span>
             <span className="fit-breakdown__value">
               {row.contribution >= 0 ? '+' : ''}
               {row.contribution.toFixed(2)}

@@ -339,6 +339,10 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                   return null;
                 })()}
                 {renderJsonValue(dossier.defect_hypothesis)}
+                <div className="dossier-doc__section-footer">
+                  Calibration priors per <code>CALIBRATION.md</code> · N=3
+                  ensemble · temps 0.1 / 0.5 / 0.9 · conformal coverage gate
+                </div>
               </section>
             ) : null}
 
