@@ -8,6 +8,7 @@ import TutorialCallout from '../components/TutorialCallout';
 import KGValidatorIndicator from '../components/KGValidatorIndicator';
 import { useDemoState } from '../hooks/useWebSocket';
 import { useTabTitle } from '../hooks/useTabTitle';
+import { installAudioUnlock } from '../lib/audioChime';
 
 function MattaWordmark() {
   // PNG asset will replace the text fallback when dropped in
@@ -30,6 +31,11 @@ function MattaWordmark() {
 const IndexPage: NextPage = () => {
   const demo = useDemoState();
   useTabTitle(demo.phase);
+  // Phase 1.7 Stage E: Chrome autoplay policy — unlock audio on first
+  // user click so the dossier-complete chime actually plays.
+  useEffect(() => {
+    installAudioUnlock();
+  }, []);
 
   // Phase 1.7 Stage D: /sandbox?mode=quickdemo skips Stage 1 UI and loads
   // the pre-baked batch directly. Polls /api/batch/prebaked once on mount;

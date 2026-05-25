@@ -504,11 +504,11 @@ export default function TheaterCenterPane({
               type="button"
               data-tutorial-anchor="reset-try-another"
             >
-              ↻ Reset & try another batch
+              ↻ Generate briefing for another prospect
             </button>
             <div className="theater-reset-row__hint">
-              Pick a different trade-show CSV to re-run with a fresh cohort —
-              ranking is deterministic per batch.
+              Pick a different trade show or another prospect from the ranked
+              shortlist. Each briefing runs ~85 seconds end-to-end.
             </div>
           </div>
         </div>

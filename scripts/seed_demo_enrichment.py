@@ -119,8 +119,10 @@ TRACER_ENRICHMENT_SEED: dict[str, dict[str, tuple]] = {
         }, None),
     },
 
-    # Caracol Aerospace Division (Industrial AI Summit tracer) — Italian, CH not_applicable
-    "pros_caracol_am_001": {
+    # Caracol Aerospace Division (Industrial AI Summit tracer) — Italian, CH not_applicable.
+    # Real prospect_id derived from md5("theater_csv:A001")[:12] = pros_686f7fda5a0b
+    # (Phase 1.7 Stage E: was placeholder pros_caracol_am_001).
+    "pros_686f7fda5a0b": {
         "companies_house": ("not_applicable", None, "non_uk_jurisdiction_heuristic"),
         "web_scrape": ("fetched", {
             "url": "https://www.caracol-am.com",
@@ -177,21 +179,22 @@ TRACER_ENRICHMENT_SEED: dict[str, dict[str, tuple]] = {
         }, None),
     },
 
-    # Brüggen Metallwerke GmbH (Hannover Messe tracer) — German, CH not_applicable
-    # Web scrape + Tavily fall through to live enrichment on demo runs.
-    "pros_brueggen_001": {
+    # Brüggen Metallwerke GmbH (Hannover Messe tracer, H001) — German, CH not_applicable.
+    # Phase 1.7 Stage E: real prospect_id md5("theater_csv:H001")[:12].
+    "pros_36a1b00a009d": {
         "companies_house": ("not_applicable", None, "non_uk_jurisdiction_heuristic"),
     },
 
-    # Lockheed Martin Aeronautics Fort Worth (IMTS Chicago) — US, CH not_applicable
-    # Web scrape + Tavily fall through to live enrichment on demo runs.
-    "pros_lockheed_ftw_001": {
+    # Lockheed Martin Aeronautics Fort Worth (IMTS Chicago, I001) — US, CH not_applicable.
+    # Phase 1.7 Stage E: real prospect_id md5("theater_csv:I001")[:12].
+    "pros_3c8a43e97321": {
         "companies_house": ("not_applicable", None, "non_uk_jurisdiction_heuristic"),
     },
 
-    # Yorkshire Casting Co (Forging Industry Convention) — UK, all three expected to fetch live
-    # No pre-seed; all three sources fall through to live enrichment.
-    "pros_yorkshire_casting_001": {},
+    # Mettis Aerospace (Forging Industry Convention, F001) — UK forging shop.
+    # Phase 1.7 Stage E: real prospect_id md5("theater_csv:F001")[:12].
+    # No pre-seed payload; all three sources fall through to live enrichment.
+    "pros_40f793a0bb06": {},
 }
 
 

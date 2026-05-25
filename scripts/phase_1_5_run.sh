@@ -82,12 +82,18 @@ bash scripts/run_demo.sh
 echo "[D.4] Initialising database tables..."
 docker compose exec -T refinery_api python scripts/init_db.py
 
-CSV_PATH=$(find . -name "UK_Metals_Expo_2025_leads*.csv" -not -path "./.git/*" | head -1)
+# Phase 1.7 Stage E: smoke now ingests Industrial AI Summit (Caracol
+# tracer), which matches the cold-email demo default (Stage D Commit 1).
+# Smoke contract: M4 click target is the rank-1 prospect, resolved via
+# the deterministic tiebreaker — so whatever Stage 1 ranks #1 is what
+# Stage 2 runs against. Industrial AI Summit's pre-baked rank-1 is
+# Caracol Aerospace Division (pros_686f7fda5a0b).
+CSV_PATH=$(find . -name "Industrial_AI_Summit_2025_leads*.csv" -not -path "./.git/*" | head -1)
 [ -z "${CSV_PATH}" ] && { echo "MISSING_CSV"; exit 1; }
 
 INGEST_RESP=$(curl -s -X POST http://localhost:8080/ingest/batch \
   -F "file=@${CSV_PATH}" \
-  -F "source_label=uk_metals_expo_2025")
+  -F "source_label=industrial_ai_summit_2025")
 echo "${INGEST_RESP}"
 
 BATCH_ID=$(echo "${INGEST_RESP}" | python -c 'import sys,json; print(json.load(sys.stdin).get("batch_id",""))' 2>/dev/null)
@@ -139,20 +145,17 @@ done
 check_milestone M3 8
 echo "[MILESTONE M3] PASS (functional) outbox_delivered_crm_field=${M3_DELIVERED}"
 
-echo "Sending M4 click trigger (William Cook Sheffield)..."
-# Resolve a real prospect_id for William Cook from the DB. Fixture file
-# apps/mocks/fixtures/williams_cook_click.json doesn't exist in this checkout
-# (was referenced in spec but never committed); construct payload inline.
-WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
-  -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' AND company_name ILIKE '%william%cook%' LIMIT 1" 2>/dev/null | tr -d ' ')
-if [ -z "${WC_PID}" ]; then
-  # Fallback: use the top-fitness prospect (anchor)
-  WC_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
-    -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' ORDER BY fitness_score DESC NULLS LAST, external_lead_id ASC LIMIT 1" 2>/dev/null | tr -d ' ')
-fi
-echo "M4 prospect_id=${WC_PID}"
-[ -z "${WC_PID}" ] && { echo "M4 FAIL: no prospect found in batch"; exit 1; }
-PAYLOAD_JSON="{\"action_id\":\"generate_full_dossier\",\"prospect_id\":\"${WC_PID}\",\"signal_hash\":\"smoke-test-sig\",\"slack_response_url\":\"https://hooks.slack.com/mock\"}"
+echo "Sending M4 click trigger (rank-1 tracer)..."
+# Phase 1.7 Stage E: smoke harness M4 click target is now the rank-1
+# tracer of whatever batch was ingested, resolved via the deterministic
+# tiebreaker (fitness_score DESC, external_lead_id ASC). The UI smoke
+# runs against Industrial AI Summit (Caracol), but the script itself
+# is CSV-agnostic — it picks whichever prospect rank-1 resolves to.
+TRACER_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
+  -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' AND fitness_score IS NOT NULL ORDER BY fitness_score DESC NULLS LAST, external_lead_id ASC LIMIT 1" 2>/dev/null | tr -d ' ')
+echo "M4 prospect_id=${TRACER_PID}"
+[ -z "${TRACER_PID}" ] && { echo "M4 FAIL: no scored prospect found in batch"; exit 1; }
+PAYLOAD_JSON="{\"action_id\":\"generate_full_dossier\",\"prospect_id\":\"${TRACER_PID}\",\"slack_response_url\":\"https://hooks.slack.com/mock\"}"
 # Endpoint accepts urlencoded form with `payload` field; signature.verify returns bool not raise → effectively bypassed for tests
 PAYLOAD_URLENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote('${PAYLOAD_JSON}'))")
 CLICK_RESP=$(curl -s -o /tmp/m4_resp.txt -w "%{http_code}" -X POST http://localhost:8080/slack/interactions \

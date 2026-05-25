@@ -4,10 +4,11 @@
 // Stage 1: single C5 (523Hz) sine, 320ms, vol 0.18.
 // Stage 2: C5+G5 two-note arpeggio, 440ms total, vol 0.22.
 //
-// All playback is best-effort — autoplay restrictions or absent AudioContext
-// support silently no-op. Browsers without user interaction prior to the
-// chime will likely block it; that's acceptable for the demo (presenter
-// interacts before Stage 1 ever completes).
+// Phase 1.7 Stage E: Chrome autoplay policy blocks audio until first user
+// gesture. installAudioUnlock attaches a one-shot document.click listener
+// that resumes any suspended AudioContext. Call this on app mount; the
+// presenter's first click (Run Demo, Generate Briefing, etc.) unlocks
+// chimes for the rest of the session.
 
 let ctx: AudioContext | null = null;
 
@@ -51,4 +52,21 @@ export function chimeStage1Complete() {
 export function chimeStage2Complete() {
   tone(523.25, 0, 220, 0.22);
   tone(783.99, 200, 240, 0.22);
+}
+
+// Phase 1.7 Stage E: Chrome autoplay policy. The AudioContext starts
+// suspended until the first user gesture. Resume it on the first
+// document click; chimes thereafter play normally.
+let unlockInstalled = false;
+export function installAudioUnlock(): void {
+  if (typeof document === 'undefined' || unlockInstalled) return;
+  unlockInstalled = true;
+  const unlock = () => {
+    const c = getCtx();
+    if (c && c.state === 'suspended') {
+      // resume() is a Promise; failures are silent.
+      void c.resume().catch(() => {});
+    }
+  };
+  document.addEventListener('click', unlock, { once: true, capture: true });
 }
