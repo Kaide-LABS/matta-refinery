@@ -98,7 +98,11 @@ echo "${INGEST_RESP}"
 
 BATCH_ID=$(echo "${INGEST_RESP}" | python -c 'import sys,json; print(json.load(sys.stdin).get("batch_id",""))' 2>/dev/null)
 [ -z "${BATCH_ID}" ] && { echo "No batch_id returned — ingest failed"; exit 1; }
-echo "batch_id=${BATCH_ID}"
+# Phase 1.7 Stage E: CSV-agnostic row count — was hardcoded 124
+# (UK Metals Expo). Read from the ingest response so smoke works on
+# Industrial AI Summit (65), Hannover Messe (120), etc.
+EXPECTED_ROW_COUNT=$(echo "${INGEST_RESP}" | python -c 'import sys,json; print(json.load(sys.stdin).get("row_count",0))' 2>/dev/null)
+echo "batch_id=${BATCH_ID} expected_rows=${EXPECTED_ROW_COUNT}"
 SMOKE_T0=$(date +%s)
 
 # ── §D.5 MILESTONE OBSERVATION ───────────────────────────────────────────────
@@ -116,11 +120,11 @@ docker compose logs refinery_worker 2>&1 | grep -c "refinery.classify_action_dom
   | grep -qv "^0$" || echo "WARN: M1 signal not yet seen"
 check_milestone M1 2
 
-echo "Waiting for M2 (124 rows in lead_prospects)..."
+echo "Waiting for M2 (${EXPECTED_ROW_COUNT} rows in lead_prospects)..."
 sleep 5
 COUNT=$(docker compose exec -T postgres psql -U postgres -d refinery \
   -tAc "SELECT COUNT(*) FROM lead_prospects WHERE batch_id='${BATCH_ID}'" 2>/dev/null | tr -d ' ')
-[ "${COUNT}" = "124" ] || { echo "M2 FAIL: lead_prospects count=${COUNT}, expected 124"; exit 1; }
+[ "${COUNT}" = "${EXPECTED_ROW_COUNT}" ] || { echo "M2 FAIL: lead_prospects count=${COUNT}, expected ${EXPECTED_ROW_COUNT}"; exit 1; }
 check_milestone M2 5
 echo "[MILESTONE M2] PASS count=${COUNT}"
 
