@@ -96,7 +96,17 @@ const IndexPage: NextPage = () => {
           >
             ↺ Reset layout
           </button>
-          <KGValidatorIndicator phase={demo.phase} />
+          <KGValidatorIndicator
+            phase={demo.phase}
+            activeAnchorId={(() => {
+              const cmp = demo.dossier?.comparable_deployment as
+                | { matta_customer_anchor?: string }
+                | undefined;
+              const key = cmp?.matta_customer_anchor;
+              if (!key || key === 'no_comparable_available') return null;
+              return `matta_deployment_${key}`;
+            })()}
+          />
           {demo.batchId && (
             <div
               className="app-header__connection"

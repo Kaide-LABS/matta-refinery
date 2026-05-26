@@ -356,6 +356,34 @@ code, .mono {
   color: var(--matta-navy);
 }
 
+/* Phase 1.7 Stage E C9: active anchor highlight + dossier section usage */
+.kg-indicator__anchor--active {
+  background: var(--matta-forest-tint, rgba(46, 95, 71, 0.08));
+  border-left: 3px solid var(--matta-forest, #2e5f47);
+  padding-left: 12px;
+  margin-left: -12px;
+  border-radius: 4px;
+}
+
+.kg-indicator__anchor-active-tag {
+  font-size: 11px;
+  color: var(--matta-forest, #2e5f47);
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.kg-indicator__anchor-usage {
+  font-size: 11px;
+  color: var(--matta-grey-medium, #6b6b6b);
+  margin: 6px 0 0;
+  line-height: 1.4;
+}
+
+.kg-indicator__anchor-usage strong {
+  color: var(--matta-charcoal, #2a2a2a);
+  font-weight: 500;
+}
+
 .kg-indicator__popover-footer {
   padding: 8px 16px;
   background: var(--matta-code-bg);

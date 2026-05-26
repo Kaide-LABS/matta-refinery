@@ -27,6 +27,7 @@ interface KGAnchor {
   source_url?: string;
   source_archive_url?: string;
   source_label?: string;
+  dossier_sections_used: string[];
 }
 
 // Phase 1.7 Stage D: metal_casting_unnamed REMOVED (no verifiable substrate
@@ -50,6 +51,7 @@ const KG_ANCHORS: KGAnchor[] = [
     source_url: CAMBRIDGE_IFM_LIVE,
     source_archive_url: CAMBRIDGE_IFM_WAYBACK,
     source_label: CAMBRIDGE_IFM_LABEL,
+    dossier_sections_used: ['§3 Comparable Matta Deployment (when prospect is electronics_assembly)'],
   },
   {
     id: 'matta_deployment_caracol_am',
@@ -60,6 +62,7 @@ const KG_ANCHORS: KGAnchor[] = [
     source_url: CAMBRIDGE_IFM_LIVE,
     source_archive_url: CAMBRIDGE_IFM_WAYBACK,
     source_label: CAMBRIDGE_IFM_LABEL,
+    dossier_sections_used: ['§3 Comparable Matta Deployment (when prospect is additive_manufacturing)'],
   },
   {
     id: 'matta_deployment_global_drinks_brand',
@@ -70,6 +73,7 @@ const KG_ANCHORS: KGAnchor[] = [
     source_url: CAMBRIDGE_IFM_LIVE,
     source_archive_url: CAMBRIDGE_IFM_WAYBACK,
     source_label: CAMBRIDGE_IFM_LABEL,
+    dossier_sections_used: ['§3 Comparable Matta Deployment (when prospect is fnb_bottling)'],
   },
   {
     id: 'matta_deployment_polymer_unnamed',
@@ -80,6 +84,7 @@ const KG_ANCHORS: KGAnchor[] = [
     source_url: CAMBRIDGE_IFM_LIVE,
     source_archive_url: CAMBRIDGE_IFM_WAYBACK,
     source_label: CAMBRIDGE_IFM_LABEL,
+    dossier_sections_used: ['§3 Comparable Matta Deployment (when prospect is polymer_extrusion)'],
   },
 ];
 
@@ -92,9 +97,12 @@ interface KGIndicatorProps {
   // to discover the small dot in the header. Single highest-impact
   // demo UX change.
   phase?: string;
+  // Phase 1.7 Stage E C9: anchor ID powering the current dossier — the
+  // matching card gets a forest-tinted active highlight in the popover.
+  activeAnchorId?: string | null;
 }
 
-export default function KGValidatorIndicator({ phase }: KGIndicatorProps = {}) {
+export default function KGValidatorIndicator({ phase, activeAnchorId }: KGIndicatorProps = {}) {
   const [bannerVisible, setBannerVisible] = useState(true);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -167,9 +175,19 @@ export default function KGValidatorIndicator({ phase }: KGIndicatorProps = {}) {
           </div>
           <ul className="kg-indicator__anchors">
             {KG_ANCHORS.map((a) => (
-              <li key={a.id} className="kg-indicator__anchor">
+              <li
+                key={a.id}
+                className={`kg-indicator__anchor${
+                  a.id === activeAnchorId ? ' kg-indicator__anchor--active' : ''
+                }`}
+              >
                 <div className="kg-indicator__anchor-head">
                   <span className="kg-indicator__anchor-display">{a.display}</span>
+                  {a.id === activeAnchorId && (
+                    <span className="kg-indicator__anchor-active-tag">
+                      · powering this dossier
+                    </span>
+                  )}
                   <span className="kg-indicator__anchor-vertical">{a.vertical}</span>
                 </div>
                 <div className="kg-indicator__anchor-id">{a.id}</div>
@@ -179,6 +197,11 @@ export default function KGValidatorIndicator({ phase }: KGIndicatorProps = {}) {
                 <div className="kg-indicator__anchor-excerpt">
                   "{a.citation_excerpt}"
                 </div>
+                {a.dossier_sections_used.length > 0 && (
+                  <p className="kg-indicator__anchor-usage">
+                    Cited in: <strong>{a.dossier_sections_used[0]}</strong>
+                  </p>
+                )}
                 {a.source_url && (
                   <div className="kg-indicator__anchor-source">
                     <span className="kg-indicator__anchor-source-label">
