@@ -9,6 +9,7 @@ from sqlalchemy import text
 from ..config import settings
 from ..deps import CeleryDep, RedisDep, SessionDep
 from packages.adapters.slack import signature
+from packages.adapters.slack.signature import SlackSignatureError
 from packages.knowledge_graph.loader import load_graph
 from packages.schemas.dossier import DossierAck
 from packages.schemas.slack_ingress import SlackDossierAction
@@ -56,9 +57,14 @@ async def receive_slack_interaction(
 ) -> DossierAck:
     raw_body = await request.body()
     try:
-        signature.verify(headers=request.headers, body=raw_body, signing_secret=settings.slack_signing_secret, window_seconds=300)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid signature")
+        signature.verify(
+            headers=dict(request.headers),
+            body=raw_body,
+            signing_secret=settings.slack_signing_secret,
+            window_seconds=300,
+        )
+    except SlackSignatureError as e:
+        raise HTTPException(status_code=401, detail=f"slack signature: {e}")
 
     form_data = await request.form()
     payload_str = form_data.get("payload")

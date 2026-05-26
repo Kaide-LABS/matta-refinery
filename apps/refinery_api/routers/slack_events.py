@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from ..deps import RedisDep, CeleryDep
 from packages.schemas.slack_ingress import SlackEventAck, SlackEventPayload
 from packages.adapters.slack import signature
+from packages.adapters.slack.signature import SlackSignatureError
 from ..config import settings
 
 router = APIRouter()
@@ -16,9 +17,14 @@ async def receive_slack_event(
 ) -> SlackEventAck | JSONResponse:
     raw_body = await request.body()
     try:
-        signature.verify(headers=request.headers, body=raw_body, signing_secret=settings.slack_signing_secret, window_seconds=300)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid signature")
+        signature.verify(
+            headers=dict(request.headers),
+            body=raw_body,
+            signing_secret=settings.slack_signing_secret,
+            window_seconds=300,
+        )
+    except SlackSignatureError as e:
+        raise HTTPException(status_code=401, detail=f"slack signature: {e}")
 
     try:
         payload = SlackEventPayload.model_validate_json(raw_body)
