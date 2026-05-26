@@ -35,7 +35,8 @@ function buildStepArray(p: Props): TutorialStep[] {
   return [
     {
       id: 'idle',
-      isMainStep: true,
+      isMainStep: false,
+      counterLabel: 'Intro',
       title: 'Why this demo exists',
       targets: ['[data-tutorial-anchor="run-demo"]', '[data-tutorial-anchor="csv-attachment"]'],
       matches: (x) => x.phase === 'idle',
