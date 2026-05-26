@@ -1,7 +1,7 @@
 from ..app import app
 import asyncio
 from google import genai
-from google.genai.types import GenerateContentConfig
+from google.genai.types import GenerateContentConfig, HttpOptions
 from apps.refinery_api.config import settings
 from packages.schemas.defect_hypothesis import LikelyDefectClassHypothesis
 from packages.uncertainty.agreement import compute_agreement_set, CalibrationTable
@@ -81,6 +81,9 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
                 response_schema=LikelyDefectClassHypothesis,
                 temperature=temp,
                 max_output_tokens=2048,
+                # Stage E audit fix: explicit 60s timeout — Vertex stalls
+                # previously hung tasks until Celery visibility_timeout.
+                http_options=HttpOptions(timeout=60_000),
             ),
         )
         text = response.text
