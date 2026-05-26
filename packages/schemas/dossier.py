@@ -130,7 +130,7 @@ class PreVisitDossier(BaseModel):
             default_factory=list,
             description=(
                 "Section keys stripped from the dossier under section-granular DS-CP "
-                "(Tightening 4; arXiv 2510.05566 per ULTIMATE_PRD.md §4.2). "
+                "(Tightening 4; arXiv 2510.05566 per docs/ULTIMATE_PRD.md §4.2). "
                 "Renderers show explicit 'N sections marked unverified' note rather than silent omission."
             ),
         ),

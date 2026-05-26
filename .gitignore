@@ -6,3 +6,20 @@ __pycache__/
 kg_anchor_sources
 kg_anchor_sources.md
 kg_anchor_sources/
+
+# Phase 1.7 Stage E audit cleanup: regenerable run artifacts
+*.smoke.log
+PHASE_*_LOG*.log
+PHASE_*_LOG*.md
+
+# Build artifacts
+build/
+*.egg-info/
+
+# Local dev probes (one-off scripts, not part of the app)
+test_gemini.py
+test_gemini_v2.py
+test_vertical.py
+list_models.py
+check_progress.py
+check_dossier.sh

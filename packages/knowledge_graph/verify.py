@@ -4,7 +4,7 @@ from packages.knowledge_graph.loader import load_graph
 class KnowledgeGraphProvenanceError(RuntimeError):
     pass
 
-SUBSTRATE_PATH = Path("Matta_Intel_cleaned.md")
+SUBSTRATE_PATH = Path("docs/Matta_Intel_cleaned.md")
 
 def validate_graph_or_die() -> None:
     graph = load_graph()
@@ -12,7 +12,7 @@ def validate_graph_or_die() -> None:
     for anchor in graph.anchors:
         if "cummins" in anchor.anchor_id.lower():
             raise KnowledgeGraphProvenanceError(
-                f"Cummins is excluded as a deployment anchor (MATTA_MASTER_PRD_v2.md §1.F). "
+                f"Cummins is excluded as a deployment anchor (docs/MATTA_MASTER_PRD_v2.md §1.F). "
                 f"Found: {anchor.anchor_id}"
             )
         for line_no in anchor.citation_substrate_lines:
