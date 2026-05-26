@@ -86,8 +86,9 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
                 http_options=HttpOptions(timeout=60_000),
             ),
         )
-        text = response.text
-        json_str = text[text.find('{'):text.rfind('}')+1] if '{' in text else text
+        # Vertex returns valid JSON per response_mime_type/response_schema; trust it.
+
+        json_str = response.text
         return LikelyDefectClassHypothesis.model_validate_json(json_str)
         
     samples = []

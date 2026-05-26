@@ -56,8 +56,9 @@ def dossier_section_approach(self, prospect_id: str, dossier_id: str):
             http_options=HttpOptions(timeout=60_000),
         ),
     )
-    text_resp = response.text
-    json_str = text_resp[text_resp.find('{'):text_resp.rfind('}')+1] if '{' in text_resp else text_resp
+    # Vertex returns valid JSON per response_mime_type/response_schema; trust it.
+
+    json_str = response.text
     appr = SuggestedApproach.model_validate_json(json_str)
 
     with engine.begin() as conn:
