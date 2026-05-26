@@ -308,7 +308,7 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
 
             {dossier?.defect_hypothesis ? (
               <section className="dossier-doc__section" data-doc-section="defect_hypothesis">
-                <h3>§2 Defect Hypothesis (N=3 conformal)</h3>
+                <h3>§2 Defect Hypothesis (N=3 ensemble agreement)</h3>
                 {(() => {
                   const d = dossier.defect_hypothesis as Record<string, unknown>;
                   const requiresReview = d?.requires_human_review === true;
@@ -340,8 +340,11 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                 })()}
                 {renderJsonValue(dossier.defect_hypothesis)}
                 <div className="dossier-doc__section-footer">
-                  Calibration priors per <code>CALIBRATION.md</code> · N=3
-                  ensemble · temps 0.1 / 0.5 / 0.9 · conformal coverage gate
+                  Calibration priors per <code>docs/CALIBRATION.md</code> · N=3
+                  temperature-varied ensemble (temps 0.1 / 0.5 / 0.9) ·
+                  inter-model agreement gate ≥0.90 with per-class thresholds.
+                  Ensemble agreement gating — not split-conformal prediction
+                  (Vovk/Shafer).
                 </div>
               </section>
             ) : null}

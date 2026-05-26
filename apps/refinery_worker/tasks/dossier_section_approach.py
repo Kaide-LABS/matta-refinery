@@ -39,7 +39,7 @@ def dossier_section_approach(self, prospect_id: str, dossier_id: str):
         company_name=company_name,
         vertical=vertical,
         process_taxonomy_json="{}",
-        conformal_set="[]",
+        agreement_set="[]",
         risk_findings="[]",
     )
 

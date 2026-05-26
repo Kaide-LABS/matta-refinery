@@ -61,7 +61,7 @@ RAW_NOTE_TEMPLATES_GENERIC = [
     "decision maker not at booth — follow up",
     "saw N=3 ensemble methodology — recognises Brion's work",
     "cycle time pressure; scrap rate priority",
-    "wants conformal coverage statement for audit",
+    "wants ensemble-agreement coverage statement for audit",
     "Tier 2 supplier; OEM mandate driving inspection upgrade",
     "post-process inspection scope; HIP'd parts",
     "calibration drift between morning and afternoon shifts",

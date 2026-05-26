@@ -4,7 +4,7 @@ from google import genai
 from google.genai.types import GenerateContentConfig
 from apps.refinery_api.config import settings
 from packages.schemas.defect_hypothesis import LikelyDefectClassHypothesis
-from packages.uncertainty.conformal import compute_conformal_set, CalibrationTable
+from packages.uncertainty.agreement import compute_agreement_set, CalibrationTable
 import json
 from datetime import datetime
 
@@ -44,7 +44,7 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
         # UNVERIFIED_INSUFFICIENT_DATA via explicit deferral, persist a
         # minimal placeholder, and STILL dispatch the next section task.
         final_res = LikelyDefectClassHypothesis(
-            conformal_set=[],
+            agreement_set=[],
             coverage=0.0,
             calibration_version="phase1-demo-v1",
             requires_human_review=True,
@@ -94,14 +94,14 @@ def dossier_section_defect(self, prospect_id: str, dossier_id: str):
     with open("packages/uncertainty/calibration_table.json") as f:
         calib = CalibrationTable.model_validate_json(f.read())
         
-    result = compute_conformal_set(samples, calib)
+    result = compute_agreement_set(samples, calib)
 
     final_res = LikelyDefectClassHypothesis(
-        conformal_set=result.conformal_set,
+        agreement_set=result.agreement_set,
         coverage=result.coverage,
         calibration_version=calib.calibration_version,
         requires_human_review=result.requires_human_review,
-        rationale="Computed via conformal ensemble",
+        rationale="Computed via N=3 temperature-varied ensemble agreement gating",
         deferral_reason=result.deferral_reason,
         inter_model_agreement_score=result.inter_model_agreement_score,
     )

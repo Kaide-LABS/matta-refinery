@@ -50,13 +50,13 @@ APPROACH_PHASE_BREAKDOWN: Final[dict[str, list[dict[str, object]]]] = {
             "duration_days": 14,
             "deliverables": [
                 "model disposition surfaced to inspector UI alongside inspector call",
-                "weekly conformal-coverage report",
+                "weekly agreement-coverage report",
                 "Slack canvas + CRM note + Drive doc surfaces wired to production outbox",
             ],
             "evaluation_criteria": [
                 "inspector override rate trending below 10% by end-of-window",
                 "no DS-CP severe-shift events for ≥7 consecutive days",
-                "scrap-rate Pareto stable (no new defect modes outside conformal set)",
+                "scrap-rate Pareto stable (no new defect modes outside agreement set)",
             ],
             "exit_criteria": "agreement rate ≥90% and inspector pull-the-cord events attributable to model error <1/week",
         },
@@ -111,7 +111,7 @@ APPROACH_PHASE_BREAKDOWN: Final[dict[str, list[dict[str, object]]]] = {
             "duration_days": 21,
             "deliverables": [
                 "consolidated disposition (4-stream majority vote) to inspector UI",
-                "weekly cross-camera conformal report",
+                "weekly cross-camera agreement report",
                 "production outbox to Slack/CRM/Drive at consolidated-disposition granularity",
             ],
             "evaluation_criteria": [
@@ -169,7 +169,7 @@ APPROACH_PHASE_BREAKDOWN: Final[dict[str, list[dict[str, object]]]] = {
             "duration_days": 28,
             "deliverables": [
                 "production parallel-inspection across all stations",
-                "weekly line-level conformal-coverage report",
+                "weekly line-level agreement-coverage report",
                 "automated outbox to Slack/CRM/Drive at line granularity",
             ],
             "evaluation_criteria": [
@@ -232,7 +232,7 @@ APPROACH_PHASE_BREAKDOWN: Final[dict[str, list[dict[str, object]]]] = {
                 "joint customer-facing reference documentation",
             ],
             "evaluation_criteria": [
-                "field sites meet individual conformal targets",
+                "field sites meet individual agreement targets",
                 "no DS-CP severe-shift events at any field site for ≥14 consecutive days",
             ],
             "exit_criteria": "OEM and field-customers accept Matta as the in-process inspection authority for AM cells",

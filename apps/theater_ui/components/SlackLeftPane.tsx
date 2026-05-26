@@ -386,7 +386,7 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                 <strong>{tracerProspect?.company_name ?? activeCsv.tracerCompany}</strong>
               </div>
               <div className="slack-blockkit__summary">
-                Process taxonomy · Defect hypothesis (N=3 conformal) · Comparable Matta
+                Process taxonomy · Defect hypothesis (N=3 ensemble agreement) · Comparable Matta
                 deployment · Integration risks · Suggested approach. Validated against
                 the deterministic-byte gate.
               </div>

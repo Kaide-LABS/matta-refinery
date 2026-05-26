@@ -75,7 +75,7 @@ function buildStepArray(p: Props): TutorialStep[] {
     {
       id: 'stage1',
       isMainStep: true,
-      title: 'Step 2 of 11 — Stage 1 deep-ensemble scoring',
+      title: 'Step 2 of 11 — Stage 1 temperature-varied ensemble scoring',
       targets: [],
       matches: (x) => x.phase === 'stage1',
       body: (
@@ -183,20 +183,28 @@ function buildStepArray(p: Props): TutorialStep[] {
     {
       id: 'm6',
       isMainStep: true,
-      title: 'Step 6 of 11 — defect hypothesis (N=3 conformal)',
+      title: 'Step 6 of 11 — defect hypothesis (N=3 ensemble agreement)',
       targets: ['[data-section="defect_hypothesis"]'],
       matches: (x) => x.phase === 'stage2' && x.stage2Progress.defect_hypothesis === 'active',
       body: (
         <>
           <p>
             Three independent Gemini Flash samples at temperatures 0.1 / 0.5 /
-            0.9, then a conformal-coverage gate at ≥0.90. The hypothesis only
-            ships if the ensemble agrees within calibration.
+            0.9, then an inter-model agreement gate at ≥0.90 with per-class
+            calibrated thresholds. The hypothesis only ships if the ensemble
+            votes the same defect class with sufficient concurrence.
           </p>
           <p>
             Disagreement is honest: if the three samples can't cluster, the
             section returns "deferred for human review" instead of inventing
             consensus.
+          </p>
+          <p style={{ fontSize: '11px', opacity: 0.7, marginTop: '6px' }}>
+            <em>
+              Methodology note: this is ensemble agreement gating, not formal
+              split-conformal prediction (Vovk/Shafer). See
+              docs/CALIBRATION.md for the methodology and known limitations.
+            </em>
           </p>
         </>
       ),

@@ -13,7 +13,7 @@ Prospect:
 - Company name: {company_name}
 - Vertical: {vertical}
 - Process taxonomy: {process_taxonomy_json}
-- Defect-class hypothesis conformal set: {conformal_set}
+- Defect-class hypothesis agreement set: {agreement_set}
 - Identified risks: {risk_findings}
 
 Fixed approach templates:

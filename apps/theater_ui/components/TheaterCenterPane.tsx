@@ -45,7 +45,7 @@ function fmtTplus(sec: number): string {
 
 const SECTION_LABELS: Record<keyof Stage2Progress, string> = {
   process_taxonomy: 'Process Taxonomy',
-  defect_hypothesis: 'Defect Hypothesis (N=3 conformal)',
+  defect_hypothesis: 'Defect Hypothesis (N=3 ensemble agreement)',
   comparable_deployment: 'Comparable Matta Deployment',
   risk_register: 'Integration Risk Register',
   suggested_approach: 'Suggested Approach',
@@ -57,7 +57,7 @@ const SECTION_DETAIL: Record<keyof Stage2Progress, { active: string; pending: st
     pending: 'awaiting upstream',
   },
   defect_hypothesis: {
-    active: 'Flash N=3 ensemble · conformal coverage gate',
+    active: 'Flash N=3 ensemble · inter-model agreement gate ≥0.90',
     pending: 'awaiting taxonomy',
   },
   comparable_deployment: {
@@ -115,13 +115,13 @@ export default function TheaterCenterPane({
   onReset,
   tracerProspect,
 }: Props) {
-  // Pull the conformal coverage value off the defect-hypothesis payload when
+  // Pull the agreement coverage value off the defect-hypothesis payload when
   // it lands in the polled dossier. Only the defect section currently runs
   // the full uncertainty pattern (per MATTA_RECONCILIATION.md §6.7) — the
   // other four section schemas have no `coverage` / `requires_human_review`
   // fields, so this UI surfacing applies to defect alone.
   const defectPayload = dossier?.defect_hypothesis as
-    | { coverage?: number; requires_human_review?: boolean; conformal_set?: unknown[]; calibration_version?: string }
+    | { coverage?: number; requires_human_review?: boolean; agreement_set?: unknown[]; calibration_version?: string }
     | undefined;
   const defectCoverage =
     typeof defectPayload?.coverage === 'number' ? defectPayload.coverage : null;
@@ -292,7 +292,7 @@ export default function TheaterCenterPane({
       {stage1 && (
         <div className="theater-section" data-tutorial-anchor="ensemble-status">
           <div className="theater-section__heading">
-            Stage 1 — Deep Ensemble Scoring
+            Stage 1 — Temperature-Varied Ensemble Scoring
           </div>
           <div className="theater-section__body">
             124 prospects × N=3 ensemble · gemini-2.5-flash · confidence-weighted
@@ -364,7 +364,8 @@ export default function TheaterCenterPane({
           })()}
           <div className="ensemble-annotation">
             CISC pattern · confidence-weighted majority vote · arXiv 2502.06233
-            (Taubenfeld 2025) · methodology lineage: pytorch-deep-ensembles
+            (Taubenfeld 2025) · temperature-varied LLM sampling (not deep
+            ensembles in Brion et al.&apos;s independent-init sense)
           </div>
           <div className="theater-away-tip" data-tutorial-anchor="away-tip-stage1">
             ↳ Ranking takes ~5 minutes. Feel free to switch tabs — the tab title
@@ -430,9 +431,9 @@ export default function TheaterCenterPane({
                   {isDefectComplete && (
                     <div
                       className="section-row__coverage"
-                      title="Domain-Shift Conformal Prediction · arXiv 2510.05566 (Lin 2025) · gate ≥0.90"
+                      title="Inter-model agreement gate · vote-share thresholded (not split-conformal — see docs/CALIBRATION.md)"
                     >
-                      <span className="section-row__coverage-label">conformal coverage</span>
+                      <span className="section-row__coverage-label">agreement coverage</span>
                       <span className="section-row__coverage-value">
                         {defectCoverage!.toFixed(2)}
                       </span>

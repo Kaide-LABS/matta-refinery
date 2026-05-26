@@ -15,15 +15,15 @@ Process context:
 - Process taxonomy: {process_taxonomy_json}
 - Allowed evidence whitelist: {allowed_evidence}
 
-Allowed defect classes (your conformal_set field is a subset of these):
+Allowed defect classes (your agreement_set field is a subset of these):
 - porosity, dimensional_drift, surface_inclusions, tool_wear, calibration_drift,
-- material_defect, process_drift, unknown
+- material_defect, process_drift
 
 Decision rules:
 - If the process is well-understood and you have specific evidence, include the 1-3 most likely
-  defect classes in conformal_set and set coverage to your honest estimate (0.0-1.0).
-- If evidence is weak or the process is out-of-vertical, return an empty conformal_set or
-  include only "unknown"; the system will mark for human review.
+  defect classes in agreement_set and set coverage to your honest estimate (0.0-1.0).
+- If evidence is weak or the process is out-of-vertical, return an empty agreement_set; the
+  system will mark for human review via the deferral path.
 - The calibration_version field will be overwritten by the system; populate as best-effort.
 
 Output JSON only."""

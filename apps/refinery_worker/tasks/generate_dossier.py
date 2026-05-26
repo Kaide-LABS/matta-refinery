@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from packages.knowledge_graph.loader import load_graph
-from packages.uncertainty.conformal import CalibrationTable
+from packages.uncertainty.agreement import CalibrationTable
 
 
 @app.task(
