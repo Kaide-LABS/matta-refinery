@@ -10,9 +10,27 @@ WORKDIR /app
 COPY --from=builder /usr/local /usr/local
 COPY . .
 
-# Phase 1.7: install Chromium for Playwright web scraping. --with-deps
-# pulls in the system libraries Chromium needs (libnss3, libatk-bridge,
-# libgbm, etc.). Adds ~300MB to the worker image.
-RUN playwright install --with-deps chromium
+# Phase 1.7: install Chromium for Playwright web scraping.
+# --with-deps tries to install Ubuntu-only font packages (ttf-unifont,
+# ttf-ubuntu-font-family) that don't exist in Debian-slim. Install the
+# essential runtime libs manually, then pull the Chromium binary.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+    libgbm1 libpango-1.0-0 libcairo2 libasound2 \
+    fonts-liberation libxss1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Stage E audit fix: drop root. Playwright caches its browser bundle
+# under $HOME/.cache so we set HOME to the non-root user's home BEFORE
+# running `playwright install`, then chown /app and switch USER. Any
+# RCE via prompt injection in worker tasks will now execute as
+# `refinery` (uid 1000), not root.
+RUN groupadd --gid 1000 refinery \
+ && useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home refinery
+ENV HOME=/home/refinery
+RUN playwright install chromium \
+ && chown -R refinery:refinery /home/refinery /app
+USER refinery
 
 ENTRYPOINT ["celery", "-A", "apps.refinery_worker.app", "worker", "--loglevel=INFO", "--concurrency=4", "--pool=gevent"]

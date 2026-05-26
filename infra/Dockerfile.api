@@ -10,5 +10,13 @@ WORKDIR /app
 COPY --from=builder /usr/local /usr/local
 COPY . .
 
+# Stage E audit fix: drop root. Any RCE (e.g., via prompt injection in
+# dossier sections processed by the worker, or via uploaded CSV
+# parsing on the api) would otherwise execute as root.
+RUN groupadd --gid 1000 refinery \
+ && useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home refinery \
+ && chown -R refinery:refinery /app
+USER refinery
+
 HEALTHCHECK CMD curl -f http://localhost:8080/healthz || exit 1
 ENTRYPOINT ["uvicorn", "apps.refinery_api.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "2"]
