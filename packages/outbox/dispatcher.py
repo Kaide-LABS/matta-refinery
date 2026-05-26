@@ -5,7 +5,12 @@ from packages.outbox.models import Outbox, OutboxDLQ
 from typing import Any
 
 async def dispatch_outbox_row(session: AsyncSession, outbox_id: str, adapters: dict[str, Any]):
-    stmt = select(Outbox).where(Outbox.id == outbox_id).with_for_update()
+    # Stage E audit fix: SKIP LOCKED prevents two workers from
+    # serializing on the same outbox row. Without it, throughput
+    # caps at one worker regardless of replicas. Idempotency is
+    # handled at the surface-adapter layer, so skipping a locked
+    # row is safe — another worker will pick it up on the next pass.
+    stmt = select(Outbox).where(Outbox.id == outbox_id).with_for_update(skip_locked=True)
     result = await session.execute(stmt)
     row = result.scalar_one_or_none()
 

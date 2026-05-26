@@ -18,7 +18,10 @@ import json
 def outbox_dispatcher(self, outbox_id: str):
     engine = create_engine(settings.postgres_url.replace('+asyncpg', ''))
     with engine.begin() as conn:
-        row = conn.execute(text("SELECT surface, payload_jsonb, delivery_attempts, next_attempt_at, state FROM outbox WHERE id = :id FOR UPDATE"), {"id": outbox_id}).first()
+        # Stage E audit fix: SKIP LOCKED — paired with the same change
+        # in packages/outbox/dispatcher.py. If another worker already
+        # holds this row, this task re-queues instead of blocking.
+        row = conn.execute(text("SELECT surface, payload_jsonb, delivery_attempts, next_attempt_at, state FROM outbox WHERE id = :id FOR UPDATE SKIP LOCKED"), {"id": outbox_id}).first()
         if not row:
             return
             
