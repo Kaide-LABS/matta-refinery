@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 const STORAGE_KEY = 'matta-refinery-layout-v1';
 const RESET_EVENT = 'matta-reset-layout';
 
-const DEFAULTS = { slack: 1.2, theater: 1.0, drive: 2.2 };
+const DEFAULTS = { slack: 1.5, theater: 0.9, drive: 2.1 };
 const MIN_PX = { slack: 240, theater: 200, drive: 380 };
 const MAX_VIEWPORT_FRACTION = 0.7;
 

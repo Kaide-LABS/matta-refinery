@@ -42,11 +42,9 @@ function buildStepArray(p: Props): TutorialStep[] {
       body: (
         <>
           <p>
-            Doug just got back from a trade show with 65 leads. Normally that means
-            three nights of triage before the team knows which factories matter.
-            Refinery does the ranking, briefing, and CRM update in 7 minutes — and
-            delivers the result to Slack, HubSpot, and Drive simultaneously. The
-            team never leaves the tools they already live in.
+            Trade-show leads sit unranked for days. Refinery scores them, briefs
+            the top 12, and updates Slack, HubSpot, and Drive in one pass —
+            without your team leaving the tools they already use.
           </p>
           <p>Click Run Demo to start.</p>
         </>
@@ -55,40 +53,28 @@ function buildStepArray(p: Props): TutorialStep[] {
     {
       id: 'ingesting',
       isMainStep: true,
-      title: 'Step 1 of 11 — ingest',
+      title: 'Step 1 of 10 — ingest',
       targets: [],
       matches: (x) => x.phase === 'ingesting',
       body: (
-        <>
-          <p>
-            CSV posted to /ingest/batch with an idempotency-keyed Postgres write.
-            The Action Domain Classifier (ADC) routes the batch to PRIORITIZATION —
-            Stage 1 is about to fan out across 65 prospects.
-          </p>
-          <p>
-            What's verifiable: the ADC is deterministic Python in
-            packages/adc/rules.py — zero LLM calls in routing. Damjan can grep this.
-          </p>
-        </>
+        <p>
+          65 leads landing in Postgres. Routing decision is deterministic Python
+          — no LLM in the path you can grep at packages/adc/rules.py.
+        </p>
       ),
     },
     {
       id: 'stage1',
       isMainStep: true,
-      title: 'Step 2 of 11 — Stage 1 temperature-varied ensemble scoring',
+      title: 'Step 2 of 10 — temperature-varied ensemble scoring',
       targets: [],
       matches: (x) => x.phase === 'stage1',
       body: (
         <>
           <p>
-            Each lead runs through an N=3 ensemble for vertical classification,
-            then through a deterministic fit-scoring function against calibrated
-            weights. ~5 minutes for the 65-lead cohort.
-          </p>
-          <p>
-            Why ensemble: a single LLM call disagrees with itself on borderline
-            verticals. Three independent samples + an inter-model agreement floor
-            forces stability before the prospect enters the dossier pipeline.
+            Each lead through three Gemini Flash calls at temperatures 0.1, 0.5,
+            0.9. A single sample disagrees with itself on borderline verticals —
+            three voting forces stability.
           </p>
           <p>Elapsed: {fmtElapsed(p.elapsedSec)}.</p>
         </>
@@ -102,16 +88,15 @@ function buildStepArray(p: Props): TutorialStep[] {
       targets: [],
       body: (
         <p>
-          65 leads ranked in 5 minutes with no human triage. In production, this
-          is where Doug's Monday morning starts — with the top 12 already in
-          Slack, ranked by fit-to-Matta, before the team has finished coffee.
+          65 leads ranked in 5 minutes. In production, the top 12 land in Slack
+          before the team has finished morning coffee.
         </p>
       ),
     },
     {
       id: 'm3',
       isMainStep: true,
-      title: 'Step 3 of 11 — Stage 1 complete',
+      title: 'Step 3 of 10 — Stage 1 complete',
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-sync-line"]',
@@ -123,16 +108,11 @@ function buildStepArray(p: Props): TutorialStep[] {
       body: (
         <>
           <p>
-            Slack, HubSpot, and Drive all updated in one Postgres transaction via
-            the transactional outbox — three surfaces, no half-states. If any of
-            the three writes fails, the whole thing rolls back.
+            Slack, HubSpot, Drive all written in one Postgres transaction. If
+            any of the three fails, the whole thing rolls back. No half-states.
           </p>
           <p>
-            In production: Doug clicks "Generate Briefing" inside Slack. The
-            click is embedded in this view so you can see what fires.
-          </p>
-          <p>
-            <em>Implementation: Slack interaction event → /slack/interactions.</em>
+            Doug clicks "Generate Briefing" in Slack to dispatch Stage 2.
           </p>
         </>
       ),
@@ -140,70 +120,48 @@ function buildStepArray(p: Props): TutorialStep[] {
     {
       id: 'm4',
       isMainStep: true,
-      title: 'Step 4 of 11 — briefing dispatched',
+      title: 'Step 4 of 10 — briefing dispatched',
       targets: [],
       matches: (x) => x.phase === 'stage2_requesting',
       body: (
-        <>
-          <p>
-            Slack interaction event accepted. Refinery generated a dossier_id and
-            enqueued the {tracer} briefing. Five sections will render in order:
-            process taxonomy, defect hypothesis, comparable deployment,
-            integration risk register, suggested approach.
-          </p>
-          <p>
-            Each section is its own Celery task with deterministic dependencies —
-            defect hypothesis can't start until process taxonomy succeeds.
-          </p>
-        </>
+        <p>
+          Stage 2 enqueued for {tracer}. Five sections in order: taxonomy →
+          defect → comparable → risk → approach. Each section a Celery task
+          with explicit dependencies.
+        </p>
       ),
     },
     {
       id: 'm5',
       isMainStep: true,
-      title: 'Step 5 of 11 — process taxonomy',
+      title: 'Step 5 of 10 — process taxonomy',
       targets: ['[data-section="process_taxonomy"]'],
       matches: (x) => x.phase === 'stage2' && x.stage2Progress.process_taxonomy === 'active',
       body: (
-        <>
-          <p>
-            First section rendering. The LLM extracts the prospect's process
-            geometry — but the vocabulary is constrained per vertical by the
-            knowledge graph. For additive manufacturing: deposition rate, layer
-            thickness, robot path class. For metal casting: pour temperature,
-            casting type, geometry class. For bottling: line speed, fill rate.
-          </p>
-          <p>
-            The LLM can't drift outside known process structures because the
-            allowed terms are loaded from the verified KG, not inferred.
-          </p>
-        </>
+        <p>
+          First section rendering. The LLM extracts process geometry from a
+          vocabulary the KG defines per vertical — it can't drift outside known
+          process structures.
+        </p>
       ),
     },
     {
       id: 'm6',
       isMainStep: true,
-      title: 'Step 6 of 11 — defect hypothesis (N=3 ensemble agreement)',
+      title: 'Step 6 of 10 — defect hypothesis',
       targets: ['[data-section="defect_hypothesis"]'],
       matches: (x) => x.phase === 'stage2' && x.stage2Progress.defect_hypothesis === 'active',
       body: (
         <>
           <p>
-            Three independent Gemini Flash samples at temperatures 0.1 / 0.5 /
-            0.9, then an inter-model agreement gate at ≥0.90 with per-class
-            calibrated thresholds. The hypothesis only ships if the ensemble
-            votes the same defect class with sufficient concurrence.
-          </p>
-          <p>
-            Disagreement is honest: if the three samples can't cluster, the
-            section returns "deferred for human review" instead of inventing
+            Three Gemini Flash samples agree on a defect class above a per-class
+            threshold, or the section defers to human review. No invented
             consensus.
           </p>
           <p style={{ fontSize: '11px', opacity: 0.7, marginTop: '6px' }}>
             <em>
-              Methodology note: this is ensemble agreement gating, not formal
-              split-conformal prediction (Vovk/Shafer). See
-              docs/CALIBRATION.md for the methodology and known limitations.
+              Note: ensemble-agreement gating, not split-conformal prediction.
+              See docs/CALIBRATION.md.
             </em>
           </p>
         </>
@@ -212,7 +170,7 @@ function buildStepArray(p: Props): TutorialStep[] {
     {
       id: 'm7',
       isMainStep: true,
-      title: 'Step 7 of 11 — comparable deployment (the load-bearing safety rail)',
+      title: 'Step 7 of 10 — comparable deployment',
       targets: [
         '[data-section="comparable_deployment"]',
         '[data-tutorial-anchor="comparable-anchor"]',
@@ -223,21 +181,12 @@ function buildStepArray(p: Props): TutorialStep[] {
           x.stage2Progress.comparable_deployment === 'complete'),
       body: (
         <>
-          <p>This is the most important section in the dossier.</p>
           <p>
-            The comparable Matta deployment is selected by the knowledge-graph
-            selector, not the LLM. The LLM only writes prose against the anchor
-            the KG selects. If the prospect's vertical doesn't match a verified
-            KG anchor, the LLM gets nothing to write against — and the section
-            returns "no comparable deployment available" instead of fabricating.
+            The KG selector picks the anchor; the LLM only writes prose against
+            it. No matching anchor → the section says so, doesn't fabricate.
           </p>
           <p>
-            This is how the dossier can't invent a Matta customer that doesn't
-            exist.
-          </p>
-          <p>
-            Click the KG ✓ in the header to see the 4 verified anchors with
-            Cambridge IfM Wayback proof.
+            The dossier can't invent a Matta customer that doesn't exist.
           </p>
         </>
       ),
@@ -250,58 +199,44 @@ function buildStepArray(p: Props): TutorialStep[] {
       targets: [],
       body: (
         <p>
-          LLM dossier failure mode #1 is hallucinated customer references — the
-          model confidently citing deployments that don't exist. Refinery makes
-          that failure mode structurally impossible: the LLM writes against
-          verified ground truth, never its training data.
+          The #1 LLM dossier failure mode is hallucinated customer references.
+          Refinery makes that failure structurally impossible — the LLM writes
+          against verified ground truth, not training data.
         </p>
       ),
     },
     {
       id: 'm8',
       isMainStep: true,
-      title: 'Step 8 of 11 — integration risk register',
+      title: 'Step 8 of 10 — integration risk register',
       targets: ['[data-section="risk_register"]'],
       matches: (x) => x.phase === 'stage2' && x.stage2Progress.risk_register === 'active',
       body: (
-        <>
-          <p>
-            Each risk is tied to a pillar (infrastructure, environmental,
-            compliance) with a severity score and a verbatim knowledge-graph
-            anchor. No free-form LLM speculation about risks Matta hasn't
-            actually encountered.
-          </p>
-          <p>
-            If a risk type isn't in the KG, the section omits it rather than
-            fabricating.
-          </p>
-        </>
+        <p>
+          Each risk tied to a pillar (infrastructure, environmental, compliance)
+          with a verbatim KG anchor. Risks Matta hasn't actually encountered
+          don't appear.
+        </p>
       ),
     },
     {
       id: 'm9',
       isMainStep: true,
-      title: 'Step 9 of 11 — suggested approach',
+      title: 'Step 9 of 10 — suggested approach',
       targets: ['[data-section="suggested_approach"]'],
       matches: (x) => x.phase === 'stage2' && x.stage2Progress.suggested_approach === 'active',
       body: (
-        <>
-          <p>
-            Phased plan assembling — two-camera pilot scaffold with deterministic
-            phase breakdown: kickoff → shadow → parallel → handoff.
-          </p>
-          <p>
-            The phase template is hardcoded; the LLM only fills in the
-            prospect-specific details for each phase against KG-anchored
-            deployment patterns.
-          </p>
-        </>
+        <p>
+          Two-camera pilot scaffold: kickoff → shadow → parallel → handoff. The
+          template is hardcoded; the LLM fills in prospect-specific details
+          against KG-anchored patterns.
+        </p>
       ),
     },
     {
       id: 'm12',
       isMainStep: true,
-      title: 'Step 11 of 11 — briefing ready',
+      title: 'Step 10 of 10 — briefing ready',
       targets: [
         '[data-tutorial-anchor="slack-shortlist"]',
         '[data-tutorial-anchor="crm-strip"]',
@@ -312,22 +247,13 @@ function buildStepArray(p: Props): TutorialStep[] {
       body: (
         <>
           <p>
-            The dossier shipped to all three surfaces in one Postgres transaction
-            — no half-states, no Slack-succeeded-HubSpot-failed split.
+            Dossier written to all three surfaces in one Postgres transaction.
           </p>
           <p>
-            Total elapsed: {fmtElapsed(p.elapsedSec)}.
-            <br />
-            Byte-density ratio: {ratioCopy} (floor 0.60).
-            <br />
-            Sections shipped: 5/5.
-            <br />
-            KG anchors verified: 4/4.
+            Total: {fmtElapsed(p.elapsedSec)} · Byte-density {ratioCopy} (floor
+            0.60) · Sections 5/5 · KG anchors verified 4/4.
           </p>
-          <p>
-            This is what Doug's Monday morning looks like with Refinery in
-            place. Click Reset to generate a briefing for a different prospect.
-          </p>
+          <p>Click Reset to brief another prospect.</p>
         </>
       ),
     },

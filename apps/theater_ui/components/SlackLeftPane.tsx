@@ -341,9 +341,12 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
                         </span>
                       </div>
                       <div className="prospect-card__meta">
-                        <span>{p.vertical.replace(/_/g, ' ')}</span>
-                        <span className="prospect-card__sep">·</span>
-                        <span>{activeCsv.tradeShowDisplay}</span>
+                        <span className="prospect-card__meta-row">
+                          {p.vertical.replace(/_/g, ' ')}
+                        </span>
+                        <span className="prospect-card__meta-row">
+                          {activeCsv.tradeShowDisplay}
+                        </span>
                       </div>
                       <div className="prospect-card__footer">
                         <button
