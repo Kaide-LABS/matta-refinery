@@ -113,6 +113,12 @@ async def get_prebaked_batch_status(session: SessionDep) -> PrebakedBatchRespons
       - "complete":    >=60 prospects have a fitness_score; queue is
                        ready for quickdemo render
     """
+    # Stage E audit fix: select the *most populated* prebake batch, not
+    # the most recent. If a TOCTOU race (now closed by advisory lock in
+    # startup_prebake.py) ever produced duplicate batches in the past,
+    # we still want to resolve to the populated one rather than an
+    # empty wedged duplicate. Sort by scored_count DESC then created_at
+    # DESC, and require >0 scored prospects to be considered.
     result = await session.execute(
         text(
             """
@@ -121,7 +127,7 @@ async def get_prebaked_batch_status(session: SessionDep) -> PrebakedBatchRespons
             LEFT JOIN lead_prospects p ON p.batch_id = b.id
             WHERE b.user_id = :user_id
             GROUP BY b.id, b.created_at
-            ORDER BY b.created_at DESC
+            ORDER BY COUNT(p.fitness_score) DESC, b.created_at DESC
             LIMIT 1
             """
         ),

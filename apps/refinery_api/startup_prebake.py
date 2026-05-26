@@ -42,6 +42,17 @@ class _DuckUser:
     id: str
 
 
+def _prebake_lock_key(file_sha256: str, user_id: str) -> int:
+    """Stable 64-bit signed int for pg_advisory_xact_lock.
+
+    Hash is intentionally deterministic across replicas so the same
+    (user_id, file_sha256) pair always collapses to the same lock
+    namespace.
+    """
+    h = hashlib.md5(f"{user_id}:{file_sha256}".encode()).digest()
+    return int.from_bytes(h[:8], byteorder="big", signed=True)
+
+
 async def maybe_prebake_default_csv(
     engine: AsyncEngine,
     celery: Celery,
@@ -62,8 +73,19 @@ async def maybe_prebake_default_csv(
     csv_bytes = DEFAULT_DEMO_CSV_PATH.read_bytes()
     file_sha256 = hashlib.sha256(csv_bytes).hexdigest()
 
-    # Check for an existing baked batch on this file_hash + user_id.
-    async with engine.connect() as conn:
+    # Stage E audit fix: wrap existence check + insert in a single
+    # transaction with a Postgres advisory lock keyed on
+    # hash(user_id + file_sha256). Concurrent API replica boots
+    # previously raced — both observed no existing batch and both
+    # inserted, leaving the /api/batch/prebaked endpoint resolving
+    # to the empty duplicate. The advisory lock serializes the
+    # check-then-act across replicas; it auto-releases when the
+    # transaction commits or rolls back.
+    lock_key = _prebake_lock_key(file_sha256, DEFAULT_DEMO_CSV_USER_ID)
+
+    async with engine.begin() as conn:
+        await conn.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": lock_key})
+
         result = await conn.execute(
             text(
                 """
@@ -81,73 +103,79 @@ async def maybe_prebake_default_csv(
         )
         existing = result.first()
 
-    if existing and existing[1] >= PREBAKE_COMPLETION_THRESHOLD:
-        logger.info(
-            "Default demo CSV already pre-baked, skipping",
-            extra={"batch_id": existing[0], "scored_count": existing[1]},
-        )
-        return
-
-    # No completed bake — trigger ingest + dispatch.
-    logger.info(
-        "Pre-baking Stage 1 on default demo CSV",
-        extra={"path": str(DEFAULT_DEMO_CSV_PATH), "file_sha256": file_sha256[:16]},
-    )
-
-    try:
-        batch = parse_csv_to_batch(
-            csv_bytes, DEFAULT_DEMO_CSV_SOURCE_LABEL, _DuckUser(id=DEFAULT_DEMO_CSV_USER_ID)
-        )
-    except Exception as e:
-        logger.exception(
-            "parse_csv_to_batch failed during pre-bake",
-            extra={"exception_type": type(e).__name__},
-        )
-        return
-
-    session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
-        engine, expire_on_commit=False
-    )
-
-    try:
-        async with session_maker() as session:
-            db_batch = IngestBatch(
-                id=batch.batch_id,
-                source_surface=batch.source_surface,
-                file_sha256=file_sha256,
-                user_id=DEFAULT_DEMO_CSV_USER_ID,
-                day=date.today(),
+        if existing and existing[1] >= PREBAKE_COMPLETION_THRESHOLD:
+            logger.info(
+                "Default demo CSV already pre-baked, skipping",
+                extra={"batch_id": existing[0], "scored_count": existing[1]},
             )
-            session.add(db_batch)
-            for row in batch.rows:
-                prospect_id = (
-                    "pros_"
-                    + hashlib.md5(
-                        f"{batch.source_surface}:{row.external_lead_id}".encode()
-                    ).hexdigest()[:12]
-                )
-                prospect = LeadProspect(
-                    id=prospect_id,
-                    batch_id=batch.batch_id,
-                    source_system=batch.source_surface,
-                    external_lead_id=row.external_lead_id,
-                    company_name=row.company_name,
-                    contact_name=row.contact_name,
-                    contact_email=row.contact_email,
-                    sector_hint=row.sector_hint,
-                    raw_notes=row.raw_notes,
-                    factory_size_band=row.factory_size_band or "unknown",
-                    website_url=row.website_url,
-                )
-                await session.merge(prospect)
-            await session.commit()
-    except Exception as e:
-        logger.exception(
-            "Pre-bake INSERT failed",
-            extra={"exception_type": type(e).__name__},
-        )
-        return
+            return
 
+        logger.info(
+            "Pre-baking Stage 1 on default demo CSV",
+            extra={
+                "path": str(DEFAULT_DEMO_CSV_PATH),
+                "file_sha256": file_sha256[:16],
+            },
+        )
+
+        try:
+            batch = parse_csv_to_batch(
+                csv_bytes,
+                DEFAULT_DEMO_CSV_SOURCE_LABEL,
+                _DuckUser(id=DEFAULT_DEMO_CSV_USER_ID),
+            )
+        except Exception as e:
+            logger.exception(
+                "parse_csv_to_batch failed during pre-bake",
+                extra={"exception_type": type(e).__name__},
+            )
+            return
+
+        # Build a session bound to this connection so the ORM inserts
+        # participate in the same advisory-locked transaction.
+        session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
+            bind=conn, expire_on_commit=False, join_transaction_mode="create_savepoint",
+        )
+        try:
+            async with session_maker() as session:
+                db_batch = IngestBatch(
+                    id=batch.batch_id,
+                    source_surface=batch.source_surface,
+                    file_sha256=file_sha256,
+                    user_id=DEFAULT_DEMO_CSV_USER_ID,
+                    day=date.today(),
+                )
+                session.add(db_batch)
+                for row in batch.rows:
+                    prospect_id = (
+                        "pros_"
+                        + hashlib.md5(
+                            f"{batch.source_surface}:{row.external_lead_id}".encode()
+                        ).hexdigest()[:12]
+                    )
+                    prospect = LeadProspect(
+                        id=prospect_id,
+                        batch_id=batch.batch_id,
+                        source_system=batch.source_surface,
+                        external_lead_id=row.external_lead_id,
+                        company_name=row.company_name,
+                        contact_name=row.contact_name,
+                        contact_email=row.contact_email,
+                        sector_hint=row.sector_hint,
+                        raw_notes=row.raw_notes,
+                        factory_size_band=row.factory_size_band or "unknown",
+                        website_url=row.website_url,
+                    )
+                    await session.merge(prospect)
+                await session.flush()
+        except Exception as e:
+            logger.exception(
+                "Pre-bake INSERT failed",
+                extra={"exception_type": type(e).__name__},
+            )
+            raise
+
+    # Lock released; safe to dispatch the score_batch task.
     celery.send_task("refinery.score_batch", args=[batch.batch_id])
 
     logger.info(
