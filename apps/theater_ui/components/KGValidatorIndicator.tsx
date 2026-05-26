@@ -168,9 +168,20 @@ export default function KGValidatorIndicator({ phase, activeAnchorId }: KGIndica
           <div className="kg-indicator__popover-header">
             <strong>Knowledge graph anchors verified at container boot</strong>
             <div className="kg-indicator__popover-sub">
-              packages/knowledge_graph/verify.py refused to start the API if any
-              anchor's citation excerpt did not appear at its substrate line
-              in Matta_Intel_cleaned.md.
+              <code>packages/knowledge_graph/verify.py</code> refused to start
+              the API if any anchor&apos;s citation excerpt did not appear at
+              its substrate line in <code>docs/Matta_Intel_cleaned.md</code>.
+              This eliminates the most common source of LLM dossier failure:
+              confidently citing customer deployments that don&apos;t exist.
+            </div>
+            <div className="kg-indicator__popover-note">
+              <em>
+                Methodology note: structurally this is a verified citation
+                table rather than a traversal graph (no entities or
+                relations) — branded &ldquo;Knowledge Graph&rdquo; for
+                architectural continuity with the broader pattern of
+                substrate-pinned LLM output constraints.
+              </em>
             </div>
           </div>
           <ul className="kg-indicator__anchors">

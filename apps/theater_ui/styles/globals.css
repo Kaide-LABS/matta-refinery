@@ -269,6 +269,16 @@ code, .mono {
   line-height: 1.5;
 }
 
+.kg-indicator__popover-note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--matta-grey-light, #d0d0d0);
+  font-size: 10px;
+  color: var(--matta-grey);
+  font-style: italic;
+  line-height: 1.5;
+}
+
 .kg-indicator__anchors {
   flex: 1;
   min-height: 0;
