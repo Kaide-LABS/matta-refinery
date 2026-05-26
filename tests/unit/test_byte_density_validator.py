@@ -31,11 +31,11 @@ def _valid_sections():
             rationale="metal casting line; verified by KG anchor",
         ),
         "defect_hypothesis": LikelyDefectClassHypothesis(
-            conformal_set=["porosity", "dimensional_drift"],
+            agreement_set=["porosity", "dimensional_drift"],
             coverage=0.9,
             calibration_version="phase1-demo-v1",
             requires_human_review=False,
-            rationale="N=3 ensemble plurality on porosity; conformal coverage 0.9",
+            rationale="N=3 ensemble plurality on porosity; agreement coverage 0.9",
         ),
         "comparable_deployment": ComparableDeployment(
             matta_customer_anchor="metal_casting_unnamed",

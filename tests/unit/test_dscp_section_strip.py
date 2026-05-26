@@ -57,9 +57,9 @@ def test_dossier_accepts_unverified_sections_without_rejection():
         "risk_register_narrative": "L" * 400,
         "suggested_approach_narrative": "L" * 400,
     }
-    # Stripped defect section stub — empty conformal_set + requires_human_review=True
+    # Stripped defect section stub — empty agreement_set + requires_human_review=True
     stripped_defect = LikelyDefectClassHypothesis(
-        conformal_set=[],
+        agreement_set=[],
         coverage=0.0,
         calibration_version="phase1-demo-v1",
         requires_human_review=True,

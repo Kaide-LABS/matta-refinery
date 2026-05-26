@@ -36,6 +36,7 @@ def test_cummins_anchor_is_rejected(monkeypatch):
                 citation_substrate_lines=[1],
                 citation_verbatim_excerpt="placeholder excerpt long enough for min_length",
                 permitted_dimensions_of_comparability=["unused"],
+                evidence_strength="named_customer_oem_partnership",
             )
         ],
     )
@@ -59,6 +60,7 @@ def test_out_of_range_citation_line_is_rejected(monkeypatch, tmp_path):
                 citation_substrate_lines=[99999],
                 citation_verbatim_excerpt="working with Bowers & Wilkins",
                 permitted_dimensions_of_comparability=["surface_finish_qc"],
+                evidence_strength="unnamed_customer_vertical_mention",
             )
         ],
     )
@@ -84,6 +86,7 @@ def test_verbatim_excerpt_mismatch_is_rejected(monkeypatch):
                 citation_substrate_lines=[540],
                 citation_verbatim_excerpt="this exact phrase is not in line 540",
                 permitted_dimensions_of_comparability=["surface_finish_qc"],
+                evidence_strength="unnamed_customer_vertical_mention",
             )
         ],
     )
