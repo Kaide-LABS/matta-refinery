@@ -103,10 +103,21 @@ async def maybe_prebake_default_csv(
         )
         existing = result.first()
 
-        if existing and existing[1] >= PREBAKE_COMPLETION_THRESHOLD:
+        if existing is not None:
+            # Stage E hotfix (Bug C): skip whenever any batch already exists
+            # for this file_sha256 + user_id, regardless of scored_count.
+            # The advisory lock above serializes concurrent boots, but on a
+            # cold start worker 2 still saw worker 1's just-inserted batch
+            # with scored_count=0 (below the old threshold) and created a
+            # duplicate. Scored-count gating is now solely the
+            # /api/batch/prebaked endpoint's job (it orders by scored_count
+            # DESC so legacy duplicates resolve to the populated one).
             logger.info(
-                "Default demo CSV already pre-baked, skipping",
-                extra={"batch_id": existing[0], "scored_count": existing[1]},
+                "Default demo CSV batch already exists; skipping re-creation",
+                extra={
+                    "batch_id": existing[0],
+                    "scored_count": existing[1] if existing[1] is not None else 0,
+                },
             )
             return
 
@@ -167,7 +178,12 @@ async def maybe_prebake_default_csv(
                         website_url=row.website_url,
                     )
                     await session.merge(prospect)
-                await session.flush()
+                # Stage E hotfix (Bug B): session.flush() wrote to a
+                # savepoint that was never released; the outer
+                # engine.begin() committed empty. session.commit()
+                # releases the savepoint into the outer transaction so
+                # the writes actually land.
+                await session.commit()
         except Exception as e:
             logger.exception(
                 "Pre-bake INSERT failed",

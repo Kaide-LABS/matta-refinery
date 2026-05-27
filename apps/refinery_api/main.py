@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import redis.asyncio as aioredis
 from celery import Celery
 from google import genai
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from .config import settings
 
@@ -27,19 +28,35 @@ async def lifespan(app: FastAPI):
     # does NOT drop existing ones. The full init_db.py script (with
     # drop_all + seed_demo_enrichment) remains the canonical setup for
     # smoke runs that need a known-clean state.
+    import logging
+    _life_log = logging.getLogger(__name__)
     try:
         from packages.models.prospects import Base as ProspectsBase
         # Register EnrichmentArtifact on ProspectsBase.metadata via import
         from packages.models.enrichment import EnrichmentArtifact  # noqa: F401
         from packages.outbox.models import Base as OutboxBase
         from sqlalchemy import text as _sa_text
+
+        # Stage E hotfix: CREATE EXTENSION IF NOT EXISTS is not atomic in
+        # Postgres — with uvicorn --workers 2, both workers race and the
+        # loser hits a UniqueViolationError on pg_extension_name_index.
+        # Wrap the extension creation in its own transaction so the loser
+        # can swallow the IntegrityError without rolling back the
+        # subsequent create_all (which is what regressed pre-bake).
+        try:
+            async with app.state.engine.begin() as _conn:
+                await _conn.execute(_sa_text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
+        except IntegrityError as e:
+            _life_log.info(
+                "pgcrypto extension already created by concurrent worker",
+                extra={"exception_type": type(e).__name__},
+            )
+
         async with app.state.engine.begin() as _conn:
-            await _conn.execute(_sa_text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
             await _conn.run_sync(ProspectsBase.metadata.create_all)
             await _conn.run_sync(OutboxBase.metadata.create_all)
     except Exception as e:
-        import logging
-        logging.getLogger(__name__).exception(
+        _life_log.exception(
             "Lifespan create_all failed", extra={"exception_type": type(e).__name__},
         )
 
