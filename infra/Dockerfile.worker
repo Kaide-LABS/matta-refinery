@@ -30,7 +30,12 @@ RUN groupadd --gid 1000 refinery \
  && useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home refinery
 ENV HOME=/home/refinery
 RUN playwright install chromium \
+ && chmod +x /app/apps/refinery_worker/entrypoint.sh \
  && chown -R refinery:refinery /home/refinery /app
 USER refinery
 
-ENTRYPOINT ["celery", "-A", "apps.refinery_worker.app", "worker", "--loglevel=INFO", "--concurrency=4", "--pool=gevent"]
+# Stage E audit fix: entrypoint script gates Celery start on DNS
+# resolution of the Vertex endpoint to prevent a 195-task
+# ConnectError retry storm during pre-bake. See
+# apps/refinery_worker/entrypoint.sh.
+ENTRYPOINT ["/app/apps/refinery_worker/entrypoint.sh"]
