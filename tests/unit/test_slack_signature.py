@@ -58,6 +58,34 @@ def test_invalid_timestamp_format_raises():
         )
 
 
+def test_valid_signature_with_lowercase_header_keys():
+    """Starlette canonicalises incoming HTTP header names to lowercase.
+    verify() must accept either the mixed-case spec name or the
+    lowercase Starlette form. This pins the case-insensitivity
+    contract.
+    """
+    secret = "shhh"
+    ts = str(int(time.time()))
+    body = b'{"hello":"world"}'
+    base = f"v0:{ts}:".encode("utf-8") + body
+    sig = "v0=" + hmac.new(secret.encode("utf-8"), base, hashlib.sha256).hexdigest()
+
+    class _CaseInsensitiveHeaders(dict):
+        """Mimics Starlette's headers: lowercase keys, case-insensitive get."""
+        def get(self, key, default=None):
+            return super().get(key.lower(), default)
+
+    headers = _CaseInsensitiveHeaders({
+        "x-slack-request-timestamp": ts,
+        "x-slack-signature": sig,
+    })
+    assert verify(
+        headers=headers,
+        body=body,
+        signing_secret=secret,
+    ) is True
+
+
 def test_valid_signature_returns_true():
     secret = "shhh"
     ts = str(int(time.time()))

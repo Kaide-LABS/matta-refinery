@@ -58,7 +58,7 @@ async def receive_slack_interaction(
     raw_body = await request.body()
     try:
         signature.verify(
-            headers=dict(request.headers),
+            headers=request.headers,
             body=raw_body,
             signing_secret=settings.slack_signing_secret,
             window_seconds=300,
