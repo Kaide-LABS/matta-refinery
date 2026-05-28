@@ -74,36 +74,40 @@ code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
 echo "theater_http=${code}"
 [ "${code}" = "200" ] || echo "WARN: Theater UI returned ${code} — see §F.24"
 
-echo "[D.4-pre] Flushing Redis (clears idempotency cache and stale task queue between re-runs)..."
-docker compose exec -T redis redis-cli FLUSHALL
-echo "[D.4] Running demo setup and CSV ingest..."
-bash scripts/run_demo.sh
+# Phase 1.7 Stage E audit follow-up: smoke now runs against the
+# pre-bake batch, not a fresh CSV ingest. The legacy "harness uploads
+# its own CSV" flow is pre-pre-bake era — in production, Doug never
+# uploads a CSV; he clicks Generate Briefing on a pre-baked prospect.
+# Testing the pre-bake batch matches what mode=quickdemo actually
+# serves.
+echo "[D.4] Locating pre-bake batch..."
+PREBAKE_BATCH_ID=$(curl -fsS http://localhost:8080/api/batch/prebaked | python3 -c "import sys,json; print(json.load(sys.stdin).get('batch_id') or '')")
+[ -z "${PREBAKE_BATCH_ID}" ] && { echo "M2 FAIL: no pre-bake batch_id"; exit 1; }
+echo "PREBAKE_BATCH_ID=${PREBAKE_BATCH_ID}"
 
-echo "[D.4] Initialising database tables..."
-docker compose exec -T refinery_api python scripts/init_db.py
+echo "[D.4] Waiting for pre-bake to reach status=complete with scored_count=65..."
+PREBAKE_DEADLINE=$(( $(date +%s) + 600 ))
+while true; do
+  STATUS_LINE=$(curl -fsS http://localhost:8080/api/batch/prebaked | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d['status']}|{d['scored_count']}\")")
+  if [ "${STATUS_LINE}" = "complete|65" ]; then break; fi
+  [ "$(date +%s)" -ge "${PREBAKE_DEADLINE}" ] && { echo "M2 FAIL: pre-bake never reached complete|65 (last: ${STATUS_LINE})"; exit 1; }
+  sleep 10
+  echo -n "."
+done
+echo ""
+echo "[D.4] Pre-bake complete on batch ${PREBAKE_BATCH_ID}"
 
-# Phase 1.7 Stage E: smoke now ingests Industrial AI Summit (Caracol
-# tracer), which matches the cold-email demo default (Stage D Commit 1).
-# Smoke contract: M4 click target is the rank-1 prospect, resolved via
-# the deterministic tiebreaker — so whatever Stage 1 ranks #1 is what
-# Stage 2 runs against. Industrial AI Summit's pre-baked rank-1 is
-# Caracol Aerospace Division (pros_686f7fda5a0b).
-CSV_PATH=$(find . -name "Industrial_AI_Summit_2025_leads*.csv" -not -path "./.git/*" | head -1)
-[ -z "${CSV_PATH}" ] && { echo "MISSING_CSV"; exit 1; }
-
-INGEST_RESP=$(curl -s -X POST http://localhost:8080/ingest/batch \
-  -F "file=@${CSV_PATH}" \
-  -F "source_label=industrial_ai_summit_2025")
-echo "${INGEST_RESP}"
-
-BATCH_ID=$(echo "${INGEST_RESP}" | python -c 'import sys,json; print(json.load(sys.stdin).get("batch_id",""))' 2>/dev/null)
-[ -z "${BATCH_ID}" ] && { echo "No batch_id returned — ingest failed"; exit 1; }
-# Phase 1.7 Stage E: CSV-agnostic row count — was hardcoded 124
-# (UK Metals Expo). Read from the ingest response so smoke works on
-# Industrial AI Summit (65), Hannover Messe (120), etc.
-EXPECTED_ROW_COUNT=$(echo "${INGEST_RESP}" | python -c 'import sys,json; print(json.load(sys.stdin).get("row_count",0))' 2>/dev/null)
-echo "batch_id=${BATCH_ID} expected_rows=${EXPECTED_ROW_COUNT}"
+BATCH_ID="${PREBAKE_BATCH_ID}"
+EXPECTED_ROW_COUNT=65
 SMOKE_T0=$(date +%s)
+
+# Capture outbox baseline so M3 verification (and downstream M11/M12)
+# can reason about deltas if needed. Pre-bake's Stage 1 stubs write
+# crm_field + slack_canvas + drive_doc for the top-12, so these will
+# already be populated before any M4 click.
+M3_BASELINE_CRM_FIELD=$(docker compose exec -T postgres psql -U postgres -d refinery \
+  -tAc "SELECT COUNT(*) FROM outbox WHERE state='delivered' AND surface='crm_field'" 2>/dev/null | tr -d ' ')
+echo "Outbox baseline crm_field delivered=${M3_BASELINE_CRM_FIELD}"
 
 # ── §D.5 MILESTONE OBSERVATION ───────────────────────────────────────────────
 
@@ -128,26 +132,15 @@ COUNT=$(docker compose exec -T postgres psql -U postgres -d refinery \
 check_milestone M2 5
 echo "[MILESTONE M2] PASS count=${COUNT}"
 
-echo "Waiting for M3 (Magic Moment 1) — polling until outbox crm_field ≥12 or T+300..."
-# §D.5 PASS functional: mock surfaces are stateless stubs with no list endpoints.
-# Outbox state=delivered is the authoritative evidence that M3 surface dispatches landed.
-# generate_dossier_stub uses surface='crm_field' (vs compose_dossier 'crm_note') — safe discriminator.
-# gemini-2.5-flash sync calls: 124 prospects × 3 calls sequential → chord → M3 takes 3-5 min actual.
-M3_DEADLINE=$(( $(date +%s) - SMOKE_T0 + 900 ))
-M3_DELIVERED=0
-while [ "${M3_DELIVERED}" -lt 12 ]; do
-  now=$(( $(date +%s) - SMOKE_T0 ))
-  if [ "${now}" -ge "${M3_DEADLINE}" ]; then
-    echo "M3 FAIL: timeout at T+${now}s, outbox crm_field delivered=${M3_DELIVERED}, expected ≥12"
-    exit 1
-  fi
-  sleep 10
-  M3_DELIVERED=$(docker compose exec -T postgres psql -U postgres -d refinery \
-    -tAc "SELECT COUNT(*) FROM outbox WHERE state='delivered' AND surface='crm_field'" 2>/dev/null | tr -d ' ' || echo 0)
-  echo "M3 poll T+$(( $(date +%s) - SMOKE_T0 ))s: outbox_delivered_crm_field=${M3_DELIVERED}"
-done
+echo "[MILESTONE M3] Verifying pre-bake's Magic Moment 1 (top-12 stub triple delivered)..."
+# Phase 1.7 Stage E reframe: with the harness now running against pre-bake,
+# M3 is a verification (not a wait). Pre-bake's score_batch already fanned
+# out generate_dossier_stub for the top-12, which writes crm_field outbox
+# rows. The pre-bake completion gate above guarantees those rows exist.
+M3_DELIVERED=${M3_BASELINE_CRM_FIELD}
+[ "${M3_DELIVERED}" -ge 12 ] || { echo "M3 FAIL: pre-bake outbox crm_field=${M3_DELIVERED}, expected >=12"; exit 1; }
 check_milestone M3 8
-echo "[MILESTONE M3] PASS (functional) outbox_delivered_crm_field=${M3_DELIVERED}"
+echo "[MILESTONE M3] PASS (pre-bake) outbox_delivered_crm_field=${M3_DELIVERED}"
 
 echo "Sending M4 click trigger (rank-1 tracer)..."
 # Phase 1.7 Stage E: smoke harness M4 click target is now the rank-1
@@ -159,6 +152,15 @@ TRACER_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
   -tAc "SELECT id FROM lead_prospects WHERE batch_id='${BATCH_ID}' AND fitness_score IS NOT NULL ORDER BY fitness_score DESC NULLS LAST, external_lead_id ASC LIMIT 1" 2>/dev/null | tr -d ' ')
 echo "M4 prospect_id=${TRACER_PID}"
 [ -z "${TRACER_PID}" ] && { echo "M4 FAIL: no scored prospect found in batch"; exit 1; }
+# Phase 1.7 Stage E: pre-bake rank-1 should be Caracol (KG-anchored
+# additive_manufacturing prospect with high fitness signals). If KG
+# anchor resolution shifts in future, warn rather than fail.
+if [ "${TRACER_PID}" = "pros_686f7fda5a0b" ]; then
+  echo "M4 tracer=Caracol (expected, KG-anchored rank-1)"
+else
+  echo "M4 WARN: tracer=${TRACER_PID}, expected Caracol pros_686f7fda5a0b"
+  echo "  (this isn't necessarily a failure — KG anchor resolution may have shifted)"
+fi
 PAYLOAD_JSON="{\"action_id\":\"generate_full_dossier\",\"prospect_id\":\"${TRACER_PID}\",\"slack_response_url\":\"https://hooks.slack.com/mock\"}"
 PAYLOAD_URLENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote('${PAYLOAD_JSON}'))")
 # Stage E audit fix: C1 (ddee9f5) made signature.verify() raise on
