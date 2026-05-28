@@ -160,11 +160,22 @@ TRACER_PID=$(docker compose exec -T postgres psql -U postgres -d refinery \
 echo "M4 prospect_id=${TRACER_PID}"
 [ -z "${TRACER_PID}" ] && { echo "M4 FAIL: no scored prospect found in batch"; exit 1; }
 PAYLOAD_JSON="{\"action_id\":\"generate_full_dossier\",\"prospect_id\":\"${TRACER_PID}\",\"slack_response_url\":\"https://hooks.slack.com/mock\"}"
-# Endpoint accepts urlencoded form with `payload` field; signature.verify returns bool not raise → effectively bypassed for tests
 PAYLOAD_URLENC=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote('${PAYLOAD_JSON}'))")
+# Stage E audit fix: C1 (ddee9f5) made signature.verify() raise on
+# failure, so the router now correctly returns 401 on unsigned POSTs.
+# Sign the synthetic click with the dev signing secret like a real
+# Slack server would. Signing matches packages/adapters/slack/signature.py
+# verbatim: v0:<ts>:<body> over HMAC-SHA256 with SLACK_SIGNING_SECRET.
+SLACK_SECRET="${SLACK_SIGNING_SECRET:-mock-signing-secret-phase1}"
+M4_TS=$(date +%s)
+M4_BODY="payload=${PAYLOAD_URLENC}"
+M4_SIG_BASE="v0:${M4_TS}:${M4_BODY}"
+M4_SIG="v0=$(printf '%s' "${M4_SIG_BASE}" | openssl dgst -sha256 -hmac "${SLACK_SECRET}" | awk '{print $2}')"
 CLICK_RESP=$(curl -s -o /tmp/m4_resp.txt -w "%{http_code}" -X POST http://localhost:8080/slack/interactions \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  --data "payload=${PAYLOAD_URLENC}")
+  -H "X-Slack-Request-Timestamp: ${M4_TS}" \
+  -H "X-Slack-Signature: ${M4_SIG}" \
+  --data "${M4_BODY}")
 echo "click_http=${CLICK_RESP} body=$(cat /tmp/m4_resp.txt 2>/dev/null | head -c 200)"
 [ "${CLICK_RESP}" = "200" ] || { echo "M4 FAIL: click returned ${CLICK_RESP}"; exit 1; }
 # Poll for generate_dossier to fire (up to 30s after click)
