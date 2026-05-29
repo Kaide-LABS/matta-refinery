@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from .config import settings
 
-from .routers import ingest, slack_events, slack_interactions, crm_webhooks, crm_actions, dossier, health, websocket, batch
+from .routers import ingest, slack_events, slack_interactions, crm_webhooks, crm_actions, dossier, health, websocket, batch, demo
 from packages.knowledge_graph.verify import validate_graph_or_die
 from packages.observability.logging_config import configure_logging
 
@@ -104,3 +104,4 @@ app.include_router(dossier.router)
 app.include_router(health.router)
 app.include_router(websocket.router)
 app.include_router(batch.router)
+app.include_router(demo.router)

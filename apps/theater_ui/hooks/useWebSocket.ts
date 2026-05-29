@@ -455,24 +455,21 @@ export function useDemoState(): UseDemoStateResult {
         return;
       }
       if (phase !== 'stage1_complete') return;
+      if (!batchId) return;
       setError(null);
       setPhase('stage2_requesting');
 
-      // Phase 1.7 Stage C: signal_hash dropped — server computes it from
-      // lead_prospects state to prevent client-side forgery + drift.
-      const payload = {
-        action_id: 'generate_full_dossier',
-        prospect_id: prospectId,
-        slack_response_url: 'https://hooks.slack.com/mock',
-      };
-      const form = new URLSearchParams();
-      form.append('payload', JSON.stringify(payload));
-
+      // Stage E audit fix: the browser is a first-party UI, not Slack,
+      // and cannot produce a Slack signature (signing secret is
+      // server-side). C1 (ddee9f5) hardened /slack/interactions to
+      // require a valid signature, which broke the browser path. The
+      // demo endpoint /api/demo/generate-briefing reuses the same
+      // dossier-trigger logic without the Slack signature gate.
       try {
-        const res = await fetch(`${API_BASE}/slack/interactions`, {
+        const res = await fetch(`${API_BASE}/api/demo/generate-briefing`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: form.toString(),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prospect_id: prospectId, batch_id: batchId }),
         });
         if (!res.ok) {
           const txt = await res.text();
@@ -487,7 +484,7 @@ export function useDemoState(): UseDemoStateResult {
         setPhase('error');
       }
     },
-    [phase, tracerProspect]
+    [phase, tracerProspect, batchId]
   );
 
   // Phase 1.7 Stage D: quickdemo URL mode. Reads the pre-baked Stage 1
