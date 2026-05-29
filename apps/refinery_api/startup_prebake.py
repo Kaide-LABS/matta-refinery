@@ -89,7 +89,10 @@ async def maybe_prebake_default_csv(
         result = await conn.execute(
             text(
                 """
-                SELECT b.id, COUNT(p.fitness_score) AS scored_count
+                SELECT
+                    b.id,
+                    COUNT(p.fitness_score) AS scored_count,
+                    COUNT(p.id) AS prospect_count
                 FROM ingest_batches b
                 LEFT JOIN lead_prospects p ON p.batch_id = b.id
                 WHERE b.file_sha256 = :file_sha256
@@ -103,7 +106,14 @@ async def maybe_prebake_default_csv(
         )
         existing = result.first()
 
-        if existing is not None:
+        # Stage E follow-up regression fix: Bug C's original relaxation
+        # ("skip if any batch row exists") was too permissive. A previous
+        # boot that left an orphaned shell batch — ingest_batches row
+        # present but zero lead_prospects — caused the skip path to fire,
+        # leaving pre-bake permanently warming at scored_count=0/0 with
+        # nothing to score. Now require prospect_count > 0 to skip; an
+        # empty-shell batch falls through to re-creation.
+        if existing is not None and (existing[2] or 0) > 0:
             # Stage E hotfix (Bug C): skip whenever any batch already exists
             # for this file_sha256 + user_id, regardless of scored_count.
             # The advisory lock above serializes concurrent boots, but on a
@@ -117,6 +127,7 @@ async def maybe_prebake_default_csv(
                 extra={
                     "batch_id": existing[0],
                     "scored_count": existing[1] if existing[1] is not None else 0,
+                    "prospect_count": existing[2] if existing[2] is not None else 0,
                 },
             )
             return
