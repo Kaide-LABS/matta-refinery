@@ -549,7 +549,10 @@ export default function TheaterCenterPane({
               </span>
             </div>
             <span className="theater-footer__annotation">
-              Routing: 0 LLM calls (deterministic) · <code>packages/adc/rules.py</code>
+              Routing decision: 0 LLM calls — deterministic · <code>packages/adc/rules.py</code>
+            </span>
+            <span className="theater-footer__annotation theater-footer__annotation--scope-note">
+              (routing only — dossier generation cost shown below)
             </span>
           </div>
           {batchId ? (
