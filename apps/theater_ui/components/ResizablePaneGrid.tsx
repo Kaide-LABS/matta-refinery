@@ -3,8 +3,15 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 const STORAGE_KEY = 'matta-refinery-layout-v1';
 const RESET_EVENT = 'matta-reset-layout';
 
-const DEFAULTS = { slack: 1.5, theater: 0.9, drive: 2.1 };
-const MIN_PX = { slack: 240, theater: 200, drive: 380 };
+// Stage E audit fix: rebalanced defaults — was {slack:1.5, theater:0.9,
+// drive:2.1} (~33/20/47%) which starved the Theater Console (batch
+// dropdown truncated to "Industr…", headings wrapped awkwardly) while
+// Drive sat mostly empty pre-click. Now ~30/28/39%: Theater Console
+// gets enough width for its controls out-of-box; Drive stays widest
+// for the post-click 5-section dossier. Theater min-width raised from
+// 200 → 280 so controls stay legible even when dragged narrow.
+const DEFAULTS = { slack: 1.4, theater: 1.3, drive: 1.8 };
+const MIN_PX = { slack: 240, theater: 280, drive: 380 };
 const MAX_VIEWPORT_FRACTION = 0.7;
 
 type Fractions = { slack: number; theater: number; drive: number };
