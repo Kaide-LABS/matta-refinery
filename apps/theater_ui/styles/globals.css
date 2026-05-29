@@ -1769,12 +1769,6 @@ code, .mono {
   word-break: break-word;
 }
 
-.theater-footer__annotation--scope-note {
-  font-style: italic;
-  opacity: 0.75;
-  margin-top: 2px;
-}
-
 /* ─── Cost ticker (M13) ───────────────────────────────────────────────── */
 .theater-footer__cell--cost {
   flex-direction: column;
