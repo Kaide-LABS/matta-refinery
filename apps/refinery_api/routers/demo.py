@@ -8,11 +8,13 @@ browser's Generate Briefing button.
 
 This router exposes POST /api/demo/generate-briefing — a first-party
 trigger that reuses the same trigger_dossier_generation service the
-Slack handler uses, without requiring a Slack signature. The endpoint
-is guarded to only operate on prospects belonging to a pre-bake batch
-(user_id='demo-prebake') so it can't be abused to enqueue arbitrary
-work. A production deployment would gate this behind real auth (session
-cookie, JWT, etc.) — this guard is appropriate for the Phase 1.7 demo.
+Slack handler uses, without requiring a Slack signature.
+
+The endpoint resolves the prospect's batch authoritatively from the
+prospect record (the client doesn't get to assert which batch a
+prospect belongs to) and rejects anything that isn't a demo-context
+batch. A production deployment would gate this behind real auth
+(session cookie, JWT, etc.).
 """
 from typing import Annotated
 
@@ -26,11 +28,16 @@ from packages.schemas.dossier import DossierAck
 
 router = APIRouter(prefix="/api/demo")
 
+# Batches whose user_id is one of these are considered demo-context and
+# may be triggered via this endpoint. demo-prebake is the quickdemo
+# pre-baked batch; demo_user is the placeholder user_id used by the
+# "Run Demo" CSV-ingest flow in Phase 1.7 (no real auth yet).
+DEMO_ALLOWED_USER_IDS = ("demo-prebake", "demo_user")
+
 
 class DemoBriefingRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     prospect_id: Annotated[str, Field(min_length=1, max_length=64)]
-    batch_id: Annotated[str, Field(min_length=1, max_length=64)]
 
 
 @router.post("/generate-briefing", response_model=DossierAck)
@@ -42,26 +49,30 @@ async def demo_generate_briefing(
 ) -> DossierAck:
     """Trigger dossier generation from the first-party demo UI.
 
-    Guarded to pre-bake batches only: the prospect must belong to the
-    provided batch_id, and that batch must be a pre-bake batch
-    (user_id='demo-prebake'). Anything else returns 404.
+    Server-authoritative: looks up the prospect by id, resolves its
+    batch, and rejects if the batch isn't a demo-context batch. The
+    client never gets to assert which batch a prospect belongs to.
     """
     row = (
         await session.execute(
             text(
-                "SELECT 1 FROM lead_prospects p "
+                "SELECT b.user_id "
+                "FROM lead_prospects p "
                 "JOIN ingest_batches b ON b.id = p.batch_id "
-                "WHERE p.id = :pid "
-                "AND p.batch_id = :bid "
-                "AND b.user_id = 'demo-prebake'"
+                "WHERE p.id = :pid"
             ),
-            {"pid": req.prospect_id, "bid": req.batch_id},
+            {"pid": req.prospect_id},
         )
     ).first()
     if row is None:
         raise HTTPException(
             status_code=404,
-            detail="prospect not found in pre-bake batch",
+            detail=f"prospect {req.prospect_id} not found",
+        )
+    if row[0] not in DEMO_ALLOWED_USER_IDS:
+        raise HTTPException(
+            status_code=403,
+            detail="demo generation is only available for demo-context batches",
         )
 
     return await trigger_dossier_generation(

@@ -455,7 +455,6 @@ export function useDemoState(): UseDemoStateResult {
         return;
       }
       if (phase !== 'stage1_complete') return;
-      if (!batchId) return;
       setError(null);
       setPhase('stage2_requesting');
 
@@ -464,12 +463,14 @@ export function useDemoState(): UseDemoStateResult {
       // server-side). C1 (ddee9f5) hardened /slack/interactions to
       // require a valid signature, which broke the browser path. The
       // demo endpoint /api/demo/generate-briefing reuses the same
-      // dossier-trigger logic without the Slack signature gate.
+      // dossier-trigger logic without the Slack signature gate. The
+      // server resolves the prospect's batch authoritatively — no
+      // batch_id needed from the client.
       try {
         const res = await fetch(`${API_BASE}/api/demo/generate-briefing`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prospect_id: prospectId, batch_id: batchId }),
+          body: JSON.stringify({ prospect_id: prospectId }),
         });
         if (!res.ok) {
           const txt = await res.text();
@@ -484,7 +485,7 @@ export function useDemoState(): UseDemoStateResult {
         setPhase('error');
       }
     },
-    [phase, tracerProspect, batchId]
+    [phase, tracerProspect]
   );
 
   // Phase 1.7 Stage D: quickdemo URL mode. Reads the pre-baked Stage 1
