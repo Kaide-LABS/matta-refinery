@@ -79,6 +79,18 @@ export interface TopProspect {
 
 export type TracerStatus = 'idle' | 'resolving' | 'resolved' | 'unavailable';
 
+// Phase 1.7 Stage E: live top-12 fetched from /api/batch/{id}/top_12.
+// Replaces the legacy TOP_12_PROSPECTS placeholder once Stage 1 ranks
+// the actual cohort — the placeholder's prospect_ids are hashed for
+// uk_metals_expo_2025 and don't match industrial_ai_summit_2025 IDs.
+export interface Top12Item {
+  rank: number;
+  prospect_id: string;
+  company_name: string;
+  vertical: string;
+  fitness_score: number;
+}
+
 export interface UseDemoStateResult {
   phase: DemoPhase;
   batchId: string | null;
@@ -95,6 +107,7 @@ export interface UseDemoStateResult {
   selectedCsv: CsvSelection;
   tracerProspect: TopProspect | null;
   tracerStatus: TracerStatus;
+  top12: Top12Item[];
   selectCsv: (selection: CsvSelection) => void;
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
@@ -136,6 +149,7 @@ export function useDemoState(): UseDemoStateResult {
   const [activeCsv, setActiveCsv] = useState<SeedCsv>(DEFAULT_SEED_CSV);
   const [selectedCsv, setSelectedCsv] = useState<CsvSelection>(DEFAULT_SEED_CSV.id);
   const [tracerProspect, setTracerProspect] = useState<TopProspect | null>(null);
+  const [top12, setTop12] = useState<Top12Item[]>([]);
   const [tracerStatus, setTracerStatus] = useState<TracerStatus>('idle');
 
   const startedAtRef = useRef<number | null>(null);
@@ -266,6 +280,20 @@ export function useDemoState(): UseDemoStateResult {
         setTracerStatus('resolved');
       } else {
         setTracerStatus('unavailable');
+      }
+
+      // Phase 1.7 Stage E: also fetch the live top-12 so every card
+      // in the Slack pane is independently clickable with its real
+      // database prospect_id. The hardcoded TOP_12_PROSPECTS
+      // placeholder doesn't match the current cohort's IDs.
+      try {
+        const res = await fetch(`${API_BASE}/api/batch/${batchId}/top_12`);
+        if (!cancelled && res.ok) {
+          const body = (await res.json()) as { items: Top12Item[] };
+          setTop12(body.items);
+        }
+      } catch {
+        // Non-fatal: cards fall back to placeholder data.
       }
     })();
 
@@ -449,15 +477,11 @@ export function useDemoState(): UseDemoStateResult {
 
   const clickProspect = useCallback(
     async (prospectId: string, companyName: string) => {
-      // The rank-1 tracer prospect (resolved per-batch via /top_prospect)
-      // is the only card that triggers Stage 2. Cards 2-12 are no-ops with
-      // a tooltip explaining the demo flow. The tracer is determined by
-      // the backend's fitness scoring, not by company-name string match —
-      // so this gate compares against tracerProspect.prospect_id rather
-      // than hardcoding any single company.
-      if (tracerProspect && prospectId !== tracerProspect.prospect_id) {
-        return;
-      }
+      // Phase 1.7 Stage E: any of the top-12 cards can trigger Stage 2.
+      // The legacy tracer-only gate (rank-1 Caracol only) was a quickdemo
+      // scaffolding artifact; with /api/demo/generate-briefing live and
+      // /api/batch/{id}/top_12 supplying real DB ids, every card has an
+      // independent dossier path.
       if (phase !== 'stage1_complete') return;
       setError(null);
       setPhase('stage2_requesting');
@@ -489,7 +513,7 @@ export function useDemoState(): UseDemoStateResult {
         setPhase('error');
       }
     },
-    [phase, tracerProspect]
+    [phase]
   );
 
   // Phase 1.7 Stage D: quickdemo URL mode. Reads the pre-baked Stage 1
@@ -537,6 +561,7 @@ export function useDemoState(): UseDemoStateResult {
     setActiveCsv(DEFAULT_SEED_CSV);
     setSelectedCsv(DEFAULT_SEED_CSV.id);
     setTracerProspect(null);
+    setTop12([]);
     setTracerStatus('idle');
     startedAtRef.current = null;
   }, []);
@@ -557,6 +582,7 @@ export function useDemoState(): UseDemoStateResult {
     selectedCsv,
     tracerProspect,
     tracerStatus,
+    top12,
     selectCsv,
     runDemo,
     clickProspect,

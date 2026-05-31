@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { DemoPhase, TopProspect, TracerStatus, DossierPayload } from '../hooks/useWebSocket';
+import type { DemoPhase, TopProspect, TracerStatus, DossierPayload, Top12Item } from '../hooks/useWebSocket';
 import { TOP_12_PROSPECTS, ProspectCard } from './prospectData';
 import CsvPreviewModal from './CsvPreviewModal';
 import CrmRecordModal from './CrmRecordModal';
@@ -12,6 +12,7 @@ interface Props {
   activeCsv: SeedCsv;
   tracerProspect: TopProspect | null;
   tracerStatus: TracerStatus;
+  top12: Top12Item[];
   onClickProspect: (prospectId: string, companyName: string) => void;
   // Phase 1.7 Stage D: when true, the queue is rendering from the
   // pre-baked Stage 1 batch. UI surfaces a "Pre-baked queue ready"
@@ -90,7 +91,7 @@ function FitBreakdownTooltip({ vertical, factorySizeBand, total }: FitBreakdownT
   );
 }
 
-export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, onClickProspect, quickdemoMode, dossier, dossierId }: Props) {
+export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerProspect, tracerStatus, top12, onClickProspect, quickdemoMode, dossier, dossierId }: Props) {
   const [crmModalOpen, setCrmModalOpen] = useState(false);
   const scrollToDossier = () => {
     const el = document.querySelector<HTMLElement>('.drive-doc-paper');
@@ -275,39 +276,45 @@ export default function SlackLeftPane({ phase, elapsedSec, activeCsv, tracerPros
             <div className="slack-blockkit">
               <ul className="slack-blockkit__cards">
                 {TOP_12_PROSPECTS.map((p: ProspectCard) => {
-                  // The rank-1 card is the live tracer — substitute its
-                  // display fields with the resolved tracer from
-                  // /top_prospect (falls back to activeCsv.tracerCompany +
-                  // hardcoded fitness while the endpoint is resolving).
+                  // Phase 1.7 Stage E: every card uses live data from
+                  // /api/batch/{id}/top_12 (authoritative DB ids that
+                  // match the current cohort, not the legacy
+                  // uk_metals_expo_2025 hashes baked into TOP_12_PROSPECTS).
+                  // The hardcoded array remains as a pre-resolution
+                  // placeholder so the rank/vertical chips render before
+                  // the fetch completes.
+                  const live = top12.find((t) => t.rank === p.rank);
                   const isTracer = p.rank === 1;
-                  const displayName = isTracer
-                    ? tracerProspect?.company_name ?? activeCsv.tracerCompany
-                    : p.companyName;
-                  const displayProspectId = isTracer
-                    ? tracerProspect?.prospect_id ?? p.prospectId
-                    : p.prospectId;
-                  const displayFit = isTracer && tracerProspect
-                    ? tracerProspect.fitness_score
-                    : p.fitnessScore;
-                  // Tracer card: clickable when Stage 1 done + tracer endpoint
-                  // resolved. Non-tracer cards (rank 2-12): NEVER clickable —
-                  // they're cosmetic top-12 placeholders. The Generate Briefing
-                  // button on those cards is disabled with an explanatory
-                  // tooltip. Card itself stays focusable for TutorialCallout
-                  // highlighting and screen-reader navigation.
-                  const tracerClickable = clickable && tracerStatus !== 'unavailable';
-                  const cardClickable = isTracer && tracerClickable;
-                  const tooltip = isTracer
-                    ? `Triggers Stage 2 dossier generation for ${displayName}`
-                    : `Demo wires Stage 2 through the rank-1 tracer · Phase 1 scope`;
+                  const displayName = live
+                    ? live.company_name
+                    : isTracer
+                      ? tracerProspect?.company_name ?? activeCsv.tracerCompany
+                      : p.companyName;
+                  const displayProspectId = live
+                    ? live.prospect_id
+                    : isTracer
+                      ? tracerProspect?.prospect_id ?? p.prospectId
+                      : p.prospectId;
+                  const displayFit = live
+                    ? live.fitness_score
+                    : isTracer && tracerProspect
+                      ? tracerProspect.fitness_score
+                      : p.fitnessScore;
+                  // All 12 cards are independently clickable once the
+                  // top_12 fetch has resolved (live entries available)
+                  // OR once the tracer endpoint resolved (rank-1 only,
+                  // brief window before /top_12 lands).
+                  const cardClickable = clickable && (
+                    Boolean(live) ||
+                    (isTracer && tracerStatus !== 'unavailable')
+                  );
+                  const tooltip = `Triggers Stage 2 dossier generation for ${displayName}`;
                   return (
                     <li
                       key={p.prospectId}
                       data-quickdemo-tracer={isTracer && quickdemoMode ? 'true' : undefined}
                       className={`prospect-card ${
-                        !isTracer ? 'prospect-card--placeholder' : ''
-                      } ${
-                        isTracer && !cardClickable ? 'prospect-card--disabled' : ''
+                        !cardClickable ? 'prospect-card--disabled' : ''
                       }`}
                       onMouseEnter={() => setHoverTip(p.prospectId)}
                       onMouseLeave={() => setHoverTip(null)}

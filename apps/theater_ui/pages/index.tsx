@@ -132,6 +132,7 @@ const IndexPage: NextPage = () => {
             activeCsv={demo.activeCsv}
             tracerProspect={demo.tracerProspect}
             tracerStatus={demo.tracerStatus}
+            top12={demo.top12}
             onClickProspect={demo.clickProspect}
             quickdemoMode={isQuickdemoMode}
             dossier={demo.dossier}

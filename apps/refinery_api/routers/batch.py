@@ -79,6 +79,67 @@ async def get_top_prospect(batch_id: str, session: SessionDep) -> TopProspectRes
     )
 
 
+class Top12Item(BaseModel):
+    """Single ranked prospect row in the top-12 list returned to the UI.
+
+    Phase 1.7 Stage E: every card in the Slack pane's top-12 is now
+    independently clickable (was rank-1 only). The UI uses these
+    authoritative prospect_ids — the hardcoded TOP_12_PROSPECTS
+    placeholder in components/prospectData.ts is computed for the
+    legacy uk_metals_expo_2025 CSV and won't match the current
+    industrial_ai_summit_2025 cohort.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    rank: Annotated[int, Field(ge=1, le=12)]
+    prospect_id: Annotated[str, Field(min_length=1, max_length=64)]
+    company_name: Annotated[str, Field(min_length=1, max_length=256)]
+    vertical: Annotated[str, Field(max_length=64)] = "unknown"
+    fitness_score: Annotated[float, Field(ge=0.0, le=1.0)]
+
+
+class Top12Response(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    items: list[Top12Item]
+
+
+@router.get(
+    "/api/batch/{batch_id}/top_12",
+    response_model=Top12Response,
+    status_code=status.HTTP_200_OK,
+)
+async def get_top_12(batch_id: str, session: SessionDep) -> Top12Response:
+    """Return the top-12 ranked prospects for a batch.
+
+    Same ordering as /top_prospect (fitness_score DESC, external_lead_id
+    ASC) — extended to 12 rows with explicit rank. Empty list if no
+    scored prospects exist yet (Stage 1 in flight).
+    """
+    query = text(
+        """
+        SELECT id, company_name, vertical, fitness_score
+        FROM lead_prospects
+        WHERE batch_id = :batch_id AND fitness_score IS NOT NULL
+        ORDER BY fitness_score DESC, external_lead_id ASC
+        LIMIT 12
+        """
+    )
+    result = await session.execute(query, {"batch_id": batch_id})
+    rows = result.fetchall()
+    items = [
+        Top12Item(
+            rank=i + 1,
+            prospect_id=r.id,
+            company_name=r.company_name,
+            vertical=r.vertical or "unknown",
+            fitness_score=float(r.fitness_score),
+        )
+        for i, r in enumerate(rows)
+    ]
+    return Top12Response(items=items)
+
+
 class PrebakedBatchResponse(BaseModel):
     """Status of the startup pre-bake on the default demo CSV.
 
