@@ -55,6 +55,70 @@ async def lifespan(app: FastAPI):
         async with app.state.engine.begin() as _conn:
             await _conn.run_sync(ProspectsBase.metadata.create_all)
             await _conn.run_sync(OutboxBase.metadata.create_all)
+
+            # Stage E audit fix: dossier_artifacts, dossier_stubs,
+            # prioritized_queues, and event_idempotency have no
+            # SQLAlchemy model — historically they were created by
+            # scripts/init_db.py at smoke-harness invocation time.
+            # The Stage E harness reframe stopped calling init_db,
+            # so on a fresh-volume boot these tables didn't exist
+            # and worker INSERTs raised UndefinedTable → 500 on
+            # /dossier/{id} → CORS middleware never got to add
+            # response headers → browser reported a CORS error
+            # masking the underlying schema bug.
+            #
+            # All four tables are now created idempotently here.
+            # IF NOT EXISTS keeps re-boots safe.
+            for ddl in (
+                """
+                CREATE TABLE IF NOT EXISTS dossier_artifacts (
+                    id TEXT PRIMARY KEY,
+                    dossier_id TEXT,
+                    prospect_id TEXT,
+                    batch_id TEXT,
+                    signal_hash TEXT,
+                    knowledge_graph_version TEXT,
+                    calibration_version TEXT,
+                    state TEXT,
+                    process_taxonomy JSONB,
+                    defect_hypothesis JSONB,
+                    comparable_deployment JSONB,
+                    risk_register JSONB,
+                    suggested_approach JSONB,
+                    unverified_sections JSONB,
+                    deterministic_section_ratio FLOAT,
+                    validation_error TEXT,
+                    generated_at TIMESTAMP
+                )
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS dossier_stubs (
+                    stub_id TEXT PRIMARY KEY,
+                    prospect_id TEXT,
+                    batch_id TEXT,
+                    company_facts JSONB,
+                    verified_vertical TEXT,
+                    headline_kg_anchor TEXT,
+                    slot_readiness TEXT,
+                    generated_at TIMESTAMP
+                )
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS prioritized_queues (
+                    id TEXT PRIMARY KEY,
+                    batch_id TEXT,
+                    payload_json JSONB
+                )
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS event_idempotency (
+                    id TEXT PRIMARY KEY,
+                    event_id TEXT,
+                    processed_at TIMESTAMP
+                )
+                """,
+            ):
+                await _conn.execute(_sa_text(ddl))
     except Exception as e:
         _life_log.exception(
             "Lifespan create_all failed", extra={"exception_type": type(e).__name__},
