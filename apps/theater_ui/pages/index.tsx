@@ -133,6 +133,7 @@ const IndexPage: NextPage = () => {
             tracerProspect={demo.tracerProspect}
             tracerStatus={demo.tracerStatus}
             top12={demo.top12}
+            activeProspect={demo.activeProspect}
             onClickProspect={demo.clickProspect}
             quickdemoMode={isQuickdemoMode}
             dossier={demo.dossier}
@@ -155,7 +156,7 @@ const IndexPage: NextPage = () => {
             onSelectCsv={demo.selectCsv}
             onRunDemo={demo.runDemo}
             onReset={demo.reset}
-            tracerProspect={demo.tracerProspect}
+            tracerProspect={demo.activeProspect ?? demo.tracerProspect}
           />
         }
         drive={
@@ -163,7 +164,7 @@ const IndexPage: NextPage = () => {
             phase={demo.phase}
             dossier={demo.dossier}
             activeCsv={demo.activeCsv}
-            tracerProspect={demo.tracerProspect}
+            tracerProspect={demo.activeProspect ?? demo.tracerProspect}
           />
         }
       />
@@ -172,7 +173,7 @@ const IndexPage: NextPage = () => {
         elapsedSec={demo.elapsedSec}
         stage2Progress={demo.stage2Progress}
         byteDensityRatio={demo.byteDensityRatio}
-        tracerName={demo.tracerProspect?.company_name ?? demo.activeCsv.tracerCompany}
+        tracerName={demo.activeProspect?.company_name ?? demo.tracerProspect?.company_name ?? demo.activeCsv.tracerCompany}
       />
     </div>
   );

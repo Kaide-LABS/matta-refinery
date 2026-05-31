@@ -108,6 +108,12 @@ export interface UseDemoStateResult {
   tracerProspect: TopProspect | null;
   tracerStatus: TracerStatus;
   top12: Top12Item[];
+  // Phase 1.7 Stage E: prospect the user just clicked Generate
+  // Briefing on. tracerProspect is rank-1 only; activeProspect
+  // follows whatever card was clicked so Theater Console + Drive
+  // pane render the correct company/vertical for the in-flight
+  // dossier. Falls back to tracerProspect when no click yet.
+  activeProspect: TopProspect | null;
   selectCsv: (selection: CsvSelection) => void;
   runDemo: () => Promise<void>;
   clickProspect: (prospectId: string, companyName: string) => Promise<void>;
@@ -150,6 +156,7 @@ export function useDemoState(): UseDemoStateResult {
   const [selectedCsv, setSelectedCsv] = useState<CsvSelection>(DEFAULT_SEED_CSV.id);
   const [tracerProspect, setTracerProspect] = useState<TopProspect | null>(null);
   const [top12, setTop12] = useState<Top12Item[]>([]);
+  const [activeProspect, setActiveProspect] = useState<TopProspect | null>(null);
   const [tracerStatus, setTracerStatus] = useState<TracerStatus>('idle');
 
   const startedAtRef = useRef<number | null>(null);
@@ -484,6 +491,27 @@ export function useDemoState(): UseDemoStateResult {
       // independent dossier path.
       if (phase !== 'stage1_complete') return;
       setError(null);
+      // Phase 1.7 Stage E: stash the clicked prospect so display
+      // components (Theater Console header, Drive pane title/CRM
+      // strip) follow this card instead of the always-rank-1
+      // tracerProspect. Look up live data from /top_12; fall back
+      // to inputs if the fetch hasn't resolved yet.
+      const liveMatch = top12.find((t) => t.prospect_id === prospectId);
+      if (liveMatch) {
+        setActiveProspect({
+          prospect_id: liveMatch.prospect_id,
+          company_name: liveMatch.company_name,
+          fitness_score: liveMatch.fitness_score,
+          vertical: liveMatch.vertical,
+        });
+      } else {
+        setActiveProspect({
+          prospect_id: prospectId,
+          company_name: companyName,
+          fitness_score: 0,
+          vertical: 'unknown',
+        });
+      }
       setPhase('stage2_requesting');
 
       // Stage E audit fix: the browser is a first-party UI, not Slack,
@@ -513,7 +541,7 @@ export function useDemoState(): UseDemoStateResult {
         setPhase('error');
       }
     },
-    [phase]
+    [phase, top12]
   );
 
   // Phase 1.7 Stage D: quickdemo URL mode. Reads the pre-baked Stage 1
@@ -562,6 +590,7 @@ export function useDemoState(): UseDemoStateResult {
     setSelectedCsv(DEFAULT_SEED_CSV.id);
     setTracerProspect(null);
     setTop12([]);
+    setActiveProspect(null);
     setTracerStatus('idle');
     startedAtRef.current = null;
   }, []);
@@ -583,6 +612,7 @@ export function useDemoState(): UseDemoStateResult {
     tracerProspect,
     tracerStatus,
     top12,
+    activeProspect,
     selectCsv,
     runDemo,
     clickProspect,
