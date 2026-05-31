@@ -281,11 +281,15 @@ export function useDemoState(): UseDemoStateResult {
     const poll = async () => {
       try {
         const res = await fetch(`${API_BASE}/dossier/${dossierId}`);
-        if (res.status === 202) {
-          // Still generating — keep polling
-          return;
-        }
-        if (!res.ok) return;
+        // 404 is the brief race window between the click and the
+        // worker INSERTing the dossier_artifacts row (~100-500ms).
+        // Silently retry — the polling interval handles it.
+        if (res.status === 404) return;
+        // The endpoint returns 200 when state=complete and 202 when
+        // state=generating, with the partial sections body in both
+        // cases. Parse the body on both so sections render
+        // progressively as the worker writes them.
+        if (res.status !== 200 && res.status !== 202) return;
         const body = (await res.json()) as DossierPayload;
         setDossier(body);
         if (typeof body.deterministic_section_ratio === 'number') {
