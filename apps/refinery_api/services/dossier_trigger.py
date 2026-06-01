@@ -70,7 +70,21 @@ async def trigger_dossier_generation(
 
     cached = await redis.get(key)
     if cached:
-        return DossierAck(dossier_id=cached.decode("utf-8"), status="cached")
+        cached_id = cached.decode("utf-8")
+        # Phase 1.7 Stage E: verify the cached dossier_id actually
+        # corresponds to a dossier_artifacts row. Stale Redis entries
+        # (from sessions whose worker tasks failed before INSERT —
+        # e.g. before the schema fix in cc45e25) point to dossier_ids
+        # the worker never wrote, and the UI polls them forever
+        # getting 404. Self-heal: if the row is missing, drop the
+        # cache entry and mint a fresh dossier_id.
+        verify = await session.execute(
+            text("SELECT 1 FROM dossier_artifacts WHERE dossier_id = :did"),
+            {"did": cached_id},
+        )
+        if verify.first() is not None:
+            return DossierAck(dossier_id=cached_id, status="cached")
+        await redis.delete(key)
 
     new_id = str(uuid.uuid4())
     await redis.set(key, new_id, ex=86400 * 7)
