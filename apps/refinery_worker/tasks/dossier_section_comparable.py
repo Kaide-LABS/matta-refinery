@@ -36,19 +36,35 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
     vertical = (row[0] if row else None) or "metal_casting"
     company_name = (row[1] if row else None) or "the prospect"
 
-    anchor_id, line, dims = select_comparable(vertical, None)
+    # Phase 1.7 Stage E: selector now returns is_named_subject_match —
+    # whether THIS prospect is the anchor's named subject (Caracol
+    # clicking Caracol) vs merely sharing the anchor's vertical
+    # (Velo3D resolving to caracol_am because both are AM). The
+    # named-subject case keeps the anchor's strong evidence_strength;
+    # the vertical-match case downgrades to "vertical_precedent" so
+    # we don't inflate Caracol's named partnership across every AM
+    # prospect.
+    anchor_id, line, dims, is_named_subject_match = select_comparable(
+        vertical, None, company_name
+    )
 
-    # Phase 1.7 Stage C: look up evidence_strength from the loaded KG anchor
-    # so §3 can render anchors asymmetrically (named-customer vs vertical
-    # mention). None when no_comparable_available.
+    # Look up the anchor's intrinsic evidence_strength for the
+    # named-subject case. None when no_comparable_available.
     anchor_evidence_strength = None
+    anchor_named_subject = None
     if anchor_id != "no_comparable_available":
         from packages.knowledge_graph.loader import load_graph
         _graph = load_graph()
         for _a in _graph.anchors:
             if _a.anchor_id == anchor_id:
                 anchor_evidence_strength = _a.evidence_strength
+                anchor_named_subject = _a.named_subject_company
                 break
+        # Downgrade for non-named-subject prospects in an anchored
+        # vertical. Caracol's own dossier stays green/named; every
+        # other AM prospect becomes slate/precedent.
+        if not is_named_subject_match:
+            anchor_evidence_strength = "vertical_precedent"
 
     if anchor_id == "no_comparable_available":
         res = ComparableDeployment(
@@ -66,15 +82,31 @@ def dossier_section_comparable(self, prospect_id: str, dossier_id: str):
         app.send_task("refinery.dossier_section_risk", args=[prospect_id, dossier_id])
         return
         
-    from packages.prompts.comparable_pro import COMPARABLE_PROMPT
-    prompt = COMPARABLE_PROMPT.format(
-        matta_customer_anchor=anchor_id,
-        citation_substrate_line=line,
-        permitted_dimensions_of_comparability=str(dims),
-        company_name=company_name,
-        vertical=vertical,
-        process_taxonomy_json="{}"
-    )
+    # Stage E: pick prompt template based on whether prospect IS the
+    # anchor's named subject. Caracol -> NAMED (existing-customer
+    # framing). Velo3D / Relativity / etc -> PRECEDENT (forward-looking
+    # "would be a net-new deployment" framing).
+    if is_named_subject_match:
+        from packages.prompts.comparable_pro import COMPARABLE_PROMPT_NAMED
+        prompt = COMPARABLE_PROMPT_NAMED.format(
+            matta_customer_anchor=anchor_id,
+            citation_substrate_line=line,
+            permitted_dimensions_of_comparability=str(dims),
+            company_name=company_name,
+            vertical=vertical,
+            process_taxonomy_json="{}",
+        )
+    else:
+        from packages.prompts.comparable_pro import COMPARABLE_PROMPT_PRECEDENT
+        prompt = COMPARABLE_PROMPT_PRECEDENT.format(
+            matta_customer_anchor=anchor_id,
+            anchor_named_subject=anchor_named_subject or "Matta's vertical reference deployment",
+            citation_substrate_line=line,
+            permitted_dimensions_of_comparability=str(dims),
+            company_name=company_name,
+            vertical=vertical,
+            process_taxonomy_json="{}",
+        )
     
     response = client.models.generate_content(
         model="gemini-2.5-pro",

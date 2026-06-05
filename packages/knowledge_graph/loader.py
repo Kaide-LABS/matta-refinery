@@ -35,6 +35,15 @@ class KnowledgeGraphAnchor(BaseModel):
     source_url: Optional[Annotated[str, Field(max_length=2048)]] = None
     source_archive_url: Optional[Annotated[str, Field(max_length=2048)]] = None
     source_label: Optional[Annotated[str, Field(max_length=128)]] = None
+    # Phase 1.7 Stage E: when this anchor describes a NAMED partner
+    # (e.g. Caracol, Bowers & Wilkins), this field carries a
+    # distinctive substring of the partner's company name. The
+    # comparable-deployment selector uses it to decide whether the
+    # briefed prospect IS the named subject (substring match → strong
+    # evidence_strength) or merely shares the anchor's vertical
+    # (no match → downgrade to vertical_precedent). Null when the
+    # anchor is already vertical-level (unnamed_customer_*).
+    named_subject_company: Optional[Annotated[str, Field(max_length=128)]] = None
 
 class KnowledgeGraph(BaseModel):
     model_config = ConfigDict(extra="forbid")

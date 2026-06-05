@@ -390,6 +390,15 @@ export default function DriveDossierRightPane({ phase, dossier, activeCsv, trace
                       note: 'Industry mention without customer identification — weakest grounding.',
                       tone: 'weak',
                     },
+                    // Stage E: prospect shares the anchor's vertical
+                    // but is NOT the named subject. Honest framing —
+                    // the named partner (Caracol) is the precedent;
+                    // this prospect would be net-new.
+                    vertical_precedent: {
+                      label: 'Comparable deployment precedent',
+                      note: 'Verified Matta deployment in this vertical is the precedent; this prospect would be a net-new deployment on the same pattern.',
+                      tone: 'precedent',
+                    },
                   };
                   const f = FRAMING[strength];
                   if (!f) return null;

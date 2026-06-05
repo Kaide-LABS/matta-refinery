@@ -16,7 +16,8 @@
       "evidence_strength": "named_customer_specific_deployment",
       "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
       "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
-      "source_label": "Cambridge IfM news, 10 Dec 2025"
+      "source_label": "Cambridge IfM news, 10 Dec 2025",
+      "named_subject_company": "Bowers & Wilkins"
     },
     {
       "anchor_id": "matta_deployment_caracol_am",
@@ -32,7 +33,8 @@
       "evidence_strength": "named_customer_oem_partnership",
       "source_url": "https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
       "source_archive_url": "https://web.archive.org/web/20260521124555/https://www.ifm.eng.cam.ac.uk/news/cambridge-spin-out-matta-raises-14m-to-build-sentient-factories/",
-      "source_label": "Cambridge IfM news, 10 Dec 2025"
+      "source_label": "Cambridge IfM news, 10 Dec 2025",
+      "named_subject_company": "Caracol"
     },
     {
       "anchor_id": "matta_deployment_global_drinks_brand",

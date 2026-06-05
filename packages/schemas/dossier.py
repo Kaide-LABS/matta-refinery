@@ -44,11 +44,17 @@ class ComparableDeployment(BaseModel):
     # gradient so §3 can render strong anchors (named-customer specific
     # deployments) visually distinct from weak ones (vertical mentions).
     # None when selection_method == "no_comparable_available".
+    # Phase 1.7 Stage E: "vertical_precedent" added so non-named-subject
+    # prospects in an anchored vertical (e.g. Velo3D resolving to the
+    # caracol_am anchor) downgrade from the anchor's own strength label.
+    # Only the named subject row (Caracol clicking Caracol) retains the
+    # strong "named_customer_*" label. Contrast = honesty proof point.
     evidence_strength: Literal[
         "named_customer_specific_deployment",
         "named_customer_oem_partnership",
         "unnamed_customer_quantitative_claim",
         "unnamed_customer_vertical_mention",
+        "vertical_precedent",
     ] | None = None
 
 

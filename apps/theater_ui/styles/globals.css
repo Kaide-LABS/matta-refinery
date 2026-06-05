@@ -2745,6 +2745,16 @@ code, .mono {
   background: var(--matta-code-bg);
 }
 
+/* Stage E: vertical_precedent — shares the anchor's vertical but is NOT
+   the named subject. Slate/neutral so it reads visibly distinct from
+   the green/forest named-customer tones. The contrast (Caracol = green
+   "Named OEM partnership"; Velo3D = slate "Comparable deployment
+   precedent") is the calibrated-honesty proof point. */
+.dossier-doc__evidence-band--precedent {
+  border-left-color: var(--matta-ink-muted, #6b7280);
+  background: rgba(107, 114, 128, 0.06);
+}
+
 .dossier-doc__evidence-label {
   font-size: 10px;
   text-transform: uppercase;
@@ -2760,6 +2770,10 @@ code, .mono {
 
 .dossier-doc__evidence-band--medium .dossier-doc__evidence-label {
   color: var(--matta-peach-dark);
+}
+
+.dossier-doc__evidence-band--precedent .dossier-doc__evidence-label {
+  color: var(--matta-ink-muted, #6b7280);
 }
 
 .dossier-doc__evidence-note {
